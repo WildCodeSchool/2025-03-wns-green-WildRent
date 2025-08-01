@@ -5,13 +5,17 @@ import { dataSource } from "./config/db";
 import { buildSchema } from "type-graphql";
 import { ApolloServer }  from "@apollo/server"; 
 import { startStandaloneServer } from "@apollo/server/standalone";
-import CategoryResolver from "./resolvers/CategoryResolver";
 import UserResolver from "./resolvers/UserResolver";
-import ProductResolver from "./resolvers/ProductResolver";
-import BookingResolver from "./resolvers/BookingResolver";
-import BookingProductsResolver from "./resolvers/BookingProductsResolver";
-import RoleResolver from "./resolvers/RoleResolver";
-import StatusResolver from "./resolvers/StatusResolver";
+// import CategoryResolver from "./resolvers/CategoryResolver";
+// import ProductResolver from "./resolvers/ProductResolver";
+// import BookingResolver from "./resolvers/BookingResolver";
+// import BookingProductsResolver from "./resolvers/BookingProductsResolver";
+// import RoleResolver from "./resolvers/RoleResolver";
+// import StatusResolver from "./resolvers/StatusResolver";
+
+type Query = {
+  _empty: String
+}
 
 dotenv.config();
 
@@ -24,7 +28,7 @@ async function startServer() {
   const { url } = await startStandaloneServer(apolloServer, {
     listen: {port: 4200}}
 ); 
-  console.log("Server started on" + url);
+  console.log("✅ Server started on " + url);
 }; 
 startServer(); 
 
