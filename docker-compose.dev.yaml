@@ -1,15 +1,21 @@
 services:
+
   backend:
     build: ./backend
     ports:
-      - "3001:3000"
-    volumes:
-        - ./backend/src/:/app/src/
+      - "4200:4200"
+    # depends_on:
+    #   database:
+    #     condition: service_healthy
+    # volumes:
+    #     - ./backend/src/:/app/src/
     environment:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
       DB_USER: ${DB_USER}
       DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      
 
   frontend:
     build: ./frontend 
@@ -19,13 +25,17 @@ services:
   database:
       image: postgres
       ports:
-        - "4001:4000"
+        - "5432:5432"
       environment:
             POSTGRES_PASSWORD: ${DB_PASSWORD}
             POSTGRES_DB: ${DB_DATABASE}
-            POSTGRES_USER: ${DB_USER}
-            POSTGRES_HOST: ${DB_HOST} 
-      volumes:
-          - ./database:/var/lib/postgresql/data
+            POSTGRES_USER: ${DB_USER} 
+      # healthcheck:
+      #   test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      #   interval: 5s
+      #   timeout: 5s
+      #   retries: 5
+      # volumes:
+      #     - ./database:/var/lib/postgresql/data
 
      
