@@ -1,13 +1,6 @@
 import { Field, ID, ObjectType } from "type-graphql";
-import {
-    BaseEntity,
-    Column,
-    Entity,
-    ManyToOne,
-    PrimaryGeneratedColumn,
-} from "typeorm";
-
-import { Role } from "./Role";
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+// import { Role } from "./Role";
 
 @Entity()
 @ObjectType()
@@ -26,7 +19,7 @@ export class User extends BaseEntity {
     lastname!: string;
 
     @Field()
-    @Column({ length: 20  })
+    @Column()
     phoneNumber!: number;
 
     @Field()
@@ -44,9 +37,8 @@ export class User extends BaseEntity {
     @Field()
     @Column({ length: 250 })
     city!: string;
-    
-    @ManyToOne(() => Role, (role) => role.users)
-    @Field(() => Role)
-    role!: Role;
 
+    // @ManyToOne(() => Role, (role) => role.users)
+    // @Field(() => Role)
+    // role!: Role;
 }

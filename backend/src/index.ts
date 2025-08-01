@@ -1,15 +1,34 @@
 
-import express from 'express';
+import "reflect-metadata"; 
 import * as dotenv from "dotenv";
+import { dataSource } from "./config/db";
+import { buildSchema } from "type-graphql";
+import { ApolloServer }  from "@apollo/server"; 
+import { startStandaloneServer } from "@apollo/server/standalone";
+import UserResolver from "./resolvers/UserResolver";
+// import CategoryResolver from "./resolvers/CategoryResolver";
+// import ProductResolver from "./resolvers/ProductResolver";
+// import BookingResolver from "./resolvers/BookingResolver";
+// import BookingProductsResolver from "./resolvers/BookingProductsResolver";
+// import RoleResolver from "./resolvers/RoleResolver";
+// import StatusResolver from "./resolvers/StatusResolver";
+
+type Query = {
+  _empty: String
+}
+
 dotenv.config();
 
-const app = express();
-const PORT = 3000; 
+async function startServer() {
+  await dataSource.initialize(); 
+  const schema = await buildSchema ({
+    resolvers: [UserResolver]
+  })
+  const apolloServer = new ApolloServer({ schema }); 
+  const { url } = await startStandaloneServer(apolloServer, {
+    listen: {port: 4200}}
+); 
+  console.log("✅ Server started on " + url);
+}; 
+startServer(); 
 
-app.get('/', (req, res) => {
-  res.send('Hello world !');
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
