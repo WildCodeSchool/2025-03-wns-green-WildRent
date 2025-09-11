@@ -1,5 +1,5 @@
-import { Field, InputType, Resolver } from "type-graphql";
-import { User } from "../entities/User";
+import { Arg, Field, InputType, Mutation, Resolver } from "type-graphql";
+
 
 @InputType()
 export class LoginInput {
@@ -10,6 +10,10 @@ export class LoginInput {
   password!: string;
 }
 
-@Resolver(User)
-export default class AuthResolver {    
-}; 
+@Resolver()
+export default class AuthResolver {
+    @Mutation(() => String)
+    async login(@Arg("data") data: LoginInput): Promise<string> {
+        return "login ok"
+    }
+};
