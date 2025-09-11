@@ -1,17 +1,12 @@
 
-import "reflect-metadata"; 
+import "reflect-metadata";
 import * as dotenv from "dotenv";
 import { dataSource } from "./config/db";
 import { buildSchema } from "type-graphql";
-import { ApolloServer }  from "@apollo/server"; 
+import { ApolloServer }  from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import UserResolver from "./resolvers/UserResolver";
-// import CategoryResolver from "./resolvers/CategoryResolver";
-// import ProductResolver from "./resolvers/ProductResolver";
-// import BookingResolver from "./resolvers/BookingResolver";
-// import BookingProductsResolver from "./resolvers/BookingProductsResolver";
-// import RoleResolver from "./resolvers/RoleResolver";
-// import StatusResolver from "./resolvers/StatusResolver";
+import AuthResolver from "./resolvers/AuthResolver";
 
 type Query = {
   _empty: String
@@ -20,15 +15,14 @@ type Query = {
 dotenv.config();
 
 async function startServer() {
-  await dataSource.initialize(); 
+  await dataSource.initialize();
   const schema = await buildSchema ({
-    resolvers: [UserResolver]
+    resolvers: [UserResolver, AuthResolver]
   })
-  const apolloServer = new ApolloServer({ schema }); 
+  const apolloServer = new ApolloServer({ schema });
   const { url } = await startStandaloneServer(apolloServer, {
     listen: {port: 4200}}
-); 
+);
   console.log("✅ Server started on " + url);
-}; 
-startServer(); 
-
+};
+startServer();
