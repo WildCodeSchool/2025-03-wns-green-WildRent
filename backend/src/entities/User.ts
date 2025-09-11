@@ -15,11 +15,11 @@ export class User extends BaseEntity {
     firstname!: string;
 
     @Field()
-    @Column({ length: 20 })
+    @Column({ length: 20, default: "" })
     lastname!: string;
 
     @Field()
-    @Column()
+    @Column({ default: 0 })
     phoneNumber!: number;
 
     @Field()
@@ -31,11 +31,11 @@ export class User extends BaseEntity {
     password!: string;
 
     @Field()
-    @Column({ length: 250 })
+    @Column({ length: 250, default: "" })
     address!: string;
 
     @Field()
-    @Column({ length: 250 })
+    @Column({ length: 250, default: "" })
     city!: string;
 
     // @ManyToOne(() => Role, (role) => role.users)
