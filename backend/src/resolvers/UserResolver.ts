@@ -1,10 +1,11 @@
-import { Field, InputType, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
 import { User } from "../entities/User";
+import { UserService } from "../services/user.service";
 
 @InputType()
 export class NewUserInput implements Partial<User> {
   @Field()
-  mail!: string;
+  email!: string;
 
   @Field()
   password!: string;
@@ -12,26 +13,20 @@ export class NewUserInput implements Partial<User> {
   @Field()
   name!: string;
 }
-
-@InputType()
-export class UserInput {
-  @Field()
-  mail!: string;
-
-  @Field()
-  password!: string;
-}
-
 @Resolver(User)
 export default class UserResolver {
-    @Query(() => [User])
-    async getAllUsers() {
-        const allUsers = await User.find(); 
-        return allUsers;
-    }
+  private readonly userService = new UserService();
+  @Query(() => [User])
+  async getAllUsers() {
+    return this.userService.getAllUsers();
+  }
 
-    @Mutation(() => String)
-    async signup() {
-        
-    }
-}; 
+  @Mutation(() => String)
+  async signup(@Arg("data") data: NewUserInput): Promise<string> {
+    return this.userService.signup({
+      email: data.email,
+      password: data.password,
+      name: data.name,
+    });
+  }
+}
