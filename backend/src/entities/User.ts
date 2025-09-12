@@ -5,11 +5,11 @@ import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "t
 @Entity()
 @ObjectType()
 export class User extends BaseEntity {
-    
+
     @Field()
     @PrimaryGeneratedColumn()
     id!: number;
-    
+
     @Field()
     @Column({ length: 20 })
     firstname!: string;

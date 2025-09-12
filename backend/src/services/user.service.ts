@@ -33,4 +33,11 @@ export class UserService {
   async getAllUsers(): Promise<User[]> {
     return User.find();
   }
+
+  async findByMail(email: string): Promise<User | null> {
+    return User.findOne({
+      select:["email", "password"],
+      where: { "email": email }
+    });
+  }
 }
