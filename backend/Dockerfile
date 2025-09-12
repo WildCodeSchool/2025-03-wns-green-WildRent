@@ -4,7 +4,7 @@ WORKDIR /app
 RUN apk --no-cache add curl
 COPY package*.json ./
 COPY tsconfig.json ./
-run npm i
+RUN npm i
 
 COPY src src
 
