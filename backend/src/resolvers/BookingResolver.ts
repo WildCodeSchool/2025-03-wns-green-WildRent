@@ -12,8 +12,6 @@ import {Booking} from "../entities/Booking";
 
 @InputType()
 class CreateBookingInput{
-	@Field()
-	bookingRef!:number;
 
 	@Field()
 	totalPrice!:number;
@@ -27,8 +25,6 @@ class CreateBookingInput{
 
 @InputType()
 class UpdateBookingInput{
-	@Field({ nullable: true })
-	bookingRef!:number;
 
   @Field({ nullable: true })
 	totalPrice!:number;
@@ -39,7 +35,6 @@ class UpdateBookingInput{
   @Field({ nullable: true })
 	endDate!:Date;
 }
-
 
 
 @Resolver(Booking)
@@ -53,11 +48,11 @@ export class BookingResolver {
 			});
 			return bookings;
 		} catch (err) {
-throw new Error (`Error fetching bookings: ${err}`);
+throw new Error (`Erreur lors de la récupération des réservations: ${err}`);
 		}
 	}
 
-	@Query (() => Booking)
+	@Query (() => Booking, { nullable: true })
 	async getBookingById(
     @Arg("id", () => ID) id: number
   ): Promise<Booking | null> {
@@ -65,7 +60,7 @@ throw new Error (`Error fetching bookings: ${err}`);
       const booking = await Booking.findOne({ where: { id } });
       return booking;
     } catch (err) {
-      throw new Error(`Error fetching booking with id ${id}: ${err}`);
+      throw new Error(`Erreur lors de la récupération de la réservation ${id}: ${err}`);
     }
   }
 	
@@ -78,14 +73,14 @@ throw new Error (`Error fetching bookings: ${err}`);
 		})
 
     if (booking.endDate <= booking.startDate) {
-      throw new Error("endDate has to be after startDate");
+      throw new Error("La date de fin doit être postérieure à la date de début");
     }
 
     try {
       await booking.save();
       return booking;
     } catch (err) {
-      throw new Error(`Error creating booking : ${err}`);
+      throw new Error(`Erreur lors de la création de la réservation : ${err}`);
     }
   }
 
@@ -99,14 +94,16 @@ async updateBooking(
 
   booking = Object.assign(booking, data);
 
-  if (booking.startDate && booking.endDate && booking.endDate <= booking.startDate) {
-    throw new Error("endDate must be after startDate");
+	if (booking.startDate && booking.endDate) {
+		if (booking.endDate <= booking.startDate) {
+    throw new Error("La date de fin doit être postérieure à la date de début");
   }
+}
   await booking.save();
 
   return booking.id;
 } catch (err) {
-	throw new Error(`Error updating booking: ${err}`);
+	throw new Error(`Erreur lors de la modification de la réservation: ${err}`);
 }
 }
 
@@ -115,12 +112,12 @@ async updateBooking(
 		try{
 			const booking = await Booking.findOneBy({ id });
 			if(!booking) {
-				throw new Error("Booking not found");
+				throw new Error("Réservation introuvable");
 			}
 			await Booking.delete({id});
 				return id; 
 			} catch (err) {
-				throw new Error(`Error deleting booking: ${err}`);
+				throw new Error(`Erreur lors de la suppression de la réservation: ${err}`);
 			}
 
 		}

@@ -3,6 +3,7 @@ import {
     BaseEntity,
     Column,
     Entity,
+    Generated,
     // OneToMany,
     // ManyToOne,
     PrimaryGeneratedColumn,
@@ -21,6 +22,7 @@ export class Booking extends BaseEntity {
 
     @Field()
     @Column({ unique: true,unsigned: true })
+		@Generated("increment")
     bookingRef!: number;
     
     @Field()
