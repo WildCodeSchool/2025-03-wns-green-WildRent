@@ -48,7 +48,7 @@ export class BookingResolver {
 			});
 			return bookings;
 		} catch (err) {
-throw new Error (`Erreur lors de la récupération des réservations: ${err}`);
+      throw new Error (`Erreur lors de la récupération des réservations: ${err}`);
 		}
 	}
 
@@ -65,47 +65,49 @@ throw new Error (`Erreur lors de la récupération des réservations: ${err}`);
   }
 	
 	@Mutation(() => Booking)
-  async createBooking(
-    @Arg("data") data: CreateBookingInput
-  ): Promise<Booking> {
+	async createBooking(
+		@Arg("data") data: CreateBookingInput
+	): Promise<Booking> {
 		const booking = Booking.create({
 			...data,
-		})
-
-    if (booking.endDate <= booking.startDate) {
-      throw new Error("La date de fin doit être postérieure à la date de début");
-    }
-
-    try {
-      await booking.save();
-      return booking;
-    } catch (err) {
-      throw new Error(`Erreur lors de la création de la réservation : ${err}`);
-    }
-  }
+		});
+	
+		if (booking.endDate <= booking.startDate) {
+			throw new Error("La date de fin doit être postérieure à la date de début");
+		}
+	
+		try {
+			await booking.save();
+			return booking;
+		} catch (err) {
+			throw new Error(`Erreur lors de la création de la réservation : ${err}`);
+		}
+	}
+	
 
 	@Mutation(() => ID)
-async updateBooking(
-  @Arg("id") id: number,
-  @Arg("data") data: UpdateBookingInput
-): Promise<number> {
-  try {
-  let booking = await Booking.findOneByOrFail({ id });
-
-  booking = Object.assign(booking, data);
-
-	if (booking.startDate && booking.endDate) {
-		if (booking.endDate <= booking.startDate) {
-    throw new Error("La date de fin doit être postérieure à la date de début");
-  }
-}
-  await booking.save();
-
-  return booking.id;
-} catch (err) {
-	throw new Error(`Erreur lors de la modification de la réservation: ${err}`);
-}
-}
+	async updateBooking(
+		@Arg("id") id: number,
+		@Arg("data") data: UpdateBookingInput
+	): Promise<number> {
+		try {
+			let booking = await Booking.findOneByOrFail({ id });
+	
+			booking = Object.assign(booking, data);
+	
+			if (booking.startDate && booking.endDate) {
+				if (booking.endDate <= booking.startDate) {
+					throw new Error("La date de fin doit être postérieure à la date de début");
+				}
+			}
+	
+			await booking.save();
+	
+			return booking.id;
+		} catch (err) {
+			throw new Error(`Erreur lors de la modification de la réservation: ${err}`);
+		}
+	}
 
 	@Mutation(()=> ID)
 	async deleteBooking(@Arg("id") id: number): Promise<number> {
