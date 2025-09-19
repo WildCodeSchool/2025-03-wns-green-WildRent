@@ -1,28 +1,38 @@
 import argon2 from "argon2";
 import { User } from "../entities/User";
 import { NewUserInput } from "../resolvers/UserResolver";
+import { Role } from "../entities/Role";
+
+const DEFAULT_ROLE = "USER";
 
 export class UserService {
   async signup(data: NewUserInput): Promise<string> {
-    if (!data.name.trim() || !data.password.trim() || !data.email.trim()) {
+    if (
+      !data.firstname.trim() ||
+      !data.lastname.trim() ||
+      !data.password.trim() ||
+      !data.email.trim()
+    ) {
       throw new Error("INVALID_INPUT");
     }
 
     const hashed = await argon2.hash(data.password);
-    // const user = User.create({
-    //   firstname: data.name,
-    //   lastname: "",
-    //   phoneNumber: 0,
-    //   email: data.email,
-    //   password: hashed,
-    //   address: "",
-    //   city: "",
-    // } as unknown as User);
+
+    let role = await Role.findOne({ where: { roleName: DEFAULT_ROLE } });
+    if (!role) {
+      role = Role.create({ roleName: DEFAULT_ROLE });
+      await role.save();
+    }
 
     const user = User.create({
-      firstname: data.name,
+      firstname: data.firstname,
+      lastname: data.lastname,
+      phoneNumber: data.phoneNumber,
       email: data.email,
       password: hashed,
+      address: data.address,
+      city: data.city,
+      role,
     });
 
     await user.save();
@@ -31,6 +41,6 @@ export class UserService {
   }
 
   async getAllUsers(): Promise<User[]> {
-    return User.find();
+    return User.find({ relations: ["role"] });
   }
 }

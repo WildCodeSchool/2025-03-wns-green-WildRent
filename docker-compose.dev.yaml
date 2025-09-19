@@ -7,8 +7,8 @@ services:
     # depends_on:
     #   database:
     #     condition: service_healthy
-    # volumes:
-    #     - ./backend/src/:/app/src/
+    volumes:
+        - ./backend/src/:/app/src/
     environment:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
@@ -35,7 +35,7 @@ services:
       #   interval: 5s
       #   timeout: 5s
       #   retries: 5
-      # volumes:
-      #     - ./database:/var/lib/postgresql/data
+      volumes:
+          - ./database:/var/lib/postgresql/data
 
      
