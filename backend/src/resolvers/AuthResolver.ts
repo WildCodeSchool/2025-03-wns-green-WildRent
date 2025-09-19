@@ -1,7 +1,5 @@
-import { GraphQLJSONObject } from "graphql-scalars";
-import argon2 from "argon2";
 import * as jwt from "jsonwebtoken";
-import * as dotenv from "dotenv";
+import argon2 from "argon2";
 import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Resolver } from "type-graphql";
 import { UserService } from "../services/user.service";
 import { AnonContext, UserToken } from "../types/types";
@@ -16,6 +14,7 @@ function getUserTokenContent(user: User): UserToken{
 };
 
 function getUserPublicProfil(user: User) {
+  console.log("utilisateur trouvé: " + JSON.stringify(user))
   return {
     name: user.firstname,
   }
@@ -26,6 +25,7 @@ function setCookie(context: AnonContext, tokenName: string, tokenValue: string) 
     "Set-Cookie",
     `${tokenName}=${tokenValue};secure;httpOnly;SameSite=strict`
   );
+  console.log("HEADER: " + JSON.stringify(context.res.getHeaders()))
 };
 
 @InputType()
@@ -56,6 +56,7 @@ export default class AuthResolver {
         if(!process.env.JWT_SECRET) throw new Error("Clé secrète manquante");
 
         const user = await this.userService.findByMail(data.mail);
+        console.log("user trouvé :", user);
         if(!user) throw new Error("Utilisateur introuvable");
 
         const isValid = await argon2.verify(user.password, data.password);
