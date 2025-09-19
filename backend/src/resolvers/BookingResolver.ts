@@ -44,11 +44,11 @@ export class BookingResolver {
 	async getAllBookings(): Promise<Booking[]> {
 		try{
 			const bookings = await Booking.find({
-				// relations: { status: true, bookingsProducts: true }
+
 			});
 			return bookings;
 		} catch (err) {
-      throw new Error (`Erreur lors de la récupération des réservations: ${err}`);
+      throw new Error (`Error fetching bookings: ${err}`);
 		}
 	}
 
@@ -60,7 +60,7 @@ export class BookingResolver {
       const booking = await Booking.findOne({ where: { id } });
       return booking;
     } catch (err) {
-      throw new Error(`Erreur lors de la récupération de la réservation ${id}: ${err}`);
+      throw new Error(`Error fetching booking ${id}: ${err}`);
     }
   }
 	
@@ -73,14 +73,14 @@ export class BookingResolver {
 		});
 	
 		if (booking.endDate <= booking.startDate) {
-			throw new Error("La date de fin doit être postérieure à la date de début");
+			throw new Error("End date must be after start date");
 		}
 	
 		try {
 			await booking.save();
 			return booking;
 		} catch (err) {
-			throw new Error(`Erreur lors de la création de la réservation : ${err}`);
+			throw new Error(`Error creating booking: ${err}`);
 		}
 	}
 	
@@ -92,20 +92,16 @@ export class BookingResolver {
 	): Promise<number> {
 		try {
 			let booking = await Booking.findOneByOrFail({ id });
-	
 			booking = Object.assign(booking, data);
-	
-			if (booking.startDate && booking.endDate) {
+			
 				if (booking.endDate <= booking.startDate) {
-					throw new Error("La date de fin doit être postérieure à la date de début");
+					throw new Error("End date must be after start date");
 				}
-			}
-	
+				
 			await booking.save();
-	
 			return booking.id;
 		} catch (err) {
-			throw new Error(`Erreur lors de la modification de la réservation: ${err}`);
+			throw new Error(`Error updating booking: ${err}`);
 		}
 	}
 
@@ -114,12 +110,12 @@ export class BookingResolver {
 		try{
 			const booking = await Booking.findOneBy({ id });
 			if(!booking) {
-				throw new Error("Réservation introuvable");
+				throw new Error("Booking not found");
 			}
 			await Booking.delete({id});
 				return id; 
 			} catch (err) {
-				throw new Error(`Erreur lors de la suppression de la réservation: ${err}`);
+				throw new Error(`Failed to delete booking: ${err}`);
 			}
 
 		}

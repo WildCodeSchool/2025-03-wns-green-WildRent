@@ -8,8 +8,8 @@ services:
     # depends_on:
     #   database:
     #     condition: service_healthy
-    # volumes:
-    #     - ./backend/src/:/app/src/
+    volumes:
+      - ./backend/src/:/app/src/
     environment:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
@@ -32,13 +32,13 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USER} 
-  # healthcheck:
-  #   test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
-  #   interval: 5s
-  #   timeout: 5s
-  #   retries: 5
-  # volumes:
-  #     - ./database:/var/lib/postgresql/data
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+    #   interval: 5s
+    #   timeout: 5s
+    #   retries: 5
+    volumes:
+      - ./database:/var/lib/postgresql/data
 
   nginx:
     image: nginx:1.21.3
