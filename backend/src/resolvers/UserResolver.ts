@@ -4,6 +4,16 @@ import { UserService } from "../services/user.service";
 
 @InputType()
 export class NewUserInput implements Partial<User> {
+
+  @Field()
+  firstname!: string;
+
+  @Field()
+  lastname!: string;
+
+  @Field()
+  phoneNumber!: number;
+
   @Field()
   email!: string;
 
@@ -11,7 +21,11 @@ export class NewUserInput implements Partial<User> {
   password!: string;
 
   @Field()
-  name!: string;
+  address!: string;
+
+  @Field()
+  city!: string;
+
 }
 @Resolver(User)
 export default class UserResolver {
@@ -24,9 +38,13 @@ export default class UserResolver {
   @Mutation(() => String)
   async signup(@Arg("data") data: NewUserInput): Promise<string> {
     return this.userService.signup({
+      firstname: data.firstname,
+      lastname: data.lastname,
+      phoneNumber: data.phoneNumber,
       email: data.email,
       password: data.password,
-      name: data.name,
+      address: data.address,
+      city: data.city,
     });
   }
 }

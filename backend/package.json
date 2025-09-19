@@ -5,7 +5,9 @@
   "scripts": {
     "test": "jest --passWithNoTests",
     "start": "ts-node-dev ./src/index.ts",
-    "dev": "nodemon --exec ts-node -- ./src/index.ts"
+    "dev": "nodemon --exec ts-node -- ./src/index.ts",
+    "build": "tsc",
+    "prod": "node ./src/index.js"
   },
   "jest": {
   "preset": "ts-jest",

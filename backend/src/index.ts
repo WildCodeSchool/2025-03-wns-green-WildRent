@@ -9,6 +9,9 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 import UserResolver from "./resolvers/UserResolver";
 import AuthResolver from "./resolvers/AuthResolver";
 import { AnonContext, AuthContext } from "./types/types";
+import { BookingResolver } from "./resolvers/BookingResolver";
+import CategoryResolver from "./resolvers/CategoryResolver";
+
 
 type Query = {
   _empty: String
@@ -19,7 +22,7 @@ console.log("DEBUG JWT_SECRET:", process.env.JWT_SECRET);
 async function startServer() {
   await dataSource.initialize();
   const schema = await buildSchema ({
-    resolvers: [UserResolver, AuthResolver]
+    resolvers: [UserResolver, AuthResolver, BookingResolver, CategoryResolver],
   })
   const apolloServer = new ApolloServer({ schema });
   const { url } = await startStandaloneServer(apolloServer, {
