@@ -8,6 +8,7 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 import UserResolver from "./resolvers/UserResolver";
 import AuthResolver from "./resolvers/AuthResolver";
 import { BookingResolver } from "./resolvers/BookingResolver";
+import CategoryResolver from "./resolvers/CategoryResolver";
 
 type Query = {
   _empty: String
@@ -18,7 +19,7 @@ dotenv.config();
 async function startServer() {
   await dataSource.initialize();
   const schema = await buildSchema ({
-    resolvers: [UserResolver, AuthResolver, BookingResolver]
+    resolvers: [UserResolver, AuthResolver, BookingResolver, CategoryResolver],
   })
   const apolloServer = new ApolloServer({ schema });
   const { url } = await startStandaloneServer(apolloServer, {
