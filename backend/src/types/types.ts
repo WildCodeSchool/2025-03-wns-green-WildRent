@@ -6,6 +6,7 @@ export type UserToken = {
   lastName: string
 };
 
+// CONTEXT:
 export type BaseContext = {
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>

@@ -14,7 +14,7 @@ function getUserTokenContent(user: User): UserToken{
 };
 
 function getUserPublicProfil(user: User) {
-  console.log("utilisateur trouvé: " + JSON.stringify(user))
+  console.log("Information sur l'utilisateur: " + JSON.stringify(user))
   return {
     name: user.firstname,
   }
@@ -71,5 +71,9 @@ export default class AuthResolver {
       } catch (err: any) {
         throw new Error(`Failed to login: ${err.message}`);
       }
-    }
+    };
+
+    async logout(){
+
+    };
 };
