@@ -5,11 +5,11 @@ import {
     Entity,
     Generated,
     // OneToMany,
-    // ManyToOne,
+    ManyToOne,
     PrimaryGeneratedColumn,
 } from "typeorm";
 
-// import { Status } from "./Status";
+import { Status } from "./Status";
 // import { BookingProducts } from "./BookingProducts";
 
 @Entity()
@@ -21,12 +21,12 @@ export class Booking extends BaseEntity {
     id!: number;
 
     @Field()
-    @Column({ unique: true,unsigned: true })
+    @Column({ unique: true })
 		@Generated("increment")
     bookingRef!: number;
     
     @Field()
-    @Column({ unsigned: true })
+    @Column({ })
     totalPrice!: number;
 
     @Field()
@@ -37,9 +37,9 @@ export class Booking extends BaseEntity {
     @Column({ })
     endDate!: Date;
 
-    // @ManyToOne(() => Status, (status) => status.bookings)
-    // @Field(() => Status)
-    // status!: Status;
+    @ManyToOne(() => Status, (status) => status.bookings)
+    @Field(() => Status)
+    status!: Status;
 
     // @OneToMany(() => BookingProducts, (bookingProducts) => bookingProducts.booking)
     // @Field(() => [BookingProducts])

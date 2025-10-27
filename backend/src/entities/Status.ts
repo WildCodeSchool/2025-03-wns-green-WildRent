@@ -1,29 +1,28 @@
-// import { Field, ID, ObjectType } from "type-graphql";
-// import {
-//     BaseEntity,
-//     Column,
-//     Entity,
-//     OneToMany,
-//     PrimaryGeneratedColumn,
-// } from "typeorm";
+import { Field, ID, ObjectType } from "type-graphql";
+import {
+    BaseEntity,
+    Column,
+    Entity,
+    OneToMany,
+    PrimaryGeneratedColumn,
+} from "typeorm";
 
-// import { Booking } from "./Booking";
+import { Booking } from "./Booking";
 
-// @Entity()
-// @ObjectType()
-// export class Status extends BaseEntity {
+@Entity()
+@ObjectType()
+export class Status extends BaseEntity {
     
-//     @Field()
-//     @PrimaryGeneratedColumn()
-//     id!: number;
+    @Field(() => ID)
+    @PrimaryGeneratedColumn()
+    id!: number;
     
-//     @Field()
-//     @Column({ length: 20 })
-//     statusName!: string;
+    @Field()
+    @Column({ length: 20, unique: true })
+    statusName!: string;
     
-//     @OneToMany(() => Booking, (booking) => booking.status)
-//     @Field(() => [Booking])
-//     bookings!: Booking[];
+    @OneToMany(() => Booking, (booking) => booking.status)
+    @Field(() => [Booking], { nullable: true })
+    bookings?: Booking[];
     
-
-// }
+}
