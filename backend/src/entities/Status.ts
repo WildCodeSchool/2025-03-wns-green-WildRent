@@ -23,6 +23,5 @@ export class Status extends BaseEntity {
     
     @OneToMany(() => Booking, (booking) => booking.status)
     @Field(() => [Booking], { nullable: true })
-    bookings?: Booking[];
-    
+    bookings?: Booking[];  
 }
