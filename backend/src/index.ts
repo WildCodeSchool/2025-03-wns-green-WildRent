@@ -16,9 +16,6 @@ import CategoryResolver from "./resolvers/CategoryResolver";
 type Query = {
   _empty: String
 }
-
-console.log("DEBUG JWT_SECRET:", process.env.JWT_SECRET);
-
 async function startServer() {
   await dataSource.initialize();
   const schema = await buildSchema ({

@@ -14,7 +14,6 @@ function getUserTokenContent(user: User): UserToken{
 };
 
 function getUserPublicProfil(user: User) {
-  console.log("Information sur l'utilisateur: " + JSON.stringify(user))
   return {
     name: user.firstname,
   }
@@ -25,7 +24,6 @@ function setCookie(context: AnonContext, tokenName: string, tokenValue: string) 
     "Set-Cookie",
     `${tokenName}=${tokenValue};secure;httpOnly;SameSite=strict`
   );
-  console.log("HEADER: " + JSON.stringify(context.res.getHeaders()))
 };
 
 @InputType()
@@ -53,14 +51,14 @@ export default class AuthResolver {
     @Mutation(() => UserLogin)
     async login(@Arg("data") data: LoginInput, @Ctx() context: AnonContext){
       try {
-        if(!process.env.JWT_SECRET) throw new Error("Clé secrète manquante");
+        if(!process.env.JWT_SECRET) throw new Error("secret key missing");
 
         const user = await this.userService.findByMail(data.mail);
-        console.log("user trouvé :", user);
-        if(!user) throw new Error("Utilisateur introuvable");
+        
+        if(!user) throw new Error("user not found");
 
         const isValid = await argon2.verify(user.password, data.password);
-        if(!isValid) throw new Error("Mot de passe incorrecte");
+        if(!isValid) throw new Error("incorrect password");
 
         const token = jwt.sign(getUserTokenContent(user), process.env.JWT_SECRET);
 
@@ -69,7 +67,7 @@ export default class AuthResolver {
         return getUserPublicProfil(user);
 
       } catch (err: any) {
-        throw new Error(`Failed to login: ${err.message}`);
+        throw new Error(`failed to login: ${err.message}`);
       }
     };
 
