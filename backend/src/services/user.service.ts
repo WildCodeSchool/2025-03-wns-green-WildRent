@@ -43,4 +43,11 @@ export class UserService {
   async getAllUsers(): Promise<User[]> {
     return User.find({ relations: ["role"] });
   }
+
+  async findByMail(email: string): Promise<User | null> {
+    return User.findOne({
+      select:["email", "password", "firstname"],
+      where: { "email": email }
+    });
+  }
 }
