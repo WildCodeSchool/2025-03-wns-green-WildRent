@@ -37,9 +37,14 @@ export class Booking extends BaseEntity {
     @Column({ })
     endDate!: Date;
 
-    @ManyToOne(() => Status, (status) => status.bookings)
-    @Field(() => Status)
-    status!: Status;
+    @Field()
+    @Column({ default:false })
+    isValidate!:boolean;
+    
+
+    // @ManyToOne(() => Status, (status) => status.bookings)
+    // @Field(() => Status)
+    // status!: Status;
 
     // @OneToMany(() => BookingProducts, (bookingProducts) => bookingProducts.booking)
     // @Field(() => [BookingProducts])

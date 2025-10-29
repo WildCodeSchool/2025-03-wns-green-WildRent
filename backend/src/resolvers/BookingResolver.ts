@@ -34,6 +34,9 @@ class UpdateBookingInput{
 
   @Field({ nullable: true })
 	endDate!:Date;
+
+	@Field({ nullable: true})
+	isValidate!: boolean;
 }
 
 
