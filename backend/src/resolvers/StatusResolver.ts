@@ -29,15 +29,13 @@ export class StatusResolver {
 
 @Query(() => [Status])
 async getAllStatus(): Promise<Status[]> {
-	return this.statusService.getAllStatus();
+	return this.statusService.findAll();
 }
 
-@Query(() => Status,{ nullable: true } )
-async getStatusById(
-	@Arg("id",() => ID) id: number
-): Promise<Status | null> {
-	return this.statusService.getStatusById(id);
-}
+@Query(() => Status, { nullable: true })
+  async getStatusById(@Arg("id", () => ID) id: number): Promise<Status | null> {
+    return this.statusService.findById()(id); 
+  }
 
 @Mutation(() => Status)
 async createStatus(@Arg("data") data: CreateStatusInput): Promise<Status> {
