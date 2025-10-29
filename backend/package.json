@@ -7,12 +7,12 @@
     "start": "ts-node-dev ./src/index.ts",
     "dev": "nodemon --exec ts-node -- ./src/index.ts",
     "build": "tsc",
-    "prod": "node ./src/index.js"
+    "prod": "node ./dist/index.js"
   },
   "jest": {
-  "preset": "ts-jest",
-  "testEnvironment": "node",
-  "testMatch": ["**/?(*.)+(spec|test).[tj]s"]
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": ["**/?(*.)+(spec|test).[tj]s"]
 },
   "keywords": [],
   "author": "",

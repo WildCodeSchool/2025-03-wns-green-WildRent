@@ -3,6 +3,7 @@ node_modules/
 /backend/.env
 database/
 docker-compose.override.yaml
+logs/
 
 
 
