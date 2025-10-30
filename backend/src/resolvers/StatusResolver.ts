@@ -35,9 +35,7 @@ async getAllStatus(): Promise<Status[]> {
 @Query(() => Status)
 async getStatusById(
   @Arg("id", () => ID) id: number): Promise<Status> {
-  const status = await this.statusService.getStatusById(id);
-  if (!status) throw new Error("Status not found");
-  return status;
+		return this.statusService.getStatusById(id);
 }
 
 @Mutation(() => Status)

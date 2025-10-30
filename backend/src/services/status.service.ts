@@ -5,8 +5,12 @@ export class StatusService {
     return Status.find();
   }
 
-  async getStatusById(id: number): Promise<Status | null> {
-    return Status.findOne({ where: { id } });
+  async getStatusById(id: number): Promise<Status> {
+    const status = await Status.findOne({ where: { id } });
+    if (!status) {
+      throw new Error("Status not found");
+    }
+    return status;
   }
 
   async createStatus(statusName: string): Promise<Status> {
