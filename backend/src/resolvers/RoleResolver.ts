@@ -1,6 +1,7 @@
 import { Arg, ID, Mutation, Query, Resolver } from "type-graphql";
 import { Role } from "../entities/Role";
 import { RoleService } from "../services/role.service";
+import { RoleInput } from "../dtos/role.dto";
 
 @Resolver(Role)
 export default class RoleResolver {
@@ -8,8 +9,8 @@ export default class RoleResolver {
     private readonly roleService = new RoleService();
     
     @Mutation(() => Role)
-    async createRole(@Arg("roleName") roleName: string): Promise<Role> {
-        return this.roleService.createRole(roleName);
+    async createRole(@Arg("data") data: RoleInput): Promise<Role> {
+        return this.roleService.createRole(data);
     }
     
     @Mutation(() => Boolean)
@@ -28,8 +29,8 @@ export default class RoleResolver {
     }
     
     @Mutation(() => Role)
-    async updateRole(@Arg("id", () => ID) id: number,@Arg("roleName") roleName: string): Promise<Role> {
-        return this.roleService.updateRole(id, roleName);
+    async updateRole(@Arg("id", () => ID) id: number,@Arg("data") data: RoleInput): Promise<Role> {
+        return this.roleService.updateRole(id, data);
     }
 
 }
