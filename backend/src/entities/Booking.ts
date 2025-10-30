@@ -22,7 +22,7 @@ export class Booking extends BaseEntity {
 
     @Field()
     @Column({ unique: true })
-		@Generated("increment")
+	@Generated("increment")
     bookingRef!: number;
     
     @Field()
@@ -41,10 +41,9 @@ export class Booking extends BaseEntity {
     @Column({ default:false })
     isValidate!:boolean;
     
-
-    // @ManyToOne(() => Status, (status) => status.bookings)
-    // @Field(() => Status)
-    // status!: Status;
+    @ManyToOne(() => Status, (status) => status.bookings)
+    @Field(() => Status)
+    status!: Status;
 
     // @OneToMany(() => BookingProducts, (bookingProducts) => bookingProducts.booking)
     // @Field(() => [BookingProducts])

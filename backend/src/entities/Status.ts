@@ -18,7 +18,7 @@ export class Status extends BaseEntity {
     id!: number;
     
     @Field()
-    @Column({ length: 20, unique: true })
+    @Column({ unique: true })
     statusName!: string;
     
     @OneToMany(() => Booking, (booking) => booking.status)

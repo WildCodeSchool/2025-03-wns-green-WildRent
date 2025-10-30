@@ -29,33 +29,29 @@ export class StatusResolver {
 
 @Query(() => [Status])
 async getAllStatus(): Promise<Status[]> {
-	return this.statusService.findAll();
+	return this.statusService.getAllStatus();
 }
 
-@Query(() => Status, { nullable: true })
-  async getStatusById(@Arg("id", () => ID) id: number): Promise<Status | null> {
-    return this.statusService.findById()(id); 
-  }
+@Query(() => Status)
+async getStatusById(
+  @Arg("id", () => ID) id: number): Promise<Status> {
+  const status = await this.statusService.getStatusById(id);
+  if (!status) throw new Error("Status not found");
+  return status;
+}
 
 @Mutation(() => Status)
 async createStatus(@Arg("data") data: CreateStatusInput): Promise<Status> {
  return this.statusService.createStatus(data.statusName);
 }
 
-@Mutation(() => ID)
+@Mutation(() => Status)
 async updateStatus(
-	@Arg("id") id: number,
-	@Arg("data") data: UpdateStatusInput
-): Promise<number>{
-	await this.statusService.updateStatus(id, data.statusName);
-	return id;
+	@Arg("id", () => ID) id: number,
+  @Arg("data") data: UpdateStatusInput): Promise<Status>{
+return this.statusService.updateStatus(id, data.statusName);
 }
 
-	@Mutation(() => ID)
-	async deleteStatus(
-		@Arg("id") id:number): Promise<number> {
-			return this.statusService.deleteStatus(id);
-	}
 }
 
 		

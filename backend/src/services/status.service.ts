@@ -1,43 +1,28 @@
 import { Status } from "../entities/Status";
 
 export class StatusService {
-  private get statusRepository() {
-    return Status.getRepository();
+  async getAllStatus(): Promise<Status[]> {
+    return Status.find();
   }
 
-  get findAll() {
-    return async (): Promise<Status[]> => {
-      return this.statusRepository.find();
-    };
+  async getStatusById(id: number): Promise<Status | null> {
+    return Status.findOne({ where: { id } });
   }
 
-  get findById() {
-    return async (id: number): Promise<Status | null> => {
-      return this.statusRepository.findOne({ where: { id } });
-    };
+  async createStatus(statusName: string): Promise<Status> {
+    const status = Status.create({ statusName });
+    await status.save();
+    return status;
   }
 
-  get createStatus() {
-    return async (statusName: string): Promise<Status> => {
-      const status = this.statusRepository.create({ statusName });
-      return status.save();
-    };
+  async updateStatus(id: number, statusName: string): Promise<Status> {
+    const status = await Status.findOne({ where: { id } });
+    if (!status) {
+      throw new Error("status not found");
+    }
+    status.statusName = statusName;
+    await status.save();
+    return status;
   }
 
-  get updateStatus() {
-    return async (id: number, statusName: string): Promise<Status | null> => {
-      const status = await this.statusRepository.findOne({ where: { id } });
-      if (!status) return null;
-
-      status.statusName = statusName;
-      return status.save();
-    };
-  }
-
-  get deleteStatus() {
-    return async (id: number): Promise<boolean> => {
-      const result = await this.statusRepository.delete(id);
-      return result.affected !== 0; 
-    };
-  }
 }
