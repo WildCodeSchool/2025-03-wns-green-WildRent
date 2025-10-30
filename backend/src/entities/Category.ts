@@ -6,8 +6,7 @@ import {
     OneToMany,
     PrimaryGeneratedColumn,
 } from "typeorm";
-
-// import { Product } from "./Product";
+import { Product } from "./Product";
 
 @Entity()
 @ObjectType()
@@ -21,7 +20,7 @@ export class Category extends BaseEntity {
     @Column({ length: 20, unique: true })
     name!: string;
 
-//     @OneToMany(() => Product, (product) => product.category)
-//     @Field(() => [Product])
-//     products!: Product[];
+    @OneToMany(() => Product, (product) => product.category)
+    @Field(() => [Product])
+    products!: Product[];
 }
