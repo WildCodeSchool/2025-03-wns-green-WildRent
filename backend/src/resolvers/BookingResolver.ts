@@ -1,7 +1,5 @@
 import {
   Arg,
-  Field,
-  InputType,
 	ID,
   Mutation,
   Resolver,
@@ -12,40 +10,7 @@ import {Booking} from "../entities/Booking";
 import { StatusService } from "../services/status.service";
 import { BookingService } from "../services/booking.service";
 
-@InputType()
-class CreateBookingInput{
-
-	@Field()
-	totalPrice!:number;
-
-	@Field()
-	startDate!:Date;
-
-	@Field()
-	endDate!:Date;
-
-	@Field(() => ID)
-  statusId!: number;
-}
-
-@InputType()
-class UpdateBookingInput{
-
-  @Field({ nullable: true })
-	totalPrice!:number;
-
-	@Field({ nullable: true })
-	startDate!:Date;
-
-  @Field({ nullable: true })
-	endDate!:Date;
-
-	@Field({ nullable: true})
-	isValidate!: boolean;
-
-	@Field(() => ID, { nullable: true })
-  statusId?: number;
-}
+import { CreateBookingInput, UpdateBookingInput } from "../dtos/booking.dto";
 
 @Resolver(Booking)
 export class BookingResolver {
