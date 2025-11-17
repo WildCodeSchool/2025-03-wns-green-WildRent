@@ -12,7 +12,7 @@ export class NewUserInput implements Partial<User> {
   lastname!: string;
 
   @Field()
-  phoneNumber!: number;
+  phoneNumber!: string;
 
   @Field()
   email!: string;
