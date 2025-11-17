@@ -32,7 +32,7 @@ describe("UserService", () => {
       firstname: "Alexandre",
       lastname: "Dumas",
       email: "test@example.com",
-      phoneNumber: 1234567890,
+      phoneNumber: "01234567890",
       address: "123 Main St",
       city: "Anytown",
     });
@@ -43,7 +43,7 @@ describe("UserService", () => {
         firstname: "Alexandre",
         lastname: "Dumas",
         email: "test@example.com",
-        phoneNumber: 1234567890,
+        phoneNumber: "01234567890",
         address: "123 Main St",
         city: "Anytown",
       })
@@ -57,7 +57,7 @@ describe("UserService", () => {
         password: "",
         firstname: "",
         lastname: "",
-        phoneNumber: 0,
+        phoneNumber: "",
         address: "",
         city: "",
       })
