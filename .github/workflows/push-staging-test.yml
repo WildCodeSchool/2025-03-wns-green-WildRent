@@ -22,7 +22,6 @@ jobs:
 
   docker:
     needs: test-back
-    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -43,7 +42,6 @@ jobs:
       - name: Build & push
         uses: docker/build-push-action@v6
         with:
-       
           context: "{{defaultContext}}:backend"
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/wildrent:latest
