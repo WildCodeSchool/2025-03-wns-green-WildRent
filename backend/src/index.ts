@@ -11,6 +11,7 @@ import AuthResolver from "./resolvers/AuthResolver";
 import { AnonContext, AuthContext } from "./types/types";
 import { BookingResolver } from "./resolvers/BookingResolver";
 import CategoryResolver from "./resolvers/CategoryResolver";
+import RoleResolver from "./resolvers/RoleResolver";
 import { StatusResolver } from "./resolvers/StatusResolver";
 
 
