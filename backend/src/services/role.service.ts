@@ -4,12 +4,13 @@ import { RoleInput } from "../dtos/role.dto";
 export class RoleService {
     
     async createRole(data: RoleInput): Promise<Role> {
-        const exists = await Role.findOne({ where: { roleName: data.roleName } });
+        const roleName = data.roleName.trim().toLowerCase();
+        const exists = await Role.findOne({ where: { roleName: roleName } });
         if (exists) {
             throw new Error("Role already exists");
         }
 
-        const role = Role.create({ roleName: data.roleName.trim() });
+        const role = Role.create({ roleName });
         await role.save();
         return role;
     }
@@ -36,11 +37,13 @@ export class RoleService {
     async updateRole(id: number, data: RoleInput): Promise<Role> {
         const role = await Role.findOne({ where: { id } });
         if (!role) throw new Error("Role not found");
-        
-        const exists = await Role.findOne({ where: { roleName: data.roleName } });
-        if (exists) throw new Error("Role already exists");
 
-        role.roleName = data.roleName.trim();
+        const roleName = data.roleName.trim().toLowerCase();;
+
+        const exists = await Role.findOne({ where: { roleName } });
+        if (exists && exists.id !== id) throw new Error("Role already exists");
+
+        role.roleName = roleName;
         await role.save();
         return role;
     }
