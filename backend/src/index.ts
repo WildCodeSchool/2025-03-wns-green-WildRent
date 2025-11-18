@@ -21,6 +21,7 @@ async function startServer() {
   await dataSource.initialize();
   const schema = await buildSchema ({
     resolvers: [UserResolver, AuthResolver, BookingResolver, CategoryResolver, StatusResolver],
+    validate: true,
   })
   const apolloServer = new ApolloServer({ schema });
   const { url } = await startStandaloneServer(apolloServer, {
