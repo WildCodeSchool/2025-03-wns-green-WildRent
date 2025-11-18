@@ -1,51 +1,45 @@
+import { CategoryInput } from "../dtos/category.dto";
 import { Category } from "../entities/Category";
 
 export class CategoryService {
 
-  async getAll(): Promise<Category[]> {
+  async getAllCategories(): Promise<Category[]> {
     return Category.find({ order: { name: "ASC" as const } });
   }
 
-  async getById(id: number): Promise<Category> {
+  async getCategoryById(id: number): Promise<Category> {
     const cat = await Category.findOne({ where: { id } });
     if (!cat) throw new Error("category not found");
     return cat;
   }
 
-  async create(name: string): Promise<Category> {
-    const newName = name.trim();
-    if (!newName) throw new Error("invalid name");
+  async createCategory(data:CategoryInput): Promise<Category> {
+    const name = data.name.trim().toLowerCase();
 
-    const exists = await Category.findOne({ where: { name: newName } });
+    const exists = await Category.findOne({ where: {name} });
     if (exists) throw new Error("category already exists");
 
-    const newCat = Category.create({ name: newName });
+    const newCat = Category.create({ name });
     await newCat.save();
     return newCat;
   }
 
-  async update(id: number, name: string): Promise<Category> {
+  async updateCategory(id: number, data:CategoryInput): Promise<Category> {
     const cat = await Category.findOne({ where: { id } });
     if (!cat) throw new Error("category not found");
 
-    const newName = name.trim();
-    if (!newName) throw new Error("invalid name");
-
-    if (newName === cat.name) {
-      return cat;
-    }
-
-    const duplicate = await Category.findOne({ where: { name: newName } });
+    const name = data.name.trim().toLowerCase();
+    const duplicate = await Category.findOne({ where: { name } });
     if (duplicate && duplicate.id !== id) {
       throw new Error("category already exists");
     }
 
-    cat.name = newName;
+    cat.name = name;
     await cat.save();
     return cat;
   }
 
-  async delete(id: number): Promise<boolean> {
+  async deleteCategory(id: number): Promise<boolean> {
     const cat = await Category.findOne({ where: { id } });
     if (!cat) return false;
 
