@@ -12,8 +12,10 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "testMatch": ["**/?(*.)+(spec|test).[tj]s"]
-},
+    "testMatch": [
+      "**/?(*.)+(spec|test).[tj]s"
+    ]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -36,6 +38,8 @@
     "@apollo/server": "^5.0.0",
     "@types/node": "^24.1.0",
     "argon2": "^0.43.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "graphql": "^16.11.0",
