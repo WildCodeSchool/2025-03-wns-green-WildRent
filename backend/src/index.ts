@@ -21,7 +21,7 @@ type Query = {
 async function startServer() {
   await dataSource.initialize();
   const schema = await buildSchema ({
-    resolvers: [UserResolver, AuthResolver, BookingResolver, CategoryResolver,StatusResolver,RoleResolver],
+    resolvers: [UserResolver, AuthResolver, BookingResolver, CategoryResolver, StatusResolver],
     validate: true,
   })
   const apolloServer = new ApolloServer({ schema });
