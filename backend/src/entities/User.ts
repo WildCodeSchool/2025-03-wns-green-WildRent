@@ -25,7 +25,7 @@ export class User extends BaseEntity {
 
   @Field()
   @Column()
-  phoneNumber!: number;
+  phoneNumber!: string;
 
   @Field()
   @Column({ length: 20 })
