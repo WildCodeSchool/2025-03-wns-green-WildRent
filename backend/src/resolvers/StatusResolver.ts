@@ -1,7 +1,5 @@
 import {
 	Arg,
-	Field,
-	InputType,
 	ID,
 	Mutation,
 	Resolver,
@@ -11,17 +9,7 @@ import {
 import { Status } from "../entities/Status";
 import { StatusService } from "../services/status.service";
 
-@InputType()
-class CreateStatusInput{
-	@Field()
-	statusName!:string;
-}
-
-@InputType()
-class UpdateStatusInput{
-	@Field()
-	statusName!:string;
-}
+import { CreateStatusInput, UpdateStatusInput } from "../dtos/status.dto";
 
 @Resolver(Status)
 export class StatusResolver {

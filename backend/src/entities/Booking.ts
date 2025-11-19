@@ -36,10 +36,6 @@ export class Booking extends BaseEntity {
     @Field()
     @Column({ })
     endDate!: Date;
-
-    @Field()
-    @Column({ default:false })
-    isValidate!:boolean;
     
     @ManyToOne(() => Status, (status) => status.bookings)
     @Field(() => Status)

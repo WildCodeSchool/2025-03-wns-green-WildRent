@@ -1,16 +1,15 @@
 import {
 	Field,
 	InputType,
+	ID,
 } from "type-graphql";
 
 @InputType()
-export class CreateStatusInput{
-	@Field()
-	statusName!:string;
-}
+export class StatusInput {
 
-@InputType()
-export class UpdateStatusInput{
-	@Field()
-	statusName!:string;
+	@Field(() => ID)
+  id!: number;
+	
+  @Field({ nullable: true }) 
+  statusName?: string;
 }

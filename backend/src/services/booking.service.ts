@@ -1,3 +1,4 @@
+import { BookingInput } from "../dtos/booking.dto";
 import { Booking } from "../entities/Booking";
 import { StatusService } from "./status.service";
 
@@ -32,24 +33,18 @@ export class BookingService {
     }
   }
 
-  async createBooking(
-    totalPrice: number,
-    startDate: Date,
-    endDate: Date,
-    statusId: number
-  ): Promise<Booking> {
-    if (endDate <= startDate) {
+  async createBooking(data: BookingInput): Promise<Booking> {
+    if (!data.endDate <= !data.startDate) {
       throw new Error("End date must be after start date");
     }
 
     const booking = Booking.create({
-      totalPrice,
-      startDate,
-      endDate,
+      startDate: data.startDate,
+      endDate: data.endDate, 
     });
 
-    if (statusId) {
-      const status = await this.statusService.getStatusById(statusId);
+    if (data.status) {
+      const status = await this.statusService.getStatusById(data.status.id);
       booking.status = status;
     }
 
@@ -61,16 +56,7 @@ export class BookingService {
     }
   }
 
-  async updateBooking(
-		id: number,
-		data: { 
-			totalPrice?: number;
-			startDate?: Date;
-			endDate?: Date;
-			isValidate?: boolean;
-			statusId?: number;
-		}
-	): Promise<Booking> {
+  async updateBooking( id: number,data: BookingInput): Promise<Booking> {
     const booking = await Booking.findOne({
       where: { id },
       relations: ["status"],
@@ -86,8 +72,8 @@ export class BookingService {
       throw new Error("End date must be after start date");
     }
 
-    if (data.statusId) {
-      const status = await this.statusService.getStatusById(data.statusId);
+    if (data.status) {
+      const status = await this.statusService.getStatusById(data.status.id);
       booking.status = status;
     }
 

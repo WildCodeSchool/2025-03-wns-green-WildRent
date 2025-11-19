@@ -9,8 +9,7 @@ import {
 import {Booking} from "../entities/Booking";
 import { StatusService } from "../services/status.service";
 import { BookingService } from "../services/booking.service";
-
-import { CreateBookingInput, UpdateBookingInput } from "../dtos/booking.dto";
+import { BookingInput } from "../dtos/booking.dto";
 
 @Resolver(Booking)
 export class BookingResolver {
@@ -29,20 +28,15 @@ export class BookingResolver {
 	
   @Mutation(() => Booking)
   async createBooking(
-    @Arg("data") data: CreateBookingInput
+    @Arg("data") data: BookingInput
   ): Promise<Booking> {
-    return this.bookingService.createBooking(
-      data.totalPrice,
-      data.startDate,
-      data.endDate,
-      data.statusId
-    );
+    return this.bookingService.createBooking(data);
   }
 
 	@Mutation(() => Booking)
   async updateBooking(
     @Arg("id", () => ID) id: number,
-    @Arg("data") data: UpdateBookingInput
+    @Arg("data") data: BookingInput
   ): Promise<Booking> {
     return this.bookingService.updateBooking(id, data);
   }
