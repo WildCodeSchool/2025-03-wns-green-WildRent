@@ -1,5 +1,5 @@
+import { NewProductInput, UpdateProductInput } from "../dtos/product.dto";
 import { Product } from "../entities/Product";
-import { NewProductInput, UpdateProductInput } from "../resolvers/ProductResolver"
 
 export class ProductService {
 

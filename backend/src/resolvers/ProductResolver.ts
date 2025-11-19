@@ -1,61 +1,7 @@
-import { Arg, Field, ID, InputType, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { Product } from "../entities/Product";
 import { ProductService } from "../services/product.service";
-import { Category } from "../entities/Category";
-
-@InputType()
-export class NewProductInput {
-    // @Field()
-    // productRef!: number;
-    
-    @Field()
-    name!: string;
-
-    @Field()
-    price!: number;
-
-    @Field()
-    description!: string;
-
-    @Field()
-    image!: string;
-
-    @Field()
-    brand!: string;
-
-    @Field()
-    gender!: string;
-
-    @Field(() => ID, { nullable: true })
-    category!: Category;
-}
-
-@InputType()
-export class UpdateProductInput {
-    @Field()
-    name!: string;
-
-    @Field()
-    price!: number;
-
-    @Field()
-    description!: string;
-
-    @Field()
-    image!: string;
-
-    @Field()
-    gender!: string;
-    
-    @Field()
-    discount!: number;
-
-    @Field(() => ID, { nullable: true })
-    category!: Category;
-
-    @Field()
-    note!: number;
-}
+import { NewProductInput, UpdateProductInput } from "../dtos/product.dto";
 
 @Resolver(Product)
 export default class ProductResolver {
