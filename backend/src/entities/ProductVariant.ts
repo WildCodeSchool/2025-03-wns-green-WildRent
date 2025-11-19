@@ -29,7 +29,7 @@ export class ProductVariant extends BaseEntity {
     @Column({ unsigned: true })
     quantity!: number; 
 
-    @ManyToOne(() => Product, (product) => product.productVariant)
-    @Field(() => Product)
-    product!: Product; 
+    // @ManyToOne(() => Product, (product) => product.productVariant)
+    // @Field(() => Product)
+    // product!: Product; 
 }

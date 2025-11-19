@@ -1,17 +1,15 @@
-import { Arg, Field, InputType, Query, Resolver } from "type-graphql";
+import { Arg, Field, ID, InputType, Mutation, Query, Resolver } from "type-graphql";
 import { Product } from "../entities/Product";
 import { ProductService } from "../services/product.service";
+import { Category } from "../entities/Category";
 
 @InputType()
-class NewProductInput implements Partial<Product> {
-    @Field()
-    productRef!: number;
+export class NewProductInput {
+    // @Field()
+    // productRef!: number;
     
     @Field()
     name!: string;
-
-    @Field()
-    quantity!: number;
 
     @Field()
     price!: number;
@@ -27,12 +25,13 @@ class NewProductInput implements Partial<Product> {
 
     @Field()
     gender!: string;
-    
-    @Field()
-    discount!: number;
+
+    @Field(() => ID, { nullable: true })
+    category!: Category;
 }
 
-class UpdateProductInput implements Partial<Product> {
+@InputType()
+export class UpdateProductInput {
     @Field()
     name!: string;
 
@@ -44,9 +43,18 @@ class UpdateProductInput implements Partial<Product> {
 
     @Field()
     image!: string;
+
+    @Field()
+    gender!: string;
     
     @Field()
     discount!: number;
+
+    @Field(() => ID, { nullable: true })
+    category!: Category;
+
+    @Field()
+    note!: number;
 }
 
 @Resolver(Product)
@@ -59,7 +67,22 @@ export default class ProductResolver {
     }
 
     @Query(() => Product)
-    async getProductByRef(@Arg("productRef") productRef: number): Promise<Product>{
-        return this.productService.getProductByRef(productRef)
+    async getProductByRef(@Arg("id") id: number): Promise<Product>{
+        return this.productService.getProductById(id);
+    }
+
+    @Mutation(() => Product)
+    async createProduct(@Arg("data") data: NewProductInput): Promise<Product>{
+        return this.productService.createProduct(data);
+    }
+
+    @Mutation(() => Product)
+    async updateProduct(@Arg("id") id: number, @Arg("data") data: UpdateProductInput) {
+        return this.productService.updateProduct(id, data);
+    }
+
+    @Mutation(() => Product)
+    async deleteProduct(@Arg("id") id: number): Promise<Boolean> {
+        return this.productService.deleteProduct(id); 
     }
 }; 

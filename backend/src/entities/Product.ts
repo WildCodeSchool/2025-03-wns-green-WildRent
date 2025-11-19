@@ -20,8 +20,8 @@ export class Product extends BaseEntity {
     name!: string;
 
     @Field()
-    @Column({ unsigned: true})
-    quantity!: number;
+    @Column({ unsigned: true, default: 0})
+    quantity_variants!: number;
 
     @Field()
     @Column({ unsigned: true })
@@ -41,31 +41,23 @@ export class Product extends BaseEntity {
 
     @Field()
     @Column({ length: 20 })
-    size!: string;
-
-    @Field()
-    @Column({ length: 20 })
-    color!: string;
-
-    @Field()
-    @Column({ length: 20 })
     gender!: string;
     
     @Field()
-    @Column({ unsigned: true })
+    @Column({ unsigned: true, default: 0})
     discount!: number;
 
     @Field()
-    @Column({ unsigned: true})
+    @Column({ unsigned: true, default: 0 })
     note!: number;
 
     @ManyToOne(() => Category, (category) => category.products )
     @Field(() => Category)
     category!: Category;
 
-    @OneToMany(() => ProductVariant, (productVariant) => productVariant.product)
-    @Field(() => [ProductVariant])
-    productVariant!: ProductVariant[];
+    // @OneToMany(() => ProductVariant, (productVariant) => productVariant.product)
+    // @Field(() => [ProductVariant])
+    // productVariant!: ProductVariant[];
 
     // @OneToMany(() => BookingProducts, (bookingProducts) => bookingProducts.product)
     // @Field(() => [BookingProducts])
