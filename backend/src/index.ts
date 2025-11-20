@@ -13,6 +13,7 @@ import { BookingResolver } from "./resolvers/BookingResolver";
 import CategoryResolver from "./resolvers/CategoryResolver";
 import RoleResolver from "./resolvers/RoleResolver";
 import { StatusResolver } from "./resolvers/StatusResolver";
+import ProductResolver from "./resolvers/ProductResolver";
 
 
 type Query = {
@@ -21,7 +22,7 @@ type Query = {
 async function startServer() {
   await dataSource.initialize();
   const schema = await buildSchema ({
-    resolvers: [UserResolver, AuthResolver, BookingResolver, CategoryResolver, StatusResolver],
+    resolvers: [UserResolver, AuthResolver, BookingResolver, CategoryResolver, StatusResolver, ProductResolver, RoleResolver],
     validate: true,
   })
   const apolloServer = new ApolloServer({ schema });
