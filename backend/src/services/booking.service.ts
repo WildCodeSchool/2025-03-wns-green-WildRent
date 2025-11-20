@@ -1,4 +1,4 @@
-import { BookingInput } from "../dtos/booking.dto";
+import { CreateBookingInput, UpdateBookingInput } from "../dtos/booking.dto";
 import { Booking } from "../entities/Booking";
 import { StatusService } from "./status.service";
 
@@ -6,18 +6,11 @@ export class BookingService {
   private readonly statusService = new StatusService();
 
   async getAllBookings(): Promise<Booking[]> {
-    try {
-      const bookings = await Booking.find({
-        relations: ["status"],
-      });
-      return bookings;
-    } catch (err) {
-      throw new Error(`Error fetching bookings: ${err}`);
+      return Booking.find({ relations: ["status"] });
     }
-  }
 
   async getBookingById(id: number): Promise<Booking> {
-    try {
+    
       const booking = await Booking.findOne({
         where: { id },
         relations: ["status"],
@@ -26,15 +19,12 @@ export class BookingService {
       if (!booking) {
         throw new Error("Booking not found");
       }
-
       return booking;
-    } catch (err) {
-      throw new Error(`Error fetching booking ${id}: ${err}`);
     }
-  }
 
-  async createBooking(data: BookingInput): Promise<Booking> {
-    if (!data.endDate <= !data.startDate) {
+  async createBooking(data: CreateBookingInput): Promise<Booking> {
+
+    if (data.endDate <= data.startDate) {
       throw new Error("End date must be after start date");
     }
 
@@ -43,20 +33,15 @@ export class BookingService {
       endDate: data.endDate, 
     });
 
-    if (data.status) {
-      const status = await this.statusService.getStatusById(data.status.id);
-      booking.status = status;
-    }
+    const status = await this.statusService.getStatusById(data.statusId);
+    booking.status = status;
 
-    try {
       await booking.save();
       return booking;
-    } catch (err) {
-      throw new Error(`Error creating booking: ${err}`);
-    }
+
   }
 
-  async updateBooking( id: number,data: BookingInput): Promise<Booking> {
+  async updateBooking( id: number,data: UpdateBookingInput): Promise<Booking> {
     const booking = await Booking.findOne({
       where: { id },
       relations: ["status"],
@@ -72,8 +57,8 @@ export class BookingService {
       throw new Error("End date must be after start date");
     }
 
-    if (data.status) {
-      const status = await this.statusService.getStatusById(data.status.id);
+    if (data.statusId) {
+      const status = await this.statusService.getStatusById(data.statusId);
       booking.status = status;
     }
 
@@ -83,9 +68,7 @@ export class BookingService {
 
   async deleteBooking(id: number): Promise<number> {
     const booking = await Booking.findOneBy({ id });
-    if (!booking) {
-      throw new Error("Booking not found");
-    }
+    if (!booking) { throw new Error("Booking not found");}
 
     await Booking.delete({ id });
     return id;

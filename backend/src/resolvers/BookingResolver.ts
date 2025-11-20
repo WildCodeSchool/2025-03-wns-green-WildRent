@@ -7,13 +7,11 @@ import {
 } from "type-graphql";
 
 import {Booking} from "../entities/Booking";
-import { StatusService } from "../services/status.service";
 import { BookingService } from "../services/booking.service";
-import { BookingInput } from "../dtos/booking.dto";
+import { CreateBookingInput, UpdateBookingInput } from "../dtos/booking.dto";
 
 @Resolver(Booking)
 export class BookingResolver {
-	private readonly statusService = new StatusService();
   private readonly bookingService = new BookingService();
   
 	@Query (() => [Booking])
@@ -28,7 +26,7 @@ export class BookingResolver {
 	
   @Mutation(() => Booking)
   async createBooking(
-    @Arg("data") data: BookingInput
+    @Arg("data") data: CreateBookingInput
   ): Promise<Booking> {
     return this.bookingService.createBooking(data);
   }
@@ -36,7 +34,7 @@ export class BookingResolver {
 	@Mutation(() => Booking)
   async updateBooking(
     @Arg("id", () => ID) id: number,
-    @Arg("data") data: BookingInput
+    @Arg("data") data: UpdateBookingInput
   ): Promise<Booking> {
     return this.bookingService.updateBooking(id, data);
   }

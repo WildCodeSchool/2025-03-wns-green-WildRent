@@ -1,18 +1,29 @@
 import {
   Field,
   InputType,
+	ID,
 } from "type-graphql";
-import { StatusInput } from "./status.dto";
 
 @InputType()
-export class BookingInput {
+export class CreateBookingInput {
+  @Field(() => Date)
+  startDate!: Date;
 
-	@Field({ nullable: true })
-	startDate?:Date;
+  @Field(() => Date)
+  endDate!: Date;
+
+  @Field(() => ID)
+  statusId!: number;
+}
+
+@InputType()
+export class UpdateBookingInput {
+  @Field({ nullable: true })
+  startDate?: Date;
 
   @Field({ nullable: true })
-	endDate?:Date;
+  endDate?: Date;
 
-	@Field(() => StatusInput, { nullable: true })
-  status?: StatusInput;
+  @Field(() => ID, { nullable: true })
+  statusId?: number;
 }
