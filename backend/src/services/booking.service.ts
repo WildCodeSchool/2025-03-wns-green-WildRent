@@ -51,8 +51,6 @@ export class BookingService {
       throw new Error("Booking not found");
     }
 
-    Object.assign(booking, data);
-
     if (booking.endDate <= booking.startDate) {
       throw new Error("End date must be after start date");
     }
@@ -62,6 +60,8 @@ export class BookingService {
       booking.status = status;
     }
 
+    Object.assign(booking, data);
+    
     await booking.save();
     return booking;
   }

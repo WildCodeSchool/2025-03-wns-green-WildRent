@@ -26,8 +26,8 @@ export class Booking extends BaseEntity {
     bookingRef!: number;
     
     @Field()
-    @Column({ })
-    totalPrice!: number;
+    @Column({ nullable: true })
+    totalPrice?: number;
 
     @Field()
     @Column({ })
