@@ -8,9 +8,13 @@ export class StatusService {
 
   async getStatusById(id: number): Promise<Status> {
     const status = await Status.findOne({ where: { id } });
-    if (!status) {
-      throw new Error("Status not found");
-    }
+    if (!status) throw new Error("Status not found");
+    return status;
+  }
+
+  async getStatusByName(name: string): Promise<Status> {
+    const status = await Status.findOne({ where: { statusName: name } });
+    if (!status) throw new Error(`Status '${name}' not found`);
     return status;
   }
 

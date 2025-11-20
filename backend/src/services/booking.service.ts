@@ -33,7 +33,7 @@ export class BookingService {
       endDate: data.endDate, 
     });
 
-    const status = await this.statusService.getStatusById(data.statusId);
+    const status = await this.statusService.getStatusByName("En attente");
     booking.status = status;
 
       await booking.save();

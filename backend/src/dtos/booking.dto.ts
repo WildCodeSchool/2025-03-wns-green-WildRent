@@ -11,9 +11,7 @@ export class CreateBookingInput {
 
   @Field(() => Date)
   endDate!: Date;
-
-  @Field(() => ID)
-  statusId!: number;
+	
 }
 
 @InputType()
