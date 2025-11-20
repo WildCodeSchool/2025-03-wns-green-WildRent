@@ -8,13 +8,15 @@ import { Booking } from "../entities/Booking";
 import { Role } from "../entities/Role";
 import { Status } from "../entities/Status";
 import { User } from "../entities/User";
+import { Product } from "../entities/Product";
+import { ProductVariant } from "../entities/ProductVariant";
 
 dotenv.config();
 
 const { DB_PASSWORD, DB_DATABASE, DB_USER, DB_HOST, DB_PORT } = process.env;
 
 export const dataSource = new DataSource({
-  entities: [User, Booking, Category, Role, Status],
+  entities: [User, Booking, Category, Role, Status, Product, ProductVariant],
   synchronize: true,
   logging: ["error", "query"],
   type: "postgres",
