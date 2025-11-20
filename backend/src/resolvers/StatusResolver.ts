@@ -1,7 +1,5 @@
 import {
 	Arg,
-	Field,
-	InputType,
 	ID,
 	Mutation,
 	Resolver,
@@ -11,17 +9,7 @@ import {
 import { Status } from "../entities/Status";
 import { StatusService } from "../services/status.service";
 
-@InputType()
-class CreateStatusInput{
-	@Field()
-	statusName!:string;
-}
-
-@InputType()
-class UpdateStatusInput{
-	@Field()
-	statusName!:string;
-}
+import { StatusInput } from "../dtos/status.dto";
 
 @Resolver(Status)
 export class StatusResolver {
@@ -39,15 +27,21 @@ async getStatusById(
 }
 
 @Mutation(() => Status)
-async createStatus(@Arg("data") data: CreateStatusInput): Promise<Status> {
- return this.statusService.createStatus(data.statusName);
+async createStatus(@Arg("data") data: StatusInput): Promise<Status> {
+ return this.statusService.createStatus(data);
 }
 
 @Mutation(() => Status)
 async updateStatus(
 	@Arg("id", () => ID) id: number,
-  @Arg("data") data: UpdateStatusInput): Promise<Status>{
-return this.statusService.updateStatus(id, data.statusName);
+  @Arg("data") data: StatusInput): Promise<Status>{
+return this.statusService.updateStatus(id, data);
+}
+
+@Mutation(() => Status)
+async deleteStatus(
+  @Arg("id", () => ID) id: number): Promise<Status> {
+  return this.statusService.deleteStatus(id);
 }
 
 }
