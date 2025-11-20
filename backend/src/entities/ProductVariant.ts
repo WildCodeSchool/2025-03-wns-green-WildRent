@@ -1,6 +1,5 @@
 import { Field, ObjectType } from "type-graphql";
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Product } from "./Product";
 
 @Entity()
 @ObjectType()
@@ -24,6 +23,14 @@ export class ProductVariant extends BaseEntity {
     @Field()
     @Column({ length: 20 })
     size!: string; 
+
+    @Field()
+    @Column()
+    price_overide?: number;
+
+    @Field()
+    @Column()
+    image?: string;
 
     @Field()
     @Column({ unsigned: true })
