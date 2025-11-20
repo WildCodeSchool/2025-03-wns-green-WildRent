@@ -26,8 +26,8 @@ export class Booking extends BaseEntity {
     bookingRef!: number;
     
     @Field()
-    @Column({ })
-    totalPrice!: number;
+    @Column({ nullable: true })
+    totalPrice?: number;
 
     @Field()
     @Column({ })
@@ -36,10 +36,6 @@ export class Booking extends BaseEntity {
     @Field()
     @Column({ })
     endDate!: Date;
-
-    @Field()
-    @Column({ default:false })
-    isValidate!:boolean;
     
     @ManyToOne(() => Status, (status) => status.bookings)
     @Field(() => Status)

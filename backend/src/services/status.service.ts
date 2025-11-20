@@ -1,3 +1,4 @@
+import { StatusInput } from "../dtos/status.dto";
 import { Status } from "../entities/Status";
 
 export class StatusService {
@@ -7,26 +8,38 @@ export class StatusService {
 
   async getStatusById(id: number): Promise<Status> {
     const status = await Status.findOne({ where: { id } });
+    if (!status) throw new Error("Status not found");
+    return status;
+  }
+
+  async getStatusByName(name: string): Promise<Status> {
+    const status = await Status.findOne({ where: { statusName: name } });
+    if (!status) throw new Error(`Status '${name}' not found`);
+    return status;
+  }
+
+  async createStatus(data: StatusInput): Promise<Status> {
+    const status = Status.create({ statusName: data.statusName });
+    await status.save();
+    return status;
+  }
+
+  async updateStatus(id: number, data: StatusInput): Promise<Status> {
+    const status = await Status.findOne({ where: { id } });
     if (!status) {
       throw new Error("Status not found");
     }
-    return status;
-  }
-
-  async createStatus(statusName: string): Promise<Status> {
-    const status = Status.create({ statusName });
+    status.statusName = data.statusName;
     await status.save();
     return status;
   }
 
-  async updateStatus(id: number, statusName: string): Promise<Status> {
+  async deleteStatus(id: number): Promise<Status> {
     const status = await Status.findOne({ where: { id } });
-    if (!status) {
-      throw new Error("status not found");
-    }
-    status.statusName = statusName;
-    await status.save();
+    if (!status) throw new Error("Status not found");
+    
+    await Status.remove(status);
     return status;
-  }
+}
 
 }
