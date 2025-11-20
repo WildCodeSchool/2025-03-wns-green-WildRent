@@ -14,7 +14,7 @@ export class ProductService {
     }
 
     async getProductById(id: number): Promise<Product>{
-        const product = await Product.findOne({where: { id } });
+        const product = await Product.findOne({where: { id }, relations: {category: true} });
         if(!product) throw new Error("PRODUCT_NOT_FOUND");
         return product;
     }
