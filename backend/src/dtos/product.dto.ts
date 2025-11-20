@@ -21,8 +21,8 @@ export class NewProductInput {
     @Field()
     gender!: string;
 
-    @Field(() => ID, { nullable: true })
-    category!: Category;
+    @Field(() => ID)
+    categoryId!: number;
 }
 
 @InputType()
@@ -48,8 +48,8 @@ export class UpdateProductInput {
     @Field({ nullable: true })
     discount?: number;
 
-    @Field(() => ID, { nullable: true })
-    category!: Category;
+    @Field(() => ID)
+    categoryId!: number;
 }
 
 @InputType()

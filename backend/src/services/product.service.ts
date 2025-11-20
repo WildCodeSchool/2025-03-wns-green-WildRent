@@ -1,10 +1,15 @@
+import { FindManyOptions } from "typeorm";
 import { NewProductInput, UpdateProductInput } from "../dtos/product.dto";
+import { Category } from "../entities/Category";
 import { Product } from "../entities/Product";
 
 export class ProductService {
 
     async getAllProducts(): Promise<Product[]>{
-        const products = await Product.find();
+        let findOptions: FindManyOptions<Product> = {
+            relations: { category: true},
+        };
+        const products = await Product.find(findOptions);
         return products; 
     }
 
@@ -22,6 +27,10 @@ export class ProductService {
         }
         const productRef = Number(result)
 
+        const category = await Category.findOneBy({ id: data.categoryId })
+
+        if(!category) throw new Error("CATEGORY NOT FOUND")
+
         const product = Product.create({
             name: data.name,
             price: data.price,
@@ -30,7 +39,7 @@ export class ProductService {
             image: data.image,
             brand: data.brand, 
             gender: data.gender, 
-            category: data.category
+            category: category,
         });
         await product.save();
         return product;
@@ -39,10 +48,15 @@ export class ProductService {
     async updateProduct(id: number, data: UpdateProductInput): Promise<Product> {
         let currProduct = await Product.findOne({ where: { id }}); 
         if(!currProduct) throw new Error("PRODUCT NOT FOUND");
-        currProduct = Object.assign(currProduct, data); 
+
+        const category = await Category.findOneBy({ id: data.categoryId })
+        if(!category) throw new Error("CATEGORY NOT FOUND");
+
+        currProduct = Object.assign(currProduct, data, {
+            category: category,
+        }); 
         currProduct.save();
         return currProduct;
-
     }
 
     async deleteProduct(id: number): Promise<Boolean>{
