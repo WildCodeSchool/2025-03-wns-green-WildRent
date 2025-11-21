@@ -1,4 +1,4 @@
-import { CreateProductVariantInput } from "../dtos/product-variant.dto";
+import { CreateProductVariantInput, UpdateProductVariantInput } from "../dtos/product-variant.dto";
 import { ProductVariant } from "../entities/ProductVariant";
 
 export class ProductVariantService {
@@ -31,5 +31,22 @@ export class ProductVariantService {
         }); 
         await productVariant.save(); 
         return productVariant
+    }
+
+    async updateProductVariant(id: number, data: UpdateProductVariantInput): Promise<ProductVariant> {
+        let currProductVariant = await ProductVariant.findOneBy({ id: id}); 
+        if(!currProductVariant) throw new Error("PRODUCT_VARIANT NOT FOUND");
+
+        currProductVariant = Object.assign(currProductVariant, data); 
+        currProductVariant.save(); 
+        return currProductVariant;
+    }
+
+    async deleteProductVariant(id: number): Promise<string> {
+        const currProductVariant = await ProductVariant.findOneBy({ id: id}); 
+        if(!currProductVariant) throw new Error("PRODUCT_VARIANT NOT FOUND"); 
+
+        await ProductVariant.remove(currProductVariant); 
+        return "PRODUCT_VARIANT DELETED"
     }
 }
