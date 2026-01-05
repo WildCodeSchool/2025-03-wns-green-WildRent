@@ -30,6 +30,5 @@ export default class ProductVariantResolver {
     @Mutation(() => ProductVariant)
     async deleteProductVariant(@Arg("id") id: number): Promise<String> {
         return this.productVariantService.deleteProductVariant(id); 
-    }
-    
+    }    
 }; 
