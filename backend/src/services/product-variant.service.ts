@@ -1,9 +1,14 @@
+import { FindManyOptions } from "typeorm";
 import { CreateProductVariantInput, UpdateProductVariantInput } from "../dtos/product-variant.dto";
+import { Product } from "../entities/Product";
 import { ProductVariant } from "../entities/ProductVariant";
 
 export class ProductVariantService {
     async getAllProductsVariant(): Promise<ProductVariant[]> {
-        const products_variant = await ProductVariant.find();
+        let findOptions: FindManyOptions<ProductVariant> = {
+            relations: { product: true },
+        }
+        const products_variant = await ProductVariant.find(findOptions);
         return products_variant;
     }
 
@@ -20,6 +25,9 @@ export class ProductVariantService {
             randomRef += number
         }
 
+        const product = await Product.findOneBy({ id: data.productId})
+        if (!product) throw new Error("PRODUCT NOT FOUND")
+
         const productVariant = ProductVariant.create({
             productRef: randomRef,
             name: data.name, 
@@ -27,6 +35,7 @@ export class ProductVariantService {
             size: data.size, 
             image: data.image, 
             quantity: data.quantity,
+            product: product,
         }); 
         await productVariant.save(); 
         return productVariant
