@@ -6,9 +6,6 @@ export class CreateProductVariantInput {
     name!: string;
 
     @Field()
-    productRef!: string;
-
-    @Field()
     color!: string;
 
     @Field()
@@ -39,5 +36,5 @@ export class UpdateProductVariantInput {
     quantity!: string;
 
     @Field()
-    price_overide!: string;
+    price_overide!: number;
 }

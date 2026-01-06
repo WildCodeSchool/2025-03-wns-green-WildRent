@@ -14,20 +14,19 @@ export class ProductVariantService {
     }
 
     async createProductVariant(data: CreateProductVariantInput): Promise<ProductVariant> {
-        let result = ""; 
+        let randomRef = ""; 
         for(let i = 0; i<6; i++) {
             const number = Math.floor(Math.random()*10)
-            result += number
+            randomRef += number
         }
-        const productRef = Number(result)
 
         const productVariant = ProductVariant.create({
-            productRef: productRef,
+            productRef: randomRef,
             name: data.name, 
             color: data.color, 
             size: data.size, 
             image: data.image, 
-            quantity: data.quantity
+            quantity: data.quantity,
         }); 
         await productVariant.save(); 
         return productVariant

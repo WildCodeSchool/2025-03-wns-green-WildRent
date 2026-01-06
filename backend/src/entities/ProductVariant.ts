@@ -10,7 +10,7 @@ export class ProductVariant extends BaseEntity {
 
     @Field()
     @Column({ unsigned: true })
-    productRef!: number;
+    productRef!: string;
 
     @Field()
     @Column({ length: 20 })
@@ -25,7 +25,7 @@ export class ProductVariant extends BaseEntity {
     size!: string; 
 
     @Field()
-    @Column()
+    @Column({ default: 0 })
     price_overide?: number;
 
     @Field()
