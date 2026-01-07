@@ -56,9 +56,9 @@ export class Product extends BaseEntity {
     @Field(() => Category)
     category!: Category;
 
-    // @OneToMany(() => ProductVariant, (productVariant) => productVariant.product)
-    // @Field(() => [ProductVariant])
-    // productVariant!: ProductVariant[];
+    @OneToMany(() => ProductVariant, (productVariant) => productVariant.product)
+    @Field(() => [ProductVariant], { nullable: true })
+    productVariant!: ProductVariant[];
 
     @OneToMany(() => BookingProducts, (bookingProducts) => bookingProducts.product)
     @Field(() => [BookingProducts])
