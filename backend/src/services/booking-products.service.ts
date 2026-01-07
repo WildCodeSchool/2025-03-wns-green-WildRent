@@ -26,6 +26,10 @@ export class BookingProductsService {
 	
 		const product = await Product.findOne({ where: { id: data.productId } });
 		if (!product) throw new Error("Product not found");
+
+		if (product.quantity_variants < productQuantity) {
+			throw new Error("Not enough stock available");
+		}
 	
 		const bookingProduct = BookingProducts.create({
 			productQuantity,
@@ -45,6 +49,10 @@ export class BookingProductsService {
 		const productQuantity = data.productQuantity;
 	
 		if (productQuantity <= 0) throw new Error("productQuantity must be > 0");
+
+		if (bookingProduct.product.quantity_variants < productQuantity) {
+      throw new Error("Not enough stock available");
+    }
 	
 		bookingProduct.productQuantity = productQuantity;
 		}
