@@ -36,9 +36,11 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
 
       {/* Title + button */}
       <div className="absolute bottom-4 left-0 w-full px-0.5 grid grid-cols-[1fr_auto] items-end">
-        <div className="h-[56px] flex items-start pr-3 max-w-[14rem]">
+        <div className="h-[56px] flex items-start pr-2 pl-0.5 max-w-[14rem]">
           <h3
             className="
+              text-left
+              max-w-[10rem]
               uppercase
               text-3xl
               leading-7
