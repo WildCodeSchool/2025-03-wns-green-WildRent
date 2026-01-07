@@ -18,45 +18,36 @@ export class BookingProductsService {
 	}
 
   async createBookingProduct(data: CreateBookingProductsInput): Promise<BookingProducts> {
-    if (data.productQuantity <= 0) {
-      throw new Error("productQuantity must be > 0");
-    }
+		const productQuantity = data.productQuantity;
+	  if (productQuantity <= 0) throw new Error("productQuantity must be > 0");
+	
+		const booking = await Booking.findOne({ where: { id: data.bookingId } });
+		if (!booking) throw new Error("Booking not found");
+	
+		const product = await Product.findOne({ where: { id: data.productId } });
+		if (!product) throw new Error("Product not found");
+	
+		const bookingProduct = BookingProducts.create({
+			productQuantity,
+			booking,
+			product,
+		});
+	
+		await bookingProduct.save();
+		return bookingProduct;
+	}
 
-    const booking = await Booking.findOne({ where: { id: data.bookingId } });
-    if (!booking) throw new Error("Booking not found");
+  async updateBookingProduct(id: number, data: UpdateBookingProductsInput ): Promise<BookingProducts> {
+    const bookingProduct = await BookingProducts.findOne({ where: { id },relations: ["booking", "product"], });
+    if (!bookingProduct) { throw new Error("BookingProduct not found"); }
 
-    const product = await Product.findOne({ where: { id: data.productId } });
-    if (!product) throw new Error("Product not found");
-
-    const bookingProduct = BookingProducts.create({
-      productQuantity: data.productQuantity,
-      booking,
-      product,
-    });
-
-    await bookingProduct.save();
-    return bookingProduct;
-  }
-
-  async updateBookingProduct(
-    id: number,
-    data: UpdateBookingProductsInput
-  ): Promise<BookingProducts> {
-    const bookingProduct = await BookingProducts.findOne({
-      where: { id },
-      relations: ["booking", "product"],
-    });
-
-    if (!bookingProduct) {
-      throw new Error("BookingProduct not found");
-    }
-
-    if (data.productQuantity !== undefined) {
-      if (data.productQuantity <= 0) {
-        throw new Error("productQuantity must be > 0");
-      }
-      bookingProduct.productQuantity = data.productQuantity;
-    }
+		if (data.productQuantity !== undefined) {
+		const productQuantity = data.productQuantity;
+	
+		if (productQuantity <= 0) throw new Error("productQuantity must be > 0");
+	
+		bookingProduct.productQuantity = productQuantity;
+		}
 
     await bookingProduct.save();
     return bookingProduct;
@@ -64,11 +55,9 @@ export class BookingProductsService {
 
   async deleteBookingProduct(id: number): Promise<number> {
     const bookingProduct = await BookingProducts.findOne({ where: { id } });
-    if (!bookingProduct) {
-      throw new Error("BookingProduct not found");
-    }
+    if (!bookingProduct) throw new Error("BookingProduct not found");
 
-    await BookingProducts.delete({ id });
+    await BookingProducts.remove(bookingProduct);
     return id;
   }
 }

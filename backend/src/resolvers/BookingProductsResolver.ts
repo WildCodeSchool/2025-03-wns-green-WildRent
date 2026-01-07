@@ -20,7 +20,7 @@ export class BookingProductsResolver {
   }
 
 	@Query(() => [BookingProducts])
-	async getBookingProductsByBooking(@Arg("bookingId", () => ID) bookingId: number): Promise<BookingProducts[]> {
+	async getBookingProductsByBookingId(@Arg("bookingId", () => ID) bookingId: number): Promise<BookingProducts[]> {
 		return this.bookingProductsService.getBookingProductsByBookingId(bookingId);
 	}
 
