@@ -15,7 +15,7 @@ import RoleResolver from "./resolvers/RoleResolver";
 import { StatusResolver } from "./resolvers/StatusResolver";
 import ProductResolver from "./resolvers/ProductResolver";
 import ProductVariantResolver from "./resolvers/ProductVariantResolver";
-
+import { customErrorFormatter  } from "./errors/customErrorFormatter";
 
 type Query = {
   _empty: String
@@ -26,7 +26,12 @@ async function startServer() {
     resolvers: [UserResolver, AuthResolver, BookingResolver, CategoryResolver, StatusResolver, ProductResolver, RoleResolver, ProductVariantResolver],
     validate: true,
   })
-  const apolloServer = new ApolloServer({ schema });
+
+  const apolloServer = new ApolloServer({
+    schema,
+    formatError: customErrorFormatter,
+  });
+
   const { url } = await startStandaloneServer(apolloServer, {
     listen: {port: 4200},
     context: async({req, res}) => {
