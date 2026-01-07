@@ -11,7 +11,7 @@ export class ProductVariant extends BaseEntity {
 
     @Field()
     @Column({ unsigned: true })
-    productRef!: number;
+    productRef!: string;
 
     @Field()
     @Column({ length: 20 })
@@ -26,10 +26,18 @@ export class ProductVariant extends BaseEntity {
     size!: string; 
 
     @Field()
+    @Column({ default: 0 })
+    price_overide?: number;
+
+    @Field()
+    @Column()
+    image?: string;
+
+    @Field()
     @Column({ unsigned: true })
     quantity!: number; 
 
-    // @ManyToOne(() => Product, (product) => product.productVariant)
-    // @Field(() => Product)
-    // product!: Product; 
+    @ManyToOne(() => Product, (product) => product.productVariant)
+    @Field(() => Product)
+    product!: Product; 
 }
