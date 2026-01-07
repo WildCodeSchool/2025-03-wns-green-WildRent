@@ -4,13 +4,13 @@ import {
     Column,
     Entity,
     Generated,
-    // OneToMany,
+    OneToMany,
     ManyToOne,
     PrimaryGeneratedColumn,
 } from "typeorm";
 
 import { Status } from "./Status";
-// import { BookingProducts } from "./BookingProducts";
+import { BookingProducts } from "./BookingProducts";
 
 @Entity()
 @ObjectType()
@@ -41,7 +41,7 @@ export class Booking extends BaseEntity {
     @Field(() => Status)
     status!: Status;
 
-    // @OneToMany(() => BookingProducts, (bookingProducts) => bookingProducts.booking)
-    // @Field(() => [BookingProducts])
-    // bookingsProducts!: BookingProducts[];
+    @OneToMany(() => BookingProducts, (bookingProducts) => bookingProducts.booking)
+    @Field(() => [BookingProducts])
+    bookingsProducts!: BookingProducts[];
 }
