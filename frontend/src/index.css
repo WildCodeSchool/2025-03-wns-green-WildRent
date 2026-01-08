@@ -5,3 +5,10 @@
   --font-title: "Bebas Neue", "Anton", sans-serif;
   --font-text: "Poppins", sans-serif;
 }
+
+
+:root {
+  --color-primary: #8caa0e;
+  --color-secondary: #31380e;
+  --color-background: #fbfcef;
+}
