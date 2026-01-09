@@ -1,6 +1,6 @@
 import React from "react";
 import { User, ShoppingCart } from "lucide-react";
-import { SearchBar } from "../Search/SearchBar";
+import { SearchBar } from "../../Search/SearchBar";
 import {
   navbarContainer,
   navbarInner,
