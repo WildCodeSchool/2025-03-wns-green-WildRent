@@ -1,7 +1,6 @@
 import { User } from "../entities/User";
 import { Role } from "../entities/Role";
 import { UserService } from "../services/user.service";
-import * as argon2 from "argon2";
 
 jest.mock("../entities/User", () => ({
   User: {
@@ -21,8 +20,9 @@ jest.mock("../entities/Role", () => ({
   },
 }));
 
-
-jest.spyOn(argon2, "hash").mockResolvedValue("hashed-password");
+jest.mock("argon2", () => ({
+  hash: jest.fn().mockResolvedValue("hashed-password"),
+}));
 
 describe("UserService", () => {
   let service: UserService;
