@@ -35,7 +35,7 @@ export const logoText = `
 
 /* ===== Search DESKTOP ===== */
 export const searchDesktop = `
-  hidden lg:flex
+  hidden md:flex
   flex-1
   justify-center
   mx-6
@@ -53,7 +53,7 @@ export const searchMobile = `
   px-4
 
   flex justify-center
-  lg:hidden
+  md:hidden
   z-20
 `;
 
