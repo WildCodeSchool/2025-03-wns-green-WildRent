@@ -1,8 +1,10 @@
 /* ===== Layout ===== */
 export const navbarContainer = `
+  relative
   w-full
   bg-[#fdffe9]
   border-b border-[#e5e7eb]/40
+
 `;
 
 /* ===== Inner wrapper ===== */
@@ -31,18 +33,28 @@ export const logoText = `
   text-[#31380d]
 `;
 
-/* ===== Search ===== */
+/* ===== Search DESKTOP ===== */
 export const searchDesktop = `
-  hidden md:flex
+  hidden lg:flex
   flex-1
   justify-center
   mx-6
 `;
 
+/* ===== Search MOBILE ===== */
 export const searchMobile = `
+  absolute
+  left-1/2
+  -translate-x-1/2
+  top-full
   mt-3
+
+  w-full
+  px-4
+
   flex justify-center
-  md:hidden
+  lg:hidden
+  z-20
 `;
 
 /* ===== Actions ===== */

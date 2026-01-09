@@ -14,7 +14,6 @@ import {
   iconLabel,
 } from "./navbar.styles";
 
-
 export const Navbar: React.FC = () => {
   return (
     <nav className={navbarContainer}>
@@ -25,7 +24,7 @@ export const Navbar: React.FC = () => {
             <span className={logoText}>WILDRENT</span>
           </div>
 
-          {/* Search DESKTOP only */}
+          {/* Search DESKTOP */}
           <div className={searchDesktop}>
             <SearchBar />
           </div>
@@ -41,11 +40,11 @@ export const Navbar: React.FC = () => {
             </button>
           </div>
         </div>
+      </div>
 
-        {/* Search MOBILE only */}
-        <div className={searchMobile}>
-          <SearchBar />
-        </div>
+      {/* Search MOBILE */}
+      <div className={searchMobile}>
+        <SearchBar />
       </div>
     </nav>
   );
