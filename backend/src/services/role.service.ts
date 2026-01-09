@@ -3,7 +3,7 @@ import { RoleInput } from "../dtos/role.dto";
 import { Errors } from "../errors/errors";
 
 export class RoleService {
-    
+        
     async createRole(data: RoleInput): Promise<Role> {
         const roleName = data.roleName.trim().toLowerCase();
         const exists = await Role.findOne({ where: { roleName: roleName } });
