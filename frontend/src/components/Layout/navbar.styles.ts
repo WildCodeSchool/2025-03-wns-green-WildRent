@@ -70,6 +70,7 @@ export const iconButton = `
 `;
 
 export const iconLabel = `
+  hidden sm:block
   text-[11px]
   font-medium
   font-[family-name:var(--font-text)]
