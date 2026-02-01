@@ -6,9 +6,12 @@
   --font-text: "Poppins", sans-serif;
 }
 
-
 :root {
-  --color-primary: #8caa0e;
-  --color-secondary: #31380e;
-  --color-background: #fbfcef;
+  --color-primary: #7A944F;
+  --color-secondary: #34380D;
+  --color-background: #FDFFE9;
+}
+
+body {
+  background-color: var(--color-background);
 }
