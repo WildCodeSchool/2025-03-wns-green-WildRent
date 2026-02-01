@@ -14,7 +14,9 @@ import CategoryResolver from "./resolvers/CategoryResolver";
 import RoleResolver from "./resolvers/RoleResolver";
 import { StatusResolver } from "./resolvers/StatusResolver";
 import ProductResolver from "./resolvers/ProductResolver";
+import ProductVariantResolver from "./resolvers/ProductVariantResolver";
 import { customErrorFormatter  } from "./errors/customErrorFormatter";
+import { BookingProductsResolver } from "./resolvers/BookingProductsResolver";
 
 type Query = {
   _empty: String
@@ -22,7 +24,7 @@ type Query = {
 async function startServer() {
   await dataSource.initialize();
   const schema = await buildSchema ({
-    resolvers: [UserResolver, AuthResolver, BookingResolver, CategoryResolver, StatusResolver, ProductResolver, RoleResolver],
+    resolvers: [UserResolver, AuthResolver, BookingResolver, CategoryResolver, StatusResolver, ProductResolver, RoleResolver, ProductVariantResolver, BookingProductsResolver],
     validate: true,
   })
 

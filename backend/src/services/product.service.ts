@@ -7,7 +7,7 @@ export class ProductService {
 
     async getAllProducts(): Promise<Product[]>{
         let findOptions: FindManyOptions<Product> = {
-            relations: { category: true},
+            relations: { category: true, productVariant: true },
         };
         const products = await Product.find(findOptions);
         return products; 
@@ -28,7 +28,6 @@ export class ProductService {
         const productRef = Number(result)
 
         const category = await Category.findOneBy({ id: data.categoryId })
-
         if(!category) throw new Error("CATEGORY NOT FOUND")
 
         const product = Product.create({

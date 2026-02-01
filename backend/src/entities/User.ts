@@ -28,7 +28,7 @@ export class User extends BaseEntity {
   phoneNumber!: string;
 
   @Field()
-  @Column({ length: 20 })
+  @Column({ length: 30, unique: true })
   email!: string;
 
   @Column({ length: 250 })
@@ -39,7 +39,7 @@ export class User extends BaseEntity {
   address!: string;
 
   @Field()
-  @Column({ length: 250 })
+  @Column({ length: 50 })
   city!: string;
 
   @ManyToOne(() => Role, (role) => role.users)
