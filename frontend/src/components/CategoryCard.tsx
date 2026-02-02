@@ -12,7 +12,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
   onClick,
 }) => {
   return (
-    <div className="relative w-full aspect-[7/8] rounded-2xl overflow-hidden group cursor-pointer">
+    <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden group cursor-pointer">
       <img
         src={image}
         alt={title}
@@ -21,9 +21,9 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"/>
 
-      <div className="absolute bottom-4 left-0 w-full px-0.5 grid grid-cols-[1fr_auto] items-end">
+      <div className="absolute bottom-4 left-0 w-full px-4 grid grid-cols-[1fr_auto] items-end gap-3">
         <div className=" h-[56px] flex items-start pr-2 pl-0.5 max-w-[14rem]">
-          <h3 className=" text-left max-w-[10rem] uppercase text-3xl leading-7 tracking-wide text-[#fdffe9] font-[family-name:var(--font-title)] drop-shadow-md">
+          <h3 className=" text-left max-w-[9rem] uppercase text-3xl leading-7 tracking-wide text-[#fdffe9] font-[family-name:var(--font-title)] drop-shadow-md">
             {title}
           </h3>
         </div>
