@@ -1,10 +1,4 @@
 import { CategoryCard } from "./CategoryCard";
-import {
-  sectionContainer,
-  innerWrapper,
-  sectionTitle,
-  gridContainer,
-} from "./categoryGrid.styles";
 
 type CategoryItem = {
   title: string;
@@ -22,13 +16,13 @@ const categories: CategoryItem[] = [
 
 export const CategoryGrid = () => {
   return (
-    <section className={sectionContainer}>
-      <div className={innerWrapper}>
-        <h2 className={sectionTitle}>
+    <section className="bg-[#fdffe9] py-12">
+      <div className="max-w-7xl mx-auto px-4">
+        <h2 className="mb-8 text-2xl sm:text-3xl font-[family-name:var(--font-title)] font-extrabold text-[#31380d]uppercase">
           Nos catégories de matériel, prêtes à l’emploi
         </h2>
 
-        <div className={gridContainer}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
           {categories.map((c) => (
             <CategoryCard key={c.title} title={c.title} image={c.image} />
           ))}
