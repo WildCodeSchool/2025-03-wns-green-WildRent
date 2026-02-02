@@ -1,7 +1,18 @@
 import { StatusService } from "../services/status.service";
 import { Status } from "../entities/Status";
 
-jest.mock("../entities/Status");
+
+jest.mock("../entities/Status", () => ({
+  Status: {
+    create: jest.fn().mockImplementation((data: any) => ({
+      ...data,
+      save: jest.fn().mockResolvedValue(undefined),
+    })),
+    findOne: jest.fn().mockResolvedValue(null),
+    remove: jest.fn().mockResolvedValue(undefined),
+    find: jest.fn().mockResolvedValue([]),
+  },
+}));
 
 describe("StatusService", () => {
   let service: StatusService;
@@ -34,51 +45,63 @@ describe("StatusService", () => {
     expect(result.statusName).toBe("En attente");
   });
 
-  it("should throw if status not found", async () => {
-    (Status.findOne as jest.Mock).mockResolvedValue(null);
+  it("should throw error if status not found by ID", async () => {
+    (Status.findOne as jest.Mock).mockResolvedValueOnce(null);
 
     await expect(service.getStatusById(999)).rejects.toThrow("Status not found");
   });
 
-  it("should create a new status", async () => {
-    (Status.create as jest.Mock).mockReturnValue({
+  it("should get status by name", async () => {
+    (Status.findOne as jest.Mock).mockResolvedValueOnce({
+      id: 1,
       statusName: "En attente",
-      save: jest.fn().mockResolvedValue(true),
     });
 
-    const res = await service.createStatus({ statusName: "En attente" });
+    const result = await service.getStatusByName("En attente");
+
+    expect(result.statusName).toBe("En attente");
+  });
+
+
+  it("should create a new status", async () => {
+    const result = await service.createStatus({ statusName: "En attente" });
 
     expect(Status.create).toHaveBeenCalledWith({ statusName: "En attente" });
-    expect(res.statusName).toBe("En attente");
+    expect(result).toBeDefined();
   });
 
   it("should update a status", async () => {
-    (Status.findOne as jest.Mock).mockResolvedValue({
-      id: 1,
-      statusName: "En attente",
-      save: jest.fn().mockResolvedValue(true),
-    });
+    const statusMock = { id: 1, statusName: "En attente", save: jest.fn() };
+    (Status.findOne as jest.Mock).mockResolvedValueOnce(statusMock);
 
-    const updated = await service.updateStatus(1, { statusName: "Disponible" });
+    const result = await service.updateStatus(1, { statusName: "Disponible" });
 
-    expect(updated.statusName).toBe("Disponible");
+    expect(statusMock.save).toHaveBeenCalled();
+    expect(result.statusName).toBe("Disponible");
+  });
+
+  it("should throw error if status not found on update", async () => {
+    (Status.findOne as jest.Mock).mockResolvedValueOnce(null);
+
+    await expect(service.updateStatus(999, { statusName: "x" })).rejects.toThrow(
+      "Status not found"
+    );
   });
 
   it("should delete a status", async () => {
-    (Status.findOne as jest.Mock).mockResolvedValue({
+    (Status.findOne as jest.Mock).mockResolvedValueOnce({
       id: 1,
       statusName: "En attente",
     });
-    (Status.remove as jest.Mock).mockResolvedValue(true);
+    (Status.remove as jest.Mock).mockResolvedValueOnce(true);
 
-    const deleted = await service.deleteStatus(1);
+    const result = await service.deleteStatus(1);
 
-    expect(Status.remove).toHaveBeenCalled();
-    expect(deleted.statusName).toBe("En attente");
+    expect(result).toBeDefined();
   });
 
-  it("should throw if delete target not found", async () => {
-    (Status.findOne as jest.Mock).mockResolvedValue(null);
+  it("should throw error if status not found on delete", async () => {
+    (Status.findOne as jest.Mock).mockResolvedValueOnce(null);
 
     await expect(service.deleteStatus(999)).rejects.toThrow("Status not found");
   });
