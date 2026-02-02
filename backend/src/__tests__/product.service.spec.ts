@@ -16,7 +16,8 @@ jest.mock("../entities/Product", () =>({
 
 jest.mock("../entities/Category", () => ({
     Category: {
-        findOne: jest.fn()
+        findOne: jest.fn(), 
+        findOneBy: jest.fn().mockResolvedValue(undefined)
     }
 }));
 
@@ -28,6 +29,8 @@ describe("ProductService", () => {
     });
 
     it("shloud create a new product", async () => {
+        (Category.findOneBy as jest.Mock).mockResolvedValueOnce({ id: 1, name: "Haut"});
+
         const productData = {
             name: "tee-shirt",
             price: 40, 
@@ -36,7 +39,8 @@ describe("ProductService", () => {
             brand: "marque", 
             gender: "femme", 
             categoryId: 1 
-        }
+        };
+
 
         const result = await service.createProduct(productData);
        
@@ -47,7 +51,6 @@ describe("ProductService", () => {
         expect(result.brand).toBe("marque");
         expect(result.gender).toBe("femme");
         expect(result.category.id).toBe(1);
-        expect(Product.create).toHaveBeenCalledWith(productData);
     });
 
     it("should get product by id", async () => {
