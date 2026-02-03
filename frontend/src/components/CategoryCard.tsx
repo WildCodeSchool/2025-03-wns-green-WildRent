@@ -12,7 +12,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
   onClick,
 }) => {
   return (
-    <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden group cursor-pointer">
+    <div className="relative w-full aspect-[4/4.5] rounded-2xl overflow-hidden group cursor-pointer">
       <img
         src={image}
         alt={title}
@@ -33,8 +33,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
             e.stopPropagation();
             onClick?.();
           }}
-          className="bg-[#fdffe9] text-[#31380d] border-2 border-[#87a700] text-xs font-[family-name:var(--font-text)] font-bold px-3 sm:px-5 py-1.5 sm:py-2 rounded-full whitespace-nowrap shadow-sm hover:bg-[#87a700] hover:text-[#fdffe9] transition-colors"
-        >
+          className="bg-[#fdffe9] text-[#31380d] border-2 border-[#87a700] text-xs font-[family-name:var(--font-text)] font-bold px-3 sm:px-5 py-1.5 sm:py-2 rounded-full whitespace-nowrap shadow-sm hover:bg-[#87a700] hover:text-[#fdffe9] transition-colors">
           Je découvre
         </button>
       </div>

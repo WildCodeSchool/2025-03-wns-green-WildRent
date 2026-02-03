@@ -4,7 +4,8 @@ import { SearchBar } from "./SearchBar";
 
 export const Navbar: React.FC = () => {
   return (
-    <nav className="relative w-full bg-[#fdffe9] border-b border-[#e5e7eb]/40">
+    //<nav className="relative w-full bg-[#fdffe9] border-b border-[#e5e7eb]/40">
+    <nav className="relative w-full bg-[#fdffe9] border-b-0">
       <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6">
         {/* Top row */}
         <div className="flex items-center justify-between">

@@ -5,3 +5,10 @@
   --font-title: "Bebas Neue", "Anton", sans-serif;
   --font-text: "Poppins", sans-serif;
 }
+
+html,
+body,
+#root {
+  min-height: 100%;
+  background-color: #fdffe9;
+}
