@@ -4,10 +4,10 @@ import { Footer } from "../components/Footer";
 
 export const HomePage = () => {
   return (
-    <div className="min-h-screen bg-[#fdffe9]">
+    <div className="min-h-screen flex flex-col bg-[#fdffe9]">
       <Navbar />
 
-      <main>
+      <main className="flex-1">
         <CategoryGrid />
       </main>
 

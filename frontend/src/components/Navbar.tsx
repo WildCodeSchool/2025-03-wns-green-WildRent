@@ -6,19 +6,18 @@ export const Navbar: React.FC = () => {
   return (
     //<nav className="relative w-full bg-[#fdffe9] border-b border-[#e5e7eb]/40">
     <nav className="relative w-full bg-[#fdffe9] border-b-0">
-      <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6">
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-8 xl:px-36 py-4">
         {/* Top row */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-1">
           {/* Logo */}
           <div className="flex items-center">
-            <span className="font-[family-name:var(--font-title)] font-bold text-2xl tracking-wider text-[#31380d]">
+            <span className="font-[family-name:var(--font-title)] font-bold text-2xl lg:text-[28px] tracking-wider text-[#31380d]">
               WILDRENT
             </span>
           </div>
 
           {/* Search DESKTOP */}
-          <div className="
-              hidden md:flex flex-1 justify-center mx-6">
+          <div className="hidden md:flex flex-1 justify-center mx-6 xl:mx-12">
             <SearchBar />
           </div>
 

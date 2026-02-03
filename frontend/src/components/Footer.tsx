@@ -5,8 +5,8 @@ export const Footer = () => {
     <footer className="bg-[#2f3a0d] text-white">
       <div className="w-full">
         {/* Desktop & Tablet */}
-        <div className="hidden md:flex max-w-7xl mx-auto h-16 px-6 items-center justify-between">
-          <span className="font-[family-name:var(--font-title)] font-bold text-3xl tracking-wide leading-relaxed">
+        <div className="hidden md:flex max-w-[1440px] mx-auto px-6 lg:px-8 xl:px-40 h-12 items-center justify-between">
+          <span className="font-[family-name:var(--font-title)] font-bold text-3xl tracking-wide leading-relaxed pl-3">
             WILDRENT
           </span>
 
@@ -17,7 +17,7 @@ export const Footer = () => {
             <a href="/accessibility">Accessibilité</a>
           </nav>
 
-          <div className="flex gap-4">
+          <div className="flex gap-4 pr-3">
             <Instagram size={18} className="hover:text-[#87a700] transition-colors"/>
             <Facebook size={18} className="hover:text-[#87a700] transition-colors"/>
             <Twitter size={18} className="hover:text-[#87a700] transition-colors"/>
@@ -40,7 +40,7 @@ export const Footer = () => {
             <a href="/accessibility">Accessibilité</a>
           </nav>
 
-          <div className="flex justify-center gap-5">
+          <div className="flex justify-center gap-5 pr-3">
             <Instagram size={20} className="hover:text-[#87a700] transition-colors"/>
             <Facebook size={20} className="hover:text-[#87a700] transition-colors"/>
             <Twitter size={20} className="hover:text-[#87a700] transition-colors"/>
