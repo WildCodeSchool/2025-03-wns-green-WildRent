@@ -43,7 +43,7 @@ export class UpdateProductInput {
     gender!: string;
 
     @Field({ nullable: true })
-    productVariant?: number;
+    quantityVariants?: number;
     
     @Field({ nullable: true })
     discount?: number;

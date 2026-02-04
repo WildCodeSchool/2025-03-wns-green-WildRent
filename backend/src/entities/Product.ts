@@ -22,7 +22,7 @@ export class Product extends BaseEntity {
 
     @Field()
     @Column({ unsigned: true, default: 0})
-    quantity_variants!: number;
+    quantityVariants!: number;
 
     @Field()
     @Column({ unsigned: true })
