@@ -17,7 +17,7 @@ jest.mock("../entities/Booking", () => ({
 
 jest.mock("../entities/Status", () => ({
   Status: {
-    findOne: jest.fn().mockResolvedValue({ id: 1, statusName: "En attente" }),
+    findOne: jest.fn().mockResolvedValue(undefined),
   },
 }));
 
