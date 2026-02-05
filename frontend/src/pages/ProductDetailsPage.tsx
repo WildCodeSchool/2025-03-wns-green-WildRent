@@ -1,71 +1,51 @@
-import { useState } from "react";
+import ProductDetailsCarousel from "../components/ProductDetails/ProductDetailsCarousel";
+import ProductDetailsDescription from "../components/ProductDetails/ProductDetailsDescription";
 
-	type Props = {
-		title: string;
-		brand: string;
-		pricePerDay: number;
-		ref: string;
-		description: string;
-		colors: string[];
-		sizes: string[];
-	};
-	
-	export default function ProductDescription({
-		title,
-		brand,
-		pricePerDay,
-		ref,
-		description,
-		colors,
-		sizes,
-	}: Readonly<Props>) {
-		const [color, setColor] = useState("");
-		const [size, setSize] = useState("");
-	
-	return (
+export default function ProductDetailsPage() {
 
+  const product = {
+    title: "Snowboard Rossignol",
+    brand: "Rossignol",
+    pricePerDay: 10,
+    reference: "9483838",
+    description:
+      "Snowboard stable et facile à manier, parfait pour profiter pleinement de chaque descente, que vous soyez débutant ou confirmé.",
+    colors: ["Blanc"],
+    sizes: ["38", "39", "40", "41", "42"],
+    images: [
+      "/images/Snowbard1.png",
+      "/images/Snowboard2.png",
+      "/images/Snowboard3.png",
+    ],
+  };
 
-		<section className="w-full text-left ">
+  return (
+    <div className="container mx-auto px-4 py-8">
 
-		<h1 className="text-3xl font-bold  font-[family-name:var(--font-title)] text-[var(--color-secondary)]"> {title} </h1>
-		<p className="mt-1 text-sm  font-[family-name:var(--font-text)] text-[var(--color-secondary)]"> {brand}</p>
-    <p className="mt-2 text-2xl font-bold  font-[family-name:var(--font-text)] text-[var(--color-secondary)]"> {pricePerDay}€/jour </p>
-    <p className="mt-2 text-sm  font-[family-name:var(--font-text)] text-[var(--color-primary)]"> Ref: {ref}</p>
-			
-			<div className="mt-5 rounded-2xl bg-[var(--color-secondary)] p-5 font-[family-name:var(--font-text)] text-[var(--color-background)]">
-				<h2 className="font-bold text-2xl uppercase  font-[family-name:var(--font-title)] text-[var(--color-background)]">DESCRIPTION PRODUIT</h2>
-				<p className="mt-2 text-sm ">{description}</p>
-			</div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-			<div className="mt-6">
-				<label className="block text-sm font-[family-name:var(--font-text)] text-[var(--color-secondary)]">Sélectionner une couleur</label>
-				<select
-					value={color}
-					onChange={(e) => setColor(e.target.value)}
-					className="mt-2 w-full rounded-xl border border-[var(--color-secondary)] text-[var(--color-secondary)] px-4 py-3"
-				>
-					<option value="">Choisir une couleur</option>
-				</select>
-			</div>
+        <ProductDetailsCarousel
+          images={product.images}
+          productName={product.title}
+        />
 
-			<div className="mt-5">
-				<label className="block text-sm font-[family-name:var(--font-text)] text-[var(--color-secondary)]">Sélectionner une taille</label>
-				<select
-					value={size}
-					onChange={(e) => setSize(e.target.value)}
-					className="mt-2 w-full rounded-xl border text-[var(--color-secondary)] px-4 py-3"
-				>
-					<option value="">Choisir une taille</option>
-				</select>
-			</div>
+        <ProductDetailsDescription {...product} />
 
-			<button
-				className="mt-6 w-full text-2xl rounded-xl bg-[#87a700] py-3 font-bold font-[family-name:var(--font-text)] text-[var(--color-background)] cursor-pointer"
-			>
-				AJOUTER AU PANIER
-			</button>
-		</section>
-	);
+      </div>
+
+    </div>
+  );
 }
 
-	
+
+
+
+
+
+
+
+
+
+
+
+
