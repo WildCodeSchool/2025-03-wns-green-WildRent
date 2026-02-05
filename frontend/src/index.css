@@ -1,7 +1,13 @@
-
 @import "tailwindcss";
 
 @theme {
   --font-title: "Bebas Neue", "Anton", sans-serif;
   --font-text: "Poppins", sans-serif;
+}
+
+:root {
+  --dark-green: #31380d; 
+  --light-green: #87a700; 
+  --kaki: #acaf91; 
+  --beige: #fdffe9; 
 }
