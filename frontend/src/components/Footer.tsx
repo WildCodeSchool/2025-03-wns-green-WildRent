@@ -5,12 +5,12 @@ export const Footer = () => {
     <footer className="bg-[#2f3a0d] text-white">
       <div className="w-full">
         {/* Desktop & Tablet */}
-        <div className="hidden md:flex max-w-[1440px] mx-auto px-6 lg:px-8 xl:px-40 h-12 items-center justify-between">
+        <div className="hidden md:flex max-w-[1440px] mx-auto px-6 lg:px-6 xl:px-44 h-24 items-center justify-between">
           <span className="font-[family-name:var(--font-title)] font-bold text-3xl tracking-wide leading-relaxed pl-3">
             WILDRENT
           </span>
 
-          <nav className="flex gap-6 text-sm">
+          <nav className="flex gap-6 text-md">
             <a href="/contact">Contact</a>
             <a href="/privacy">Données personnelles</a>
             <a href="/cookies">Gestion des cookies</a>

@@ -5,8 +5,8 @@ import { SearchBar } from "./SearchBar";
 export const Navbar: React.FC = () => {
   return (
     //<nav className="relative w-full bg-[#fdffe9] border-b border-[#e5e7eb]/40">
-    <nav className="relative w-full bg-[#fdffe9] border-b-0">
-      <div className="max-w-[1440px] mx-auto px-6 lg:px-8 xl:px-36 py-4">
+    <nav className="relative w-full bg-[#fdffe9]">
+      <div className="px-4 xl:px-6 2xl:px-24 py-6 lg:py-8">
         {/* Top row */}
         <div className="flex items-center justify-between gap-1">
           {/* Logo */}
@@ -17,8 +17,10 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* Search DESKTOP */}
-          <div className="hidden md:flex flex-1 justify-center mx-6 xl:mx-12">
-            <SearchBar />
+          <div className="hidden md:flex flex-[2] mx-6 xl:mx-12">
+            <div className="mx-auto w-full flex justify-center">
+              <SearchBar />
+            </div>
           </div>
 
           {/* Actions */}
