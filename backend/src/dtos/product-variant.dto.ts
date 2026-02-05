@@ -12,7 +12,7 @@ export class CreateProductVariantInput {
     size!: string;
 
     @Field()
-    image!: string;
+    image?: string;
 
     @Field()
     quantity!: number;
@@ -24,20 +24,20 @@ export class CreateProductVariantInput {
 @InputType()
 export class UpdateProductVariantInput {
     @Field()
-    name!: string;
+    name?: string;
     
     @Field()
-    color!: string;
+    color?: string;
     
     @Field()
-    size!: string;
+    size?: string;
     
     @Field()
-    image!: string;
+    image?: string;
     
     @Field()
-    quantity!: string;
+    quantity?: number;
 
     @Field()
-    price_overide!: number;
+    price_overide?: number;
 }
