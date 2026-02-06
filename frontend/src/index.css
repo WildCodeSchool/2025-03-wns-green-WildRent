@@ -5,9 +5,18 @@
   --font-text: "Poppins", sans-serif;
 }
 
+
 :root {
   --dark-green: #31380d; 
   --light-green: #87a700; 
   --kaki: #acaf91; 
   --beige: #fdffe9; 
+}
+
+#root {
+  min-height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #fdffe9;
 }

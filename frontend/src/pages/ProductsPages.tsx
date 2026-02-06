@@ -1,5 +1,6 @@
-import { ProductFilter } from "../components/CategoryCard/ProductFilter";
-import { ProductsGrid } from "../components/CategoryCard/ProductsGrid";
+import { ProductFilter } from "../components/ProductFilter";
+import { ProductsGrid } from "../components/ProductsGrid";
+
 
 export const ProductPages = () => {
     return(
