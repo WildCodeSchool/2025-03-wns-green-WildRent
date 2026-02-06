@@ -1,6 +1,6 @@
 export const ProductFilter = () => {
     return(
-        <div className="w-1/4 bg-[var(--dark-green)] m-2 rounded-2xl flex flex-col gap-3">
+        <div className="w-1/4 h-full sticky top-2 bg-[var(--dark-green)] rounded-2xl flex flex-col gap-3">
             <div className="m-4 flex flex-col gap-6">
 
                 {/* Filtre par genre */}
@@ -162,7 +162,7 @@ export const ProductFilter = () => {
                 </div>
 
                 {/* Bouton de validation des filtres */}
-                <div className="flex flex-row gap-4 justify-center mt-2">
+                <div className="flex flex-row gap-4 justify-center my-2">
                     <button>
                         <p className="text-[var(--light-green)]">Réinitialiser</p>
                     </button>
