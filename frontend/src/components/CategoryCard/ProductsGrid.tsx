@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { ProductCard } from "./ProductCard";
 
 type Product = {
@@ -43,13 +44,56 @@ const products: Product[] = [
         brand: "Burton", 
         image: "/images/snow2.png",
         price: 31
+    },
+    {
+        title: "Bâton de ski", 
+        brand: "Rossignol", 
+        image: "/images/baton.png",
+        price: 10
+    },
+    {
+        title: "Chaussure de ski", 
+        brand: "Lange", 
+        image: "/images/boot1.png",
+        price: 18
+    },
+    {
+        title: "Chaussure de ski", 
+        brand: "Rossignol", 
+        image: "/images/boot2.png",
+        price: 18
+    },
+    {
+        title: "Ski", 
+        brand: "Rossignol", 
+        image: "/images/ski.png",
+        price: 35
+    },
+    {
+        title: "Planche de snowboard", 
+        brand: "Rossignol", 
+        image: "/images/snow1.png",
+        price: 31
+    },
+    {
+        title: "Planche de snowboard", 
+        brand: "Burton", 
+        image: "/images/snow2.png",
+        price: 31
     }
+
 ];
 
 export const ProductsGrid = () => {
     return(
-        <div>
-            {products.map((product)) => ()}
+        <div className="w-full bg-[var(--beige)]">
+            <div className="m-4 grid grid-cols-5 gap-3">
+                {products.map((product) => (
+                    <Link to="/products/product">
+                        <ProductCard title={product.title} brand={product.brand} price={product.price} image={product.image}/>
+                    </Link>
+                ))};
+            </div>
         </div>
     )
 }
