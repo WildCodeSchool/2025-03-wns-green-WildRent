@@ -13,6 +13,10 @@
   --beige: #fdffe9; 
 }
 
+body {
+  background-color: var(--beige);
+}
+
 #root {
   min-height: 100%;
   width: 100%;
