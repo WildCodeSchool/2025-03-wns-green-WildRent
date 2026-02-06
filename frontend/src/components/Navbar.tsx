@@ -1,7 +1,10 @@
 import { User, ShoppingCart } from "lucide-react";
 import { SearchBar } from "./SearchBar";
+import { useNavigate } from "react-router";
 
 export const Navbar = () => {
+  const navigate = useNavigate();
+
   return (
     //<nav className="relative w-full bg-[#fdffe9] border-b border-[#e5e7eb]/40">
     <nav className="relative w-full bg-[#fdffe9]">
@@ -9,7 +12,7 @@ export const Navbar = () => {
         {/* Top row */}
         <div className="flex items-center justify-between gap-1">
           {/* Logo */}
-          <div className="flex items-center">
+          <div className="flex items-center" onClick={() => navigate("/")}>
             <span className="font-[family-name:var(--font-title)] font-bold text-2xl lg:text-[28px] tracking-wider text-[#31380d]">
               WILDRENT
             </span>

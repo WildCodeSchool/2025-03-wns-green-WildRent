@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router";
+
 interface CategoryCardProps {
   title: string;
   image: string;
@@ -5,6 +7,8 @@ interface CategoryCardProps {
 }
 
 export const CategoryCard = ({ title, image, onClick }: CategoryCardProps) => {
+
+  const navigate = useNavigate();
   return (
     <div className="relative w-full aspect-[4/4.5] rounded-2xl overflow-hidden group cursor-pointer">
       <img
@@ -26,6 +30,7 @@ export const CategoryCard = ({ title, image, onClick }: CategoryCardProps) => {
           onClick={(e) => {
             e.stopPropagation();
             onClick?.();
+            navigate("/products")
           }}
           className="bg-[#fdffe9] text-[#31380d] border-2 border-[#87a700] text-xs font-[family-name:var(--font-text)] font-bold px-3 sm:px-5 py-1.5 sm:py-2 rounded-full whitespace-nowrap shadow-sm hover:bg-[#87a700] hover:text-[#fdffe9] transition-colors">
           Je découvre
