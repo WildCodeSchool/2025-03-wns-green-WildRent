@@ -10,7 +10,7 @@ export default function ProductDetailsPage() {
     reference: "9483838",
     description:
       "Snowboard stable et facile à manier, parfait pour profiter pleinement de chaque descente, que vous soyez débutant ou confirmé.",
-    colors: ["Blanc"],
+    colors: ["Blanc, noir"],
     sizes: ["38", "39", "40", "41", "42"],
     images: [
       "/images/Snowbard1.png",
@@ -36,13 +36,6 @@ export default function ProductDetailsPage() {
     </div>
   );
 }
-
-
-
-
-
-
-
 
 
 

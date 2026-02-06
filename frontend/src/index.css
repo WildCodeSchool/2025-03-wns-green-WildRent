@@ -7,11 +7,12 @@
 }
 
 :root {
-  --color-primary: #7A944F;
-  --color-secondary: #34380D;
-  --color-background: #FDFFE9;
+  --dark-green: #31380d; 
+  --light-green: #87a700; 
+  --kaki: #acaf91; 
+  --beige: #fdffe9; 
 }
 
 body {
-  background-color: var(--color-background);
+  background-color: var(--beige);
 }

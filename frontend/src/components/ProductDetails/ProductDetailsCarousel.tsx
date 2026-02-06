@@ -1,11 +1,11 @@
 import { useState } from "react";
 
-type Props = {
+type CarouselProps = {
   images: string[];
   productName: string;
 };
 
-export default function ProductDetailsCarousel({ images, productName }: Readonly<Props>) {
+export default function ProductDetailsCarousel({ images, productName }: Readonly<CarouselProps>) {
   const [index, setIndex] = useState(0);
 
   return (
@@ -25,8 +25,8 @@ export default function ProductDetailsCarousel({ images, productName }: Readonly
             type="button"
             key={img}
             onClick={() => setIndex(i)}
-            className={`h-20 w-20 rounded-lg overflow-hidden border-2
-             ${i === index ? "border-[var(--color-primary)]" : "border-gray-300"}
+            className={`h-20 w-20 rounded-lg overflow-hidden border-2 cursor-pointer
+             ${i === index ? "border-[var(--dark-green)]" : "border-gray-300"}
             `}
           >
             <img

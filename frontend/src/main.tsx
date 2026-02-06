@@ -7,6 +7,7 @@ import { CategoryGrid } from './components/CategoryCard/CategoryGrid.tsx'
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client'
 import { ApolloProvider } from '@apollo/client/react'
 import { Layout } from './pages/Layout.tsx'
+import ProductDetailsPage from './pages/ProductDetailsPage.tsx'
 
 const client = new ApolloClient({
   link: new HttpLink({ uri: "http://localhost:5173/" }),
@@ -20,8 +21,12 @@ const router = createBrowserRouter([
     children : 
     [
       { index: true, element: <CategoryGrid/> },
-      { path: "products", element: <CategoryGrid/> }
+      { path: "products", element: <CategoryGrid/> },
+      { path: "products/details", element: <ProductDetailsPage/> }
+      
     ],
+    
+    
   },
 ]);
 
