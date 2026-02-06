@@ -28,7 +28,7 @@ export const ProductsGrid = () => {
         <div className="w-full">
             <div className="grid grid-cols-4 gap-3">
                 {products.map((product) => (
-                    <Link to="/products/product">
+                    <Link to="/products/details">
                         <ProductCard title={product.title} brand={product.brand} price={product.price} image={product.image}/>
                     </Link>
                 ))}

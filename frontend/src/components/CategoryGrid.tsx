@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import { CategoryCard } from "./CategoryCard";
 
 type CategoryItem = {
@@ -15,6 +16,8 @@ const categories: CategoryItem[] = [
 ];
 
 export const CategoryGrid = () => {
+  const navigate = useNavigate();
+
   return (
     <section className="py-12">
       <div className="px-4 lg:px-3 xl:px-2">
@@ -25,7 +28,7 @@ export const CategoryGrid = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 lg:gap-x-4 xl:gap-x-0">
             {categories.map((c) => (
-              <div className="mx-auto w-full max-w-[18rem]">
+              <div className="mx-auto w-full max-w-[18rem]" onClick={() => navigate("/products")}>
                 <CategoryCard key={c.title} title={c.title} image={c.image} />
               </div>
             ))}
