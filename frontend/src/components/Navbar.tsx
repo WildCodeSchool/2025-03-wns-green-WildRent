@@ -2,7 +2,7 @@ import React from "react";
 import { User, ShoppingCart } from "lucide-react";
 import { SearchBar } from "./SearchBar";
 
-export const Navbar: React.FC = () => {
+export const Navbar = () => {
   return (
     //<nav className="relative w-full bg-[#fdffe9] border-b border-[#e5e7eb]/40">
     <nav className="relative w-full bg-[#fdffe9]">

@@ -1,16 +1,11 @@
 import React from "react";
-
 interface CategoryCardProps {
   title: string;
   image: string;
   onClick?: () => void;
 }
 
-export const CategoryCard: React.FC<CategoryCardProps> = ({
-  title,
-  image,
-  onClick,
-}) => {
+export const CategoryCard = ({ title, image, onClick }: CategoryCardProps) => {
   return (
     <div className="relative w-full aspect-[4/4.5] rounded-2xl overflow-hidden group cursor-pointer">
       <img
