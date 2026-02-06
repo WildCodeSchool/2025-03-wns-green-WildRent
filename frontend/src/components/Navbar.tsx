@@ -1,4 +1,3 @@
-import React from "react";
 import { User, ShoppingCart } from "lucide-react";
 import { SearchBar } from "./SearchBar";
 
