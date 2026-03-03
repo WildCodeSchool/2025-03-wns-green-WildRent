@@ -25,11 +25,12 @@ type ProductData = {
 export default function ProductDetailsPage() {
   const { id } = useParams();
 
-  const { data, error } = useQuery<{ getProductByRef: ProductData }>(GET_PRODUCT_BY_ID, {
+  const { data,loading,error } = useQuery<{ getProductByRef: ProductData }>(GET_PRODUCT_BY_ID, {
     variables: { id: Number(id) },
   });
 
   if (error) return <p>Produit introuvable</p>;
+  if (loading) return <p>Chargement...</p>;
 
   const product = data?.getProductByRef;
 
