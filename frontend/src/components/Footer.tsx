@@ -2,7 +2,7 @@ import { Instagram, Facebook, Twitter } from "lucide-react";
 
 export const Footer = () => {
   return (
-    <footer className="bg-[#2f3a0d] text-white">
+    <footer className="fixed inset-x-0 bottom-0 z-50 bg-[var(--dark-green)] text-white">
       <div className="w-full">
         {/* Desktop & Tablet */}
         <div className="hidden md:flex max-w-[1440px] mx-auto px-6 lg:px-6 xl:px-44 h-24 items-center justify-between">
@@ -18,9 +18,9 @@ export const Footer = () => {
           </nav>
 
           <div className="flex gap-4 pr-3">
-            <Instagram size={18} className="hover:text-[#87a700] transition-colors"/>
-            <Facebook size={18} className="hover:text-[#87a700] transition-colors"/>
-            <Twitter size={18} className="hover:text-[#87a700] transition-colors"/>
+            <Instagram size={18} className="hover:text-[var(--light-green)] transition-colors" />
+            <Facebook size={18} className="hover:text-[var(--light-green)] transition-colors" />
+            <Twitter size={18} className="hover:text-[var(--light-green)] transition-colors" />
           </div>
         </div>
 
@@ -41,9 +41,9 @@ export const Footer = () => {
           </nav>
 
           <div className="flex justify-center gap-5 pr-3">
-            <Instagram size={20} className="hover:text-[#87a700] transition-colors"/>
-            <Facebook size={20} className="hover:text-[#87a700] transition-colors"/>
-            <Twitter size={20} className="hover:text-[#87a700] transition-colors"/>
+            <Instagram size={20} className="hover:text-[var(--light-green)] transition-colors" />
+            <Facebook size={20} className="hover:text-[var(--light-green)] transition-colors" />
+            <Twitter size={20} className="hover:text-[var(--light-green)] transition-colors" />
           </div>
         </div>
       </div>
