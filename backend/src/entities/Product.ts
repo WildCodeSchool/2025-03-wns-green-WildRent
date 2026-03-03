@@ -36,6 +36,18 @@ export class Product extends BaseEntity {
     @Column()
     image!: string;
 
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    image1?: string;
+    
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    image2?: string;
+    
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    image3?: string;
+
     @Field()
     @Column({ length: 20 })
     brand!: string;
