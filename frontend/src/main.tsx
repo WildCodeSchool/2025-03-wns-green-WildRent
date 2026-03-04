@@ -12,7 +12,7 @@ import { HomePage } from "./pages/Home/HomePage";
 
 
 const client = new ApolloClient({
-  link: new HttpLink({ uri: "http://localhost:5173/" }),
+  link: new HttpLink({ uri: "http://localhost:4200/graphql" }),
   cache: new InMemoryCache(),
 });
 
@@ -24,7 +24,7 @@ const router = createBrowserRouter([
     [
       { index: true, element: <HomePage /> },
       { path: "products", element: <ProductPages/> },
-      { path: "products/details", element: <ProductDetailsPage/> }
+      { path: "products/:id", element: <ProductDetailsPage/> }
       
     ],
   },

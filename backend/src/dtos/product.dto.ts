@@ -15,6 +15,15 @@ export class NewProductInput {
     @Field()
     image!: string;
 
+    @Field({ nullable: true })
+    image1?: string;
+
+    @Field({ nullable: true })
+    image2?: string;
+
+    @Field({ nullable: true })
+    image3?: string;
+
     @Field()
     brand!: string;
 
@@ -38,6 +47,15 @@ export class UpdateProductInput {
 
     @Field()
     image!: string;
+
+    @Field({ nullable: true })
+    image1?: string;
+
+    @Field({ nullable: true })
+    image2?: string;
+
+    @Field({ nullable: true })
+    image3?: string;
 
     @Field()
     gender!: string;
