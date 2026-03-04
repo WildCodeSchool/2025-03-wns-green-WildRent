@@ -18,7 +18,7 @@ export default function ProductDetailsDescription({
   description,
   colors,
   sizes,
-}: ProductDescriptionProps) {
+}: Readonly<ProductDescriptionProps>) {
 
 
   const [color, setColor] = useState("");
