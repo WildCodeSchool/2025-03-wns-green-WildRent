@@ -12,8 +12,9 @@ type UserProfilData = {
     name: string,
 }
 export const LoginPage = () => {
-    const [user, setUser] = useState<UserInput>({ email: "", password: ""});
-    const[login, {loading, error}] = useMutation<{User: UserProfilData}>(LOGIN_USER, );
+    // const navigate = useNavigate();
+    const [user, setUser] = useState<UserInput>({ email: "test@gmail.com", password: "Test123!"});
+    const[login, {loading, error}] = useMutation<{login: UserProfilData}>(LOGIN_USER);
 
     const changeFieldValue = (field: string, value: string) => {
         setUser({...user, [field]: value})
@@ -21,8 +22,8 @@ export const LoginPage = () => {
 
     const handleLogin = async () => {
         try {
-            const result = await login({variables: { email: user?.email, password: user?.password }});
-            console.log("Connexion Réussie");
+            const result = await login({variables: { data: { email: user.email, password: user.password }}});
+            // navigate("/");
             console.log(result)
             
         } catch (error) {
@@ -38,7 +39,7 @@ export const LoginPage = () => {
             </div>
             <div className="w-xs flex flex-col gap-3">
                 <label htmlFor="">Mot de passe</label>
-                <input type="text" value={user?.password} className="border border-black rounded-lg" onChange={(e) => changeFieldValue("password", e.target.value)}/>
+                <input type="password" value={user?.password} className="border border-black rounded-lg" onChange={(e) => changeFieldValue("password", e.target.value)}/>
             </div>
             <Link to="" className="w-xs bg-[#31380d] rounded-lg py-1" onClick={() => handleLogin()}>
                 <p className="text-white text-center">Connexion</p>

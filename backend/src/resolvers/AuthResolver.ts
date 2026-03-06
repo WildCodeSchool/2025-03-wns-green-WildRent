@@ -22,14 +22,16 @@ function getUserPublicProfil(user: User) {
 function setCookie(context: AnonContext, tokenName: string, tokenValue: string) {
   context.res.setHeader(
     "Set-Cookie",
-    `${tokenName}=${tokenValue};secure;httpOnly;SameSite=strict`
+    `${tokenName}=${tokenValue};httpOnly;SameSite=strict`
   );
+  console.log("tokenName: " + tokenName)
+  console.log("tokenValue: " + tokenValue)
 };
 
 @InputType()
 export class LoginInput {
   @Field()
-  mail!: string;
+  email!: string;
 
   @Field()
   password!: string;
@@ -53,15 +55,19 @@ export default class AuthResolver {
       try {
         if(!process.env.JWT_SECRET) throw new Error("secret key missing");
 
-        const user = await this.userService.findByMail(data.mail);
+        console.log("Recherche utilisateur par email: ")
+        const user = await this.userService.findByMail(data.email);
         
         if(!user) throw new Error("user not found");
 
+        console.log("Comparaison du mdp en bdd et celui envoyé: ")
         const isValid = await argon2.verify(user.password, data.password);
         if(!isValid) throw new Error("incorrect password");
 
+        console.log("Création du token: ")
         const token = jwt.sign(getUserTokenContent(user), process.env.JWT_SECRET);
 
+        console.log("Envoie du token: ")
         setCookie(context, "WildRentAuthToken", token);
 
         return getUserPublicProfil(user);

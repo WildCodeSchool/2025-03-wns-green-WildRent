@@ -14,7 +14,7 @@ import { LoginPage } from './pages/LoginPage.tsx'
 
 const client = new ApolloClient({
   link: new HttpLink({ uri: "http://localhost:4200/graphql" }),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache()
 });
 
 const router = createBrowserRouter([

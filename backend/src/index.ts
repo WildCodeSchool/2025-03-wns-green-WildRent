@@ -34,7 +34,7 @@ async function startServer() {
   });
 
   const { url } = await startStandaloneServer(apolloServer, {
-    listen: {port: 4200},
+    listen: {port: 4200}, 
     context: async({req, res}) => {
       const context : AnonContext | AuthContext = {
         req, 
