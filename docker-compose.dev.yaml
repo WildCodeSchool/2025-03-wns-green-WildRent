@@ -21,9 +21,15 @@ services:
 
   frontend:
     build: ./frontend
+    ports:
+      - "5173:5173"
     command: sh -c "npm run dev"
     volumes:
-      - web-client-build:/app/dist
+    - ./frontend:/app
+    - /app/node_modules
+      # - web-client-build:/app
+    depends_on:
+      - backend
 
   database:
     image: postgres
@@ -41,18 +47,18 @@ services:
     volumes:
       - ./persist/database:/var/lib/postgresql
 
-  nginx:
-    image: nginx:1.21.3
-    depends_on:
-      - backend
-      - frontend
-    restart: always
-    ports:
-      - ${GATEWAY_PORT:-8000}:80
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - web-client-build:/web-client-build
-      - ./logs:/var/log/nginx
+  # nginx:
+  #   image: nginx:1.21.3
+  #   depends_on:
+  #     - backend
+  #     - frontend
+  #   restart: always
+  #   ports:
+  #     - ${GATEWAY_PORT:-8000}:80
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #     - web-client-build:/web-client-build
+  #     - ./logs:/var/log/nginx
       
-volumes:
-  web-client-build:
+# volumes:
+#   web-client-build:
