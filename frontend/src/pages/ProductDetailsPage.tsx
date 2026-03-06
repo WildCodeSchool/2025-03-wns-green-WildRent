@@ -15,6 +15,7 @@ type ProductData = {
   brand: string;
   price: number;
   productRef: string;
+  image?: string
   image1?: string;
   image2?: string;
   image3?: string;
@@ -54,6 +55,7 @@ export default function ProductDetailsPage() {
           description={product.description}
           colors={colors}
           sizes={sizes}
+          image={images[0]}
         />
       </div>
     </div>

@@ -34,7 +34,9 @@ export const Navbar = () => {
               </span>
             </button>
 
-            <button className="flex flex-col items-center gap-2 text-[#31380d] hover:text-[#87a700] transition-colors">
+            <button 
+             onClick={() => navigate("/cart")}
+             className="flex flex-col items-center gap-2 text-[#31380d] hover:text-[#87a700] transition-colors">
               <ShoppingCart size={20} strokeWidth={2} />
               <span className="hidden sm:block text-[11px] font-medium font-[family-name:var(--font-text)] leading-none">
                 Mon panier
