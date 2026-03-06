@@ -27,7 +27,7 @@ export const Navbar = () => {
 
           {/* Actions */}
           <div className="flex items-center gap-3">
-            <button className="flex flex-col items-center gap-2 text-[#31380d] hover:text-[#87a700] transition-colors">
+            <button className="flex flex-col items-center gap-2 text-[#31380d] hover:text-[#87a700] transition-colors" onClick={() => navigate("/login")}>
               <User size={20} strokeWidth={2} />
               <span className="hidden sm:block text-[11px] font-medium font-[family-name:var(--font-text)] leading-none">
                 Se connecter

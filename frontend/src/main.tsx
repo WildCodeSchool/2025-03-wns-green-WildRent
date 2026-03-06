@@ -9,6 +9,7 @@ import { Layout } from './pages/Layout.tsx'
 import { ProductPages } from './pages/ProductsPages.tsx'
 import ProductDetailsPage from './pages/ProductDetailsPage.tsx'
 import { HomePage } from "./pages/Home/HomePage";
+import { LoginPage } from './pages/LoginPage.tsx'
 
 
 const client = new ApolloClient({
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
     children : 
     [
       { index: true, element: <HomePage /> },
+      { path: "/login", element: <LoginPage /> },
       { path: "products", element: <ProductPages/> },
       { path: "products/:id", element: <ProductDetailsPage/> }
       
