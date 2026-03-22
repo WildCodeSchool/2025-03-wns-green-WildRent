@@ -1,4 +1,29 @@
-export const ProductFilter = () => {
+import { useState } from "react";
+import type { ActiveFilters } from "../types/filters";
+import { emptyFilters } from "../types/filters";
+
+type ProductFilterProps = {
+    onApply: (filters: ActiveFilters) => void;
+    onReset: () => void;
+};
+
+export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
+    const [pending, setPending] = useState<ActiveFilters>(emptyFilters);
+
+    const toggle = (key: keyof ActiveFilters, value: string) => {
+        setPending((prev) => ({
+            ...prev,
+            [key]: prev[key].includes(value)
+                ? prev[key].filter((v) => v !== value)
+                : [...prev[key], value],
+        }));
+    };
+
+    const handleReset = () => {
+        setPending(emptyFilters);
+        onReset();
+    };
+
     return(
         <div className="w-1/4 h-full sticky top-2 bg-[var(--dark-green)] rounded-2xl flex flex-col gap-3">
             <div className="m-4 flex flex-col gap-6">
@@ -11,7 +36,7 @@ export const ProductFilter = () => {
                     <div className="flex flex-col gap-2 mx-3">
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3">
-                                <input type="checkbox"/>
+                                <input type="checkbox" checked={pending.genders.includes("Femme")} onChange={() => toggle("genders", "Femme")} />
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Femme</p>
                             </div>
                             <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">562</p>
@@ -19,7 +44,7 @@ export const ProductFilter = () => {
 
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3">
-                                <input type="checkbox" />
+                                <input type="checkbox" checked={pending.genders.includes("Homme")} onChange={() => toggle("genders", "Homme")} />
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Homme</p>
                             </div>
                             <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">344</p>
@@ -27,7 +52,7 @@ export const ProductFilter = () => {
 
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3">
-                                <input type="checkbox" />
+                                <input type="checkbox" checked={pending.genders.includes("Enfant")} onChange={() => toggle("genders", "Enfant")} />
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Enfant</p>
                             </div>
                             <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">18</p>
@@ -36,7 +61,7 @@ export const ProductFilter = () => {
                     </div>
                 </div>
 
-                {/* Filtre par genre */}
+                {/* Filtre par taille */}
                 <div className="flex flex-col gap-3">
                     <div className="border-b-1 border-[var(--kaki)]">
                         <h1 className="pb-2 text-[var(--beige)] text-xl font-[family-name:var(--font-title)]">Filtrer par taille</h1>
@@ -44,7 +69,7 @@ export const ProductFilter = () => {
                     <div className="flex flex-col gap-2 mx-3">
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3">
-                                <input type="checkbox" />
+                                <input type="checkbox" checked={pending.sizes.includes("Taille unique")} onChange={() => toggle("sizes", "Taille unique")} />
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Taille unique</p>
                             </div>
                             <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">10</p>
@@ -52,7 +77,7 @@ export const ProductFilter = () => {
 
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3">
-                                <input type="checkbox" />
+                                <input type="checkbox" checked={pending.sizes.includes("150cm")} onChange={() => toggle("sizes", "150cm")} />
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">150cm</p>
                             </div>
                             <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">8</p>
@@ -60,7 +85,7 @@ export const ProductFilter = () => {
 
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3">
-                                <input type="checkbox" />
+                                <input type="checkbox" checked={pending.sizes.includes("140cm")} onChange={() => toggle("sizes", "140cm")} />
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">140cm</p>
                             </div>
                             <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">7</p>
@@ -78,6 +103,7 @@ export const ProductFilter = () => {
 
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3 items-center">
+                                <input type="checkbox" checked={pending.colors.includes("Bleu")} onChange={() => toggle("colors", "Bleu")} />
                                 <div className="w-4 h-4 rounded-full bg-blue-500"></div>
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Bleu</p>
                             </div>
@@ -85,6 +111,7 @@ export const ProductFilter = () => {
                         </div>
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3 items-center">
+                                <input type="checkbox" checked={pending.colors.includes("Noir")} onChange={() => toggle("colors", "Noir")} />
                                 <div className="w-4 h-4 rounded-full bg-black"></div>
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Noir</p>
                             </div>
@@ -92,6 +119,7 @@ export const ProductFilter = () => {
                         </div>
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3 items-center">
+                                <input type="checkbox" checked={pending.colors.includes("Orange")} onChange={() => toggle("colors", "Orange")} />
                                 <div className="w-4 h-4 rounded-full bg-orange-500"></div>
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Orange</p>
                             </div>
@@ -99,6 +127,7 @@ export const ProductFilter = () => {
                         </div>
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3 items-center">
+                                <input type="checkbox" checked={pending.colors.includes("Jaune")} onChange={() => toggle("colors", "Jaune")} />
                                 <div className="w-4 h-4 rounded-full bg-yellow-500"></div>
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Jaune</p>
                             </div>
@@ -106,6 +135,7 @@ export const ProductFilter = () => {
                         </div>
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3 items-center">
+                                <input type="checkbox" checked={pending.colors.includes("Rouge")} onChange={() => toggle("colors", "Rouge")} />
                                 <div className="w-4 h-4 rounded-full bg-red-500"></div>
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Rouge</p>
                             </div>
@@ -113,6 +143,7 @@ export const ProductFilter = () => {
                         </div>
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3 items-center">
+                                <input type="checkbox" checked={pending.colors.includes("Vert")} onChange={() => toggle("colors", "Vert")} />
                                 <div className="w-4 h-4 rounded-full bg-green-500"></div>
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Vert</p>
                             </div>
@@ -120,6 +151,7 @@ export const ProductFilter = () => {
                         </div>
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3 items-center">
+                                <input type="checkbox" checked={pending.colors.includes("Blanc")} onChange={() => toggle("colors", "Blanc")} />
                                 <div className="w-4 h-4 rounded-full bg-white"></div>
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Blanc</p>
                             </div>
@@ -137,7 +169,7 @@ export const ProductFilter = () => {
                     <div className="flex flex-col gap-2 mx-3">
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3">
-                                <input type="checkbox" />
+                                <input type="checkbox" checked={pending.brands.includes("Salomon")} onChange={() => toggle("brands", "Salomon")} />
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Salomon</p>
                             </div>
                             <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">14</p>
@@ -145,7 +177,7 @@ export const ProductFilter = () => {
 
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3">
-                                <input type="checkbox" />
+                                <input type="checkbox" checked={pending.brands.includes("Rossignol")} onChange={() => toggle("brands", "Rossignol")} />
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Rossignol</p>
                             </div>
                             <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">1</p>
@@ -153,7 +185,7 @@ export const ProductFilter = () => {
 
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3">
-                                <input type="checkbox" />
+                                <input type="checkbox" checked={pending.brands.includes("Lange")} onChange={() => toggle("brands", "Lange")} />
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Lange</p>
                             </div>
                             <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">4</p>
@@ -163,10 +195,12 @@ export const ProductFilter = () => {
 
                 {/* Bouton de validation des filtres */}
                 <div className="flex flex-row gap-4 justify-center my-2">
-                    <button>
+                    <button onClick={handleReset}>
                         <p className="text-[var(--light-green)]">Réinitialiser</p>
                     </button>
-                    <button className="
+                    <button
+                        onClick={() => onApply(pending)}
+                        className="
                         bg-[#fdffe9] 
                         text-[#31380d]
                         border-2 border-[#87a700]
