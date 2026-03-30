@@ -2,17 +2,18 @@ import { useNavigate } from "react-router";
 import { CategoryCard } from "./CategoryCard";
 
 type CategoryItem = {
+  id: number;
   title: string;
   image: string;
 };
 
 const categories: CategoryItem[] = [
-  { title: "Activités Outdoor", image: "/images/Cat activités outdoor.png" },
-  { title: "Escalade", image: "/images/Cat escalade.png" },
-  { title: "Sports aquatique", image: "/images/Cat sports aquatique.png" },
-  { title: "Sports d’hiver", image: "/images/Cat sports d'hiver.png" },
-  { title: "Camping", image: "/images/Cat camping.png" },
-  { title: "Randonnée", image: "/images/Cat randonnée.png" },
+  { id: 1, title: "Activités Outdoor", image: "/images/Cat activités outdoor.png" },
+  { id: 2, title: "Escalade", image: "/images/Cat escalade.png" },
+  { id: 3, title: "Sports aquatique", image: "/images/Cat sports aquatique.png" },
+  { id: 4, title: "Sports d’hiver", image: "/images/Cat sports d'hiver.png" },
+  { id: 5, title: "Camping", image: "/images/Cat camping.png" },
+  { id: 6, title: "Randonnée", image: "/images/Cat randonnée.png" },
 ];
 
 export const CategoryGrid = () => {
@@ -28,8 +29,8 @@ export const CategoryGrid = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 lg:gap-x-4 xl:gap-x-0">
             {categories.map((c) => (
-              <div className="mx-auto w-full max-w-[18rem]" onClick={() => navigate("/products")}>
-                <CategoryCard key={c.title} title={c.title} image={c.image} />
+              <div key={c.id} className="mx-auto w-full max-w-[18rem]" onClick={() => navigate(`/products?category=${c.id}`)}>
+                <CategoryCard title={c.title} image={c.image} />
               </div>
             ))}
           </div>
