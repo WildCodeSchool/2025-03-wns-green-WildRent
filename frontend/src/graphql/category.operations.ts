@@ -8,6 +8,11 @@ export const GET_PRODUCTS_BY_CATEGORY = gql`
       brand
       price
       image
+      gender
+      productVariant {
+        color
+        size
+      }
     }
   }
 `;
