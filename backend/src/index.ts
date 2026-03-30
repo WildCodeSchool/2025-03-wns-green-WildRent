@@ -17,32 +17,45 @@ import ProductResolver from "./resolvers/ProductResolver";
 import ProductVariantResolver from "./resolvers/ProductVariantResolver";
 import { customErrorFormatter  } from "./errors/customErrorFormatter";
 import { BookingProductsResolver } from "./resolvers/BookingProductsResolver";
+import express from "express";
+import { expressMiddleware } from "@apollo/server/express4";
+import cors from 'cors';
 
 type Query = {
   _empty: String
 }
 async function startServer() {
   await dataSource.initialize();
+
   const schema = await buildSchema ({
     resolvers: [UserResolver, AuthResolver, BookingResolver, CategoryResolver, StatusResolver, ProductResolver, RoleResolver, ProductVariantResolver, BookingProductsResolver],
     validate: true,
-  })
+  });
 
   const apolloServer = new ApolloServer({
     schema,
     formatError: customErrorFormatter,
   });
 
-  const { url } = await startStandaloneServer(apolloServer, {
-    listen: {port: 4200},
+  await apolloServer.start();
+
+  const app = express();
+
+  app.use(cors({
+    origin: "http://localhost:5173", 
+    credentials: true
+  }));
+
+  app.use(express.json())
+  app.use("/graphql", expressMiddleware(apolloServer, {
     context: async({req, res}) => {
-      const context : AnonContext | AuthContext = {
-        req, 
-        res
-      };
+      const context : AnonContext | AuthContext = { req, res };
       return context
     }
-  });
-  console.log("✅ Server started on " + url);
+  }));
+
+app.listen(4200, () => {
+console.log("✅ Server started on http://localhost:4200/graphql");
+});
 };
 startServer();
