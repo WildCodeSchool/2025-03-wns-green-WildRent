@@ -18,8 +18,8 @@ type CartItem = {
 type CartContextType = {
   items: CartItem[];
   addItem: (item: CartItem) => void;
-  removeItem: (variantId: number) => void;      
-  updateQuantity: (variantId: number, quantity: number) => void; 
+  removeItem: (variantId: number, startDate: string, endDate: string) => void;
+  updateQuantity: (variantId: number, quantity: number, startDate: string, endDate: string) => void;
   clearCart: () => void;
 };
 
@@ -40,11 +40,15 @@ export function CartProvider({ children }: Readonly<{ children: React.ReactNode 
     setItems((prev) => {
       const existing = prev.find(
         (i) => i.variantId === item.variantId
+          && i.startDate === item.startDate
+          && i.endDate === item.endDate
       );
-
+  
       if (existing) {
         return prev.map((i) =>
           i.variantId === item.variantId
+            && i.startDate === item.startDate
+            && i.endDate === item.endDate
             ? { ...i, quantity: i.quantity + 1 }
             : i
         );
@@ -53,14 +57,22 @@ export function CartProvider({ children }: Readonly<{ children: React.ReactNode 
     });
   }
 
-  function removeItem(variantId: number) {
-    setItems((prev) => prev.filter((item) => item.variantId !== variantId));
+  function removeItem(variantId: number, startDate: string, endDate: string) {
+    setItems((prev) => prev.filter((item) => 
+      !(item.variantId === variantId 
+        && item.startDate === startDate 
+        && item.endDate === endDate)
+    ));
   }
   
-  function updateQuantity(variantId: number, quantity: number) {
+  function updateQuantity(variantId: number, quantity: number, startDate: string, endDate: string) {
     setItems((prev) =>
       prev.map((item) =>
-        item.variantId === variantId ? { ...item, quantity } : item
+        item.variantId === variantId
+          && item.startDate === startDate
+          && item.endDate === endDate
+          ? { ...item, quantity }
+          : item
       )
     );
   }

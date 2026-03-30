@@ -25,7 +25,7 @@ export default function CartItemList() {
       ) : (
         <>
           {items.map((item) => (
-            <CartItem key={`${item.productId}-${item.color}-${item.size}`} {...item} />
+            <CartItem key={`${item.productId}-${item.color}-${item.size}-${item.startDate}-${item.endDate}`} {...item} />
           ))}
         </>
       )}

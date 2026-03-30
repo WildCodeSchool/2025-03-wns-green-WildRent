@@ -20,9 +20,11 @@ export default function CartItem({ variantId, productName, productRef, image, pr
 }: Readonly<CartItemProps>) {
   const { removeItem, updateQuantity } = useCart();
 
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  const startDateObj = new Date(startDate);
+  const endDateObj = new Date(endDate);
+  const differenceMilliseconds = endDateObj.getTime() - startDateObj.getTime();
+  const millisecondsPerDay = 1000 * 60 * 60 * 24;
+  const days = Math.ceil(differenceMilliseconds / millisecondsPerDay);
 
 
   const { data } = useQuery<{ getProductVariantById: { id: number; quantity: number } }>(
@@ -49,14 +51,14 @@ export default function CartItem({ variantId, productName, productRef, image, pr
     
         {isMaxStock && (
           <p className="text-red-400 text-xs mt-1">
-            Stock maximum atteint ({stock} disponible{stock > 1 ? "s" : ""})
+             Stock maximum atteint ({stock} disponibles)
           </p>
         )}
       </div>
 
       <div className="flex items-center gap-2">
         <button
-          onClick={() => updateQuantity(variantId, quantity - 1)}
+          onClick={() => updateQuantity(variantId, quantity - 1, startDate, endDate)}
           disabled={quantity <= 1}
           className="h-8 w-8 rounded-lg bg-white text-[var(--dark-green)] font-bold cursor-pointer disabled:opacity-50"
         >
@@ -66,7 +68,7 @@ export default function CartItem({ variantId, productName, productRef, image, pr
           {quantity}
         </button>
         <button
-          onClick={() => updateQuantity(variantId, quantity + 1)}
+          onClick={() => updateQuantity(variantId, quantity + 1, startDate, endDate)}
           disabled={isMaxStock} 
           className="h-8 w-8 rounded-lg bg-white text-[var(--dark-green)] font-bold cursor-pointer disabled:opacity-50"
         >
@@ -77,7 +79,7 @@ export default function CartItem({ variantId, productName, productRef, image, pr
       <p className="font-bold text-[var(--light-green)] w-16 text-right"> {price * quantity * days}€ </p>
 
       <button
-        onClick={() => removeItem(variantId)}
+        onClick={() => removeItem(variantId,startDate, endDate)}
         className="text-red-400 text-sm cursor-pointer"
       >
         Supprimer

@@ -32,7 +32,7 @@ export default function ProductDetailsDescription({
   const [size, setSize] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const { addItem } = useCart();
+  const { addItem, items} = useCart();
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
@@ -66,6 +66,12 @@ export default function ProductDetailsDescription({
       setError("Ce produit n'est plus en stock");
       return;
     }
+
+    const quantityInCart = items.find((i) => i.variantId === selectedVariant.id)?.quantity ?? 0;
+    if (quantityInCart >= selectedVariant.quantity) {
+    setError("Stock maximum atteint");
+    return;
+  }
 
     addItem({
       productId: Number(reference),
