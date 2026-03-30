@@ -26,7 +26,6 @@ export default function PaymentForm() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Données paiement :", formData);
   };
 
   return (
