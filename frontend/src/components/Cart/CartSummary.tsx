@@ -1,7 +1,9 @@
 import { useCart } from "../../context/CartContext";
+import { useNavigate } from "react-router";
 
 export default function CartSummary() {
   const { items } = useCart();
+  const navigate = useNavigate();
 
   const total = items.reduce((sum, item) => {
     const start = new Date(item.startDate);
@@ -18,7 +20,9 @@ export default function CartSummary() {
         <p className="text-[var(--light-green)] font-bold text-lg">Total : {total}€</p>
       </div>
 
-      <button className="mt-4 w-full rounded-xl py-4 font-bold bg-white border-2 border-[var(--dark-green)] text-[var(--dark-green)] cursor-pointer">
+      <button 
+       onClick={() => navigate("/payment")}
+       className="mt-4 w-full rounded-xl py-4 font-bold bg-white border-2 border-[var(--dark-green)] text-[var(--dark-green)] cursor-pointer">
         Paiement
       </button>
     </div>

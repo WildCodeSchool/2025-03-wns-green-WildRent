@@ -25,7 +25,7 @@ type ProductData = {
   productVariant: ProductVariant[];
 };
 
-export default function ProductDetailsPage() {
+export function ProductDetailsPage() {
   const { id } = useParams();
 
   const { data,loading,error } = useQuery<{ getProductByRef: ProductData }>(GET_PRODUCT_BY_ID, {
