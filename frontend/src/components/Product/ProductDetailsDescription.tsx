@@ -11,6 +11,8 @@ type ProductDescriptionProps = {
   colors: string[];
   sizes: string[];
   image: string;
+  variants: { id: number; color: string; size: string; quantity: number }[];
+  
 };
 
 export default function ProductDetailsDescription({
@@ -22,6 +24,7 @@ export default function ProductDetailsDescription({
   colors,
   sizes,
   image,
+  variants,
 }: Readonly<ProductDescriptionProps>) {
 
 
@@ -34,6 +37,10 @@ export default function ProductDetailsDescription({
   const [error, setError] = useState("");
 
   const today = new Date().toISOString().slice(0, 10);
+  
+  const selectedVariant = variants.find(
+    (v) => v.color === color && v.size === size
+  );
 
   function handleStartDateChange(e: React.ChangeEvent<HTMLInputElement>) {
     const date = e.target.value;
@@ -49,8 +56,20 @@ export default function ProductDetailsDescription({
       setError("Veuillez remplir tous les champs avant d'ajouter le produit au panier");
       return;
     }
+
+    if (!selectedVariant) {
+      setError("Cette combinaison couleur/taille n'est pas disponible");
+      return;
+    }
+
+    if (selectedVariant.quantity === 0) {
+      setError("Ce produit n'est plus en stock");
+      return;
+    }
+
     addItem({
       productId: Number(reference),
+      variantId: selectedVariant.id, 
       productName: title,
       productRef: reference,
       image,
@@ -61,8 +80,9 @@ export default function ProductDetailsDescription({
       endDate,
       quantity: 1,
     });
-    navigate("/cart"); 
+    navigate("/cart");
   }
+
 
   return (
     <section className="w-full text-left">

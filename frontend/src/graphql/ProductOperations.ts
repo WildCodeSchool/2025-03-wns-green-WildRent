@@ -13,8 +13,10 @@ export const GET_PRODUCT_BY_ID = gql`
       image2
       image3
       productVariant {
+        id          
         color
         size
+        quantity 
       }
     }
   }
