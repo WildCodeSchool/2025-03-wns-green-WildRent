@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useCart } from "../../context/CartContext";
+import { useNavigate } from "react-router";
 
 type ProductDescriptionProps = {
   title: string;
@@ -8,6 +10,7 @@ type ProductDescriptionProps = {
   description: string;
   colors: string[];
   sizes: string[];
+  image: string;
 };
 
 export default function ProductDetailsDescription({
@@ -18,6 +21,7 @@ export default function ProductDetailsDescription({
   description,
   colors,
   sizes,
+  image,
 }: Readonly<ProductDescriptionProps>) {
 
 
@@ -25,6 +29,9 @@ export default function ProductDetailsDescription({
   const [size, setSize] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const { addItem } = useCart();
+  const navigate = useNavigate();
+  const [error, setError] = useState("");
 
   const today = new Date().toISOString().slice(0, 10);
 
@@ -35,6 +42,26 @@ export default function ProductDetailsDescription({
   if (endDate && endDate < date) {
       setEndDate("");
     }
+  }
+
+  function handleAddToCart() {
+    if (!color || !size || !startDate || !endDate) {
+      setError("Veuillez remplir tous les champs avant d'ajouter le produit au panier");
+      return;
+    }
+    addItem({
+      productId: Number(reference),
+      productName: title,
+      productRef: reference,
+      image,
+      price: pricePerDay,
+      color,
+      size,
+      startDate,
+      endDate,
+      quantity: 1,
+    });
+    navigate("/cart"); 
   }
 
   return (
@@ -109,7 +136,13 @@ export default function ProductDetailsDescription({
         </div>
       </div>
 
-      <button className={`mt-7 w-full rounded-xl py-4 font-bold text-white bg-[var(--light-green)] cursor-pointer`} >
+      {error && (
+      <div className="mt-4 rounded-xl bg-red-100 border border-red-300 text-red-700 px-4 py-3 text-sm font-[family-name:var(--font-text)]"> {error}</div>
+      )}
+
+      <button 
+      onClick={handleAddToCart}
+      className={`mt-7 w-full rounded-xl py-4 font-bold text-white bg-[var(--light-green)] cursor-pointer`} >
         AJOUTER AU PANIER
       </button>
 
