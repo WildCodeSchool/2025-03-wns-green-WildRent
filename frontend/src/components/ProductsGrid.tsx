@@ -1,35 +1,40 @@
+import { useQuery } from "@apollo/client/react";
 import { Link } from "react-router";
+import { GET_PRODUCTS_BY_CATEGORY } from "../graphql/category.operations";
 import { ProductCard } from "./ProductCard";
 
 type Product = {
-    title: string; 
-    brand: string; 
-    image: string; 
-    price: number; 
+    id: number;
+    name: string;
+    brand: string;
+    price: number;
+    image: string;
 };
 
-const products: Product[] = [
-    { title: "Bâton de ski", brand: "Rossignol", image: "/images/baton.png", price: 10 },
-    { title: "Chaussure de ski", brand: "Lange", image: "/images/boot1.png", price: 18 },
-    { title: "Chaussure de ski", brand: "Rossignol", image: "/images/boot2.png", price: 18 },
-    { title: "Ski", brand: "Rossignol", image: "/images/ski.png", price: 35 },
-    { title: "Planche de snowboard", brand: "Rossignol", image: "/images/snow1.png", price: 31 },
-    { title: "Planche de snowboard", brand: "Burton", image: "/images/snow2.png", price: 31 },
-    { title: "Bâton de ski", brand: "Rossignol", image: "/images/baton.png", price: 10 },
-    { title: "Chaussure de ski", brand: "Lange", image: "/images/boot1.png", price: 18 },
-    { title: "Chaussure de ski", brand: "Rossignol", image: "/images/boot2.png", price: 18 },
-    { title: "Ski", brand: "Rossignol", image: "/images/ski.png", price: 35 },
-    { title: "K2000", brand: "Rossignol", image: "/images/snow1.png", price: 31 },
-    { title: "Planche de snowboard", brand: "Burton", image: "/images/snow2.png", price: 31 }
-];
+type Props = {
+    categoryId?: number;
+};
 
-export const ProductsGrid = () => {
+export const ProductsGrid = ({ categoryId }: Props) => {
+    const { data, loading, error } = useQuery<{ getProductsByCategory: Product[] }>(
+        GET_PRODUCTS_BY_CATEGORY,
+        {
+            variables: { categoryId },
+            skip: !categoryId,
+        }
+    );
+
+    if (loading) return <p>Chargement...</p>;
+    if (error) return <p>Erreur lors du chargement des produits.</p>;
+
+    const products = data?.getProductsByCategory ?? [];
+
     return(
         <div className="w-full">
             <div className="grid grid-cols-4 gap-3">
                 {products.map((product) => (
-                    <Link to="/products/:id">
-                        <ProductCard title={product.title} brand={product.brand} price={product.price} image={product.image}/>
+                    <Link key={product.id} to={`/products/${product.id}`}>
+                        <ProductCard title={product.name} brand={product.brand} price={product.price} image={product.image}/>
                     </Link>
                 ))}
             </div>
