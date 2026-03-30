@@ -7,10 +7,11 @@ import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client'
 import { ApolloProvider } from '@apollo/client/react'
 import { Layout } from './pages/Layout.tsx'
 import { ProductPages } from './pages/ProductsPages.tsx'
-import ProductDetailsPage from './pages/ProductDetailsPage.tsx'
+import {ProductDetailsPage} from './pages/ProductDetailsPage.tsx'
 import { HomePage } from "./pages/Home/HomePage";
 import { CartProvider } from "./context/CartContext.tsx";
-import CartPage from './pages/CartPage.tsx'
+import { CartPage } from './pages/CartPage.tsx'
+import { PaymentPage } from './pages/PayementPage.tsx'
 
 
 const client = new ApolloClient({
@@ -27,7 +28,8 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: "products", element: <ProductPages/> },
       { path: "products/:id", element: <ProductDetailsPage/> },
-      { path: "cart", element: <CartPage/> }
+      { path: "cart", element: <CartPage/> },
+      { path: "payment", element: <PaymentPage /> }
       
     ],
   },
