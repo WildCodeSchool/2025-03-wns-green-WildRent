@@ -1,13 +1,15 @@
 import { useParams } from "react-router";
 import { useQuery } from "@apollo/client/react";
-import { GET_PRODUCT_BY_ID } from "../graphql/operations";
+import { GET_PRODUCT_BY_ID } from "../graphql/ProductOperations";
 import ProductDetailsCarousel from "../components/Product/ProductDetailsCarousel";
 import ProductDetailsDescription from "../components/Product/ProductDetailsDescription";
 
 type ProductVariant = {
+  id: number;      
   color: string;
   size: string;
   image: string;
+  quantity: number; 
 };
 
 type ProductData = {
@@ -56,6 +58,7 @@ export default function ProductDetailsPage() {
           colors={colors}
           sizes={sizes}
           image={images[0]}
+          variants={variants}
         />
       </div>
     </div>

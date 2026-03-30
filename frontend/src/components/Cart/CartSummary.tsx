@@ -3,7 +3,12 @@ import { useCart } from "../../context/CartContext";
 export default function CartSummary() {
   const { items } = useCart();
 
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const total = items.reduce((sum, item) => {
+    const start = new Date(item.startDate);
+    const end = new Date(item.endDate);
+    const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    return sum + item.price * item.quantity * days;
+  }, 0);
 
   return (
     <div className="rounded-xl border p-6 bg-[var(--dark-green)]">

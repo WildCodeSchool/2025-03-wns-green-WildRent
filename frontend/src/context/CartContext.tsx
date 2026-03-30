@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 type CartItem = {
   productId: number;
+  variantId: number;
   productName: string;
   image: string;
   price: number;
@@ -17,8 +18,8 @@ type CartItem = {
 type CartContextType = {
   items: CartItem[];
   addItem: (item: CartItem) => void;
-  removeItem: (productId: number) => void;
-  updateQuantity: (productId: number, quantity: number) => void;
+  removeItem: (variantId: number, startDate: string, endDate: string) => void;
+  updateQuantity: (variantId: number, quantity: number, startDate: string, endDate: string) => void;
   clearCart: () => void;
 };
 
@@ -36,17 +37,42 @@ export function CartProvider({ children }: Readonly<{ children: React.ReactNode 
   }, [items]);
 
   function addItem(item: CartItem) {
-    setItems((prev) => [...prev, item]);
+    setItems((prev) => {
+      const existing = prev.find(
+        (i) => i.variantId === item.variantId
+          && i.startDate === item.startDate
+          && i.endDate === item.endDate
+      );
+  
+      if (existing) {
+        return prev.map((i) =>
+          i.variantId === item.variantId
+            && i.startDate === item.startDate
+            && i.endDate === item.endDate
+            ? { ...i, quantity: i.quantity + 1 }
+            : i
+        );
+      }
+      return [...prev, item];
+    });
   }
 
-  function removeItem(productId: number) {
-    setItems((prev) => prev.filter((item) => item.productId !== productId));
+  function removeItem(variantId: number, startDate: string, endDate: string) {
+    setItems((prev) => prev.filter((item) => 
+      !(item.variantId === variantId 
+        && item.startDate === startDate 
+        && item.endDate === endDate)
+    ));
   }
-
-  function updateQuantity(productId: number, quantity: number) {
+  
+  function updateQuantity(variantId: number, quantity: number, startDate: string, endDate: string) {
     setItems((prev) =>
       prev.map((item) =>
-        item.productId === productId ? { ...item, quantity } : item
+        item.variantId === variantId
+          && item.startDate === startDate
+          && item.endDate === endDate
+          ? { ...item, quantity }
+          : item
       )
     );
   }
