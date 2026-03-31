@@ -1,13 +1,14 @@
 import { useState } from "react";
-import type { ActiveFilters } from "../types/filters";
+import type { ActiveFilters, FilterCounts } from "../types/filters";
 import { emptyFilters } from "../types/filters";
 
 type ProductFilterProps = {
     onApply: (filters: ActiveFilters) => void;
     onReset: () => void;
+    counts: FilterCounts;
 };
 
-export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
+export const ProductFilter = ({ onApply, onReset, counts }: ProductFilterProps) => {
     const [pending, setPending] = useState<ActiveFilters>(emptyFilters);
 
     const toggle = (key: keyof Omit<ActiveFilters, 'priceMin' | 'priceMax'>, value: string) => {
@@ -39,7 +40,7 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                                 <input type="checkbox" checked={pending.genders.includes("Femme")} onChange={() => toggle("genders", "Femme")} />
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Femme</p>
                             </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">562</p>
+                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.genders["Femme"] ?? 0}</p>
                         </div>
 
                         <div className="flex flex-row justify-between">
@@ -47,7 +48,7 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                                 <input type="checkbox" checked={pending.genders.includes("Homme")} onChange={() => toggle("genders", "Homme")} />
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Homme</p>
                             </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">344</p>
+                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.genders["Homme"] ?? 0}</p>
                         </div>
 
                         <div className="flex flex-row justify-between">
@@ -55,7 +56,7 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                                 <input type="checkbox" checked={pending.genders.includes("Enfant")} onChange={() => toggle("genders", "Enfant")} />
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Enfant</p>
                             </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">18</p>
+                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.genders["Enfant"] ?? 0}</p>
                         </div>
                         
                     </div>
@@ -72,7 +73,7 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                                 <input type="checkbox" checked={pending.sizes.includes("Taille unique")} onChange={() => toggle("sizes", "Taille unique")} />
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Taille unique</p>
                             </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">10</p>
+                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.sizes["Taille unique"] ?? 0}</p>
                         </div>
 
                         <div className="flex flex-row justify-between">
@@ -80,7 +81,7 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                                 <input type="checkbox" checked={pending.sizes.includes("150cm")} onChange={() => toggle("sizes", "150cm")} />
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">150cm</p>
                             </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">8</p>
+                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.sizes["150cm"] ?? 0}</p>
                         </div>
 
                         <div className="flex flex-row justify-between">
@@ -88,7 +89,7 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                                 <input type="checkbox" checked={pending.sizes.includes("140cm")} onChange={() => toggle("sizes", "140cm")} />
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">140cm</p>
                             </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">7</p>
+                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.sizes["140cm"] ?? 0}</p>
                         </div>
                     </div>
                 </div>
@@ -107,7 +108,7 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                                 <div className="w-4 h-4 rounded-full bg-blue-500"></div>
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Bleu</p>
                             </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">10</p>
+                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.colors["Bleu"] ?? 0}</p>
                         </div>
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3 items-center">
@@ -115,7 +116,7 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                                 <div className="w-4 h-4 rounded-full bg-black"></div>
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Noir</p>
                             </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">15</p>
+                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.colors["Noir"] ?? 0}</p>
                         </div>
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3 items-center">
@@ -123,7 +124,7 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                                 <div className="w-4 h-4 rounded-full bg-orange-500"></div>
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Orange</p>
                             </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">32</p>
+                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.colors["Orange"] ?? 0}</p>
                         </div>
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3 items-center">
@@ -131,7 +132,7 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                                 <div className="w-4 h-4 rounded-full bg-yellow-500"></div>
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Jaune</p>
                             </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">8</p>
+                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.colors["Jaune"] ?? 0}</p>
                         </div>
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3 items-center">
@@ -139,7 +140,7 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                                 <div className="w-4 h-4 rounded-full bg-red-500"></div>
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Rouge</p>
                             </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">1</p>
+                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.colors["Rouge"] ?? 0}</p>
                         </div>
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3 items-center">
@@ -147,7 +148,7 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                                 <div className="w-4 h-4 rounded-full bg-green-500"></div>
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Vert</p>
                             </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">24</p>
+                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.colors["Vert"] ?? 0}</p>
                         </div>
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-3 items-center">
@@ -155,7 +156,7 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                                 <div className="w-4 h-4 rounded-full bg-white"></div>
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Blanc</p>
                             </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">13</p>
+                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.colors["Blanc"] ?? 0}</p>
                         </div>
 
                     </div>
@@ -172,7 +173,7 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                                 <input type="checkbox" checked={pending.brands.includes("Salomon")} onChange={() => toggle("brands", "Salomon")} />
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Salomon</p>
                             </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">14</p>
+                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.brands["Salomon"] ?? 0}</p>
                         </div>
 
                         <div className="flex flex-row justify-between">
@@ -180,7 +181,7 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                                 <input type="checkbox" checked={pending.brands.includes("Rossignol")} onChange={() => toggle("brands", "Rossignol")} />
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Rossignol</p>
                             </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">1</p>
+                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.brands["Rossignol"] ?? 0}</p>
                         </div>
 
                         <div className="flex flex-row justify-between">
@@ -188,7 +189,7 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                                 <input type="checkbox" checked={pending.brands.includes("Lange")} onChange={() => toggle("brands", "Lange")} />
                                 <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Lange</p>
                             </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">4</p>
+                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.brands["Lange"] ?? 0}</p>
                         </div>
                     </div>
                 </div>
@@ -222,7 +223,7 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                     </div>
                 </div>
 
-                {/* Bouton de validation des filtres */}
+                {/* Boutons */}
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 lg:gap-10 justify-center items-center my-2">
                     <button
                         onClick={handleReset}
@@ -233,21 +234,8 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                     </button>
                     <button
                         onClick={() => onApply(pending)}
-                        className="
-                        bg-[#fdffe9] 
-                        text-[#31380d]
-                        border-2 border-[#87a700]
-                        text-xs
-                        font-[family-name:var(--font-text)]
-                        font-bold
-                        px-3 sm:px-5
-                        py-1.5 sm:py-2
-                        rounded-full
-                        whitespace-nowrap
-                        shadow-sm
-                        hover:bg-[#87a700] hover:text-[#fdffe9] 
-                        transition-colors
-                    ">
+                        className="bg-[#fdffe9] text-[#31380d] border-2 border-[#87a700] text-xs font-[family-name:var(--font-text)] font-bold px-3 sm:px-5 py-1.5 sm:py-2 rounded-full whitespace-nowrap shadow-sm hover:bg-[#87a700] hover:text-[#fdffe9] transition-colors"
+                    >
                         <p>Appliquer</p>
                     </button>
                 </div>
