@@ -10,7 +10,7 @@ type ProductFilterProps = {
 export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
     const [pending, setPending] = useState<ActiveFilters>(emptyFilters);
 
-    const toggle = (key: keyof ActiveFilters, value: string) => {
+    const toggle = (key: keyof Omit<ActiveFilters, 'priceMin' | 'priceMax'>, value: string) => {
         setPending((prev) => ({
             ...prev,
             [key]: prev[key].includes(value)
@@ -193,9 +193,42 @@ export const ProductFilter = ({ onApply, onReset }: ProductFilterProps) => {
                     </div>
                 </div>
 
+                {/* Filtrer par prix */}
+                <div className="flex flex-col gap-3">
+                    <div className="border-b-1 border-[var(--kaki)]">
+                        <h1 className="pb-2 text-[var(--beige)] text-xl font-[family-name:var(--font-title)]">Filtrer par prix</h1>
+                    </div>
+                    <div className="flex flex-row gap-6 justify-center items-center">
+                        <div className="flex flex-col gap-1">
+                            <label className="text-[var(--beige)] text-xs font-[family-name:var(--font-text)]">Min (€)</label>
+                            <input
+                                type="number"
+                                min={0}
+                                value={pending.priceMin ?? ""}
+                                onChange={(e) => setPending((prev) => ({ ...prev, priceMin: e.target.value === "" ? undefined : Number(e.target.value) }))}
+                                className="w-20 bg-[var(--beige)] text-[var(--dark-green)] text-sm rounded px-2 py-1"
+                            />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                            <label className="text-[var(--beige)] text-xs font-[family-name:var(--font-text)]">Max (€)</label>
+                            <input
+                                type="number"
+                                min={0}
+                                value={pending.priceMax ?? ""}
+                                onChange={(e) => setPending((prev) => ({ ...prev, priceMax: e.target.value === "" ? undefined : Number(e.target.value) }))}
+                                className="w-20 bg-[var(--beige)] text-[var(--dark-green)] text-sm rounded px-2 py-1"
+                            />
+                        </div>
+                    </div>
+                </div>
+
                 {/* Bouton de validation des filtres */}
-                <div className="flex flex-row gap-4 justify-center my-2">
-                    <button onClick={handleReset}>
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 lg:gap-10 justify-center items-center my-2">
+                    <button
+                        onClick={handleReset}
+                        disabled={Object.values(pending).every((v) => Array.isArray(v) ? v.length === 0 : v === undefined)}
+                        className="transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
                         <p className="text-[var(--light-green)]">Réinitialiser</p>
                     </button>
                     <button

@@ -45,6 +45,8 @@ export const ProductsGrid = ({ activeFilters, categoryId }: Props) => {
         if (activeFilters.brands.length > 0 && !activeFilters.brands.includes(product.brand)) return false;
         if (activeFilters.sizes.length > 0 && !product.productVariant.some((v) => activeFilters.sizes.includes(v.size))) return false;
         if (activeFilters.colors.length > 0 && !product.productVariant.some((v) => activeFilters.colors.includes(v.color))) return false;
+        if (activeFilters.priceMin !== undefined && product.price < activeFilters.priceMin) return false;
+        if (activeFilters.priceMax !== undefined && product.price > activeFilters.priceMax) return false;
         return true;
     });
 
