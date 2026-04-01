@@ -3,6 +3,7 @@ import { useCart } from "../../context/CartContext";
 import { useNavigate } from "react-router";
 
 type ProductDescriptionProps = {
+  productId: number;
   title: string;
   brand: string;
   pricePerDay: number;
@@ -16,6 +17,7 @@ type ProductDescriptionProps = {
 };
 
 export default function ProductDetailsDescription({
+  productId,
   title,
   brand,
   pricePerDay,
@@ -74,7 +76,7 @@ export default function ProductDetailsDescription({
   }
 
     addItem({
-      productId: Number(reference),
+      productId:  productId,
       variantId: selectedVariant.id, 
       productName: title,
       productRef: reference,

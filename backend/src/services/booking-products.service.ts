@@ -2,6 +2,7 @@ import { Booking } from "../entities/Booking";
 import { BookingProducts } from "../entities/BookingProducts";
 import { Product } from "../entities/Product";
 import { CreateBookingProductsInput, UpdateBookingProductsInput } from "../dtos/booking-products.dto";
+import { ProductVariant } from "../entities/ProductVariant";
 
 export class BookingProductsService {
   async getAllBookingProducts(): Promise<BookingProducts[]> {
@@ -27,7 +28,10 @@ export class BookingProductsService {
 		const product = await Product.findOne({ where: { id: data.productId } });
 		if (!product) throw new Error("Product not found");
 
-		if (product.quantityVariants < productQuantity) {
+		const variants = await ProductVariant.find({ where: { product: { id: product.id } } });
+		const totalStock = variants.reduce((sum, variant) => sum + variant.quantity, 0);
+	
+		if (totalStock < productQuantity) {
 			throw new Error("Not enough stock available");
 		}
 	

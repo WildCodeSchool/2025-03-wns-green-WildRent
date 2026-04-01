@@ -3,11 +3,11 @@ import { IsInt, Min, IsOptional } from "class-validator";
 
 @InputType()
 export class CreateBookingProductsInput {
-  @Field(() => ID)
+  @Field(() => Int)
   @IsInt()
   bookingId!: number;
 
-  @Field(() => ID)
+  @Field(() => Int)
   @IsInt()
   productId!: number;
 

@@ -1,6 +1,11 @@
 import { useCart } from "../../context/CartContext";
 
-export default function PaymentSummary() {
+type PaymentSummaryProps = {
+  onPayment: () => void;
+  loading: boolean;
+};
+
+export default function PaymentSummary({ onPayment, loading }: Readonly<PaymentSummaryProps>) {
   const { items } = useCart();
 
   const total = items.reduce((sum, item) => {
@@ -30,8 +35,12 @@ export default function PaymentSummary() {
           En cliquant sur Payer, j’accepte les conditions générales de Wild Rent
         </p>
 
-        <button className="mt-8 w-full rounded-full bg-[var(--beige)] py-4 text-xl font-bold text-[var(--dark-green)] cursor-pointer">
-          Payer
+        <button
+         onClick={onPayment}
+         disabled={loading}
+         className="mt-8 w-full rounded-full bg-[var(--beige)] py-4 text-xl font-bold text-[var(--dark-green)] cursor-pointer disabled:opacity-50"
+         >
+            {loading ? "Traitement..." : "Payer"}
         </button>
       </div>
     </div>

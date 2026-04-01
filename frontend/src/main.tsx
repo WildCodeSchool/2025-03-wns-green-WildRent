@@ -12,6 +12,7 @@ import { HomePage } from "./pages/Home/HomePage";
 import { CartProvider } from "./context/CartContext.tsx";
 import { CartPage } from './pages/CartPage.tsx'
 import { PaymentPage } from './pages/PayementPage.tsx'
+import { ConfirmationPage } from './pages/ConfirmationPage.tsx'
 
 
 const client = new ApolloClient({
@@ -29,7 +30,8 @@ const router = createBrowserRouter([
       { path: "products", element: <ProductPages/> },
       { path: "products/:id", element: <ProductDetailsPage/> },
       { path: "cart", element: <CartPage/> },
-      { path: "payment", element: <PaymentPage /> }
+      { path: "payment", element: <PaymentPage /> },
+      { path: "confirmation", element: <ConfirmationPage /> }
       
     ],
   },
