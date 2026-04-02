@@ -37,7 +37,6 @@ services:
       dockerfile: Dockerfile.prod
     depends_on:
       - backend
-      - frontend
     restart: always
     ports:
       - 80:80
