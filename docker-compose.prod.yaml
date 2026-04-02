@@ -4,7 +4,6 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
-    command: sh -c "npm run prod"
     ports:
       - "4200:4200"
     depends_on:
@@ -23,7 +22,6 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.prod
-    command: sh -c "npm run build"
     depends_on:
       - backend
 
