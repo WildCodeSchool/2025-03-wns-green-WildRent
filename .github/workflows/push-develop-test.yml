@@ -1,8 +1,9 @@
-name: Tests, Compile and push images
+name: Tests
 
 on:
-  push: 
-    branches: ["develop"]
+  pull_request: 
+    branches:
+      - develop
 
 jobs:
   test-back:
