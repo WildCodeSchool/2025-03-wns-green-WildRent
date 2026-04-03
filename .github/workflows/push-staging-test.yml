@@ -39,9 +39,16 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build & push
+      - name: Build & push backend
         uses: docker/build-push-action@v6
         with:
           context: "{{defaultContext}}:backend"
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/wildrent:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/2025-03-wns-green-wildrent-backend:latest
+
+      - name: Build & push frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: "{{defaultContext}}:backend"
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/2025-03-wns-green-wildrent-frontend:latest
