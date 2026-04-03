@@ -1,6 +1,8 @@
-name: backend-tests-and-docker
+name: Tests, Compile and push images
 
-on: push
+on:
+  push: 
+    branches: ["main"]
 
 jobs:
   test-back:
