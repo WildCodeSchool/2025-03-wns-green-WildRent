@@ -1,9 +1,7 @@
 services:
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.prod
+    image: alicepgrd/2025-03-wns-green-wildrent-backend
     ports:
       - "4200:4200"
     depends_on:
@@ -32,9 +30,7 @@ services:
       - ./persist/database:/var/lib/postgresql
 
   nginx:
-    build: 
-      context: ./frontend
-      dockerfile: Dockerfile.prod
+    image: alicepgrd/2025-03-wns-green-wildrent-nginx-1
     depends_on:
       - backend
     restart: always
@@ -42,7 +38,7 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx.conf/nginx.conf:/etc/nginx/nginx.conf
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - ./logs:/var/log/nginx
       

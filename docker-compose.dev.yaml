@@ -1,7 +1,9 @@
 services:
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     command: sh -c "npm run build && npm run prod"
     ports:
       - "4200:4200"
@@ -20,7 +22,9 @@ services:
       
 
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
       - "5173:5173"
     command: sh -c "npm run dev"

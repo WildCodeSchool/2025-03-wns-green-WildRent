@@ -1,6 +1,8 @@
-name: backend-tests-and-docker
+name: Tests, Compile and push images
 
-on: push
+on:
+  pull_request: 
+    branches: ["main"]
 
 jobs:
   test-back:
@@ -39,9 +41,18 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build & push
+      - name: Build & push backend
         uses: docker/build-push-action@v6
         with:
-          context: "{{defaultContext}}:backend"
+          context: ./backend
+          file: ./backend/Dockerfile.prod
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/wildrent:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/2025-03-wns-green-wildrent-backend:latest
+
+      - name: Build & push nginx
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile.prod
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/2025-03-wns-green-wildrent-nginx-1:latest
