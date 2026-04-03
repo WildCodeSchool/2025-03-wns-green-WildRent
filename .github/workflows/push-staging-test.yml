@@ -42,13 +42,15 @@ jobs:
       - name: Build & push backend
         uses: docker/build-push-action@v6
         with:
-          context: "{{defaultContext}}:backend"
+          context: ./backend
+          file: ./backend/Dockerfile.prod
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/2025-03-wns-green-wildrent-backend:latest
 
-      - name: Build & push frontend
+      - name: Build & push nginx
         uses: docker/build-push-action@v6
         with:
-          context: "{{defaultContext}}:backend"
+          context: ./frontend
+          file: ./frontend/Dockerfile.prod
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/2025-03-wns-green-wildrent-frontend:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/2025-03-wns-green-wildrent-nginx-1:latest
