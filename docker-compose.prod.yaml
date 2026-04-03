@@ -43,7 +43,7 @@ services:
       - 443:443
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - /etc/letsencrypt/live/032025-bleu-6.wns.wilders.dev:/etc/letsencrypt/live/032025-bleu-6.wns.wilders.dev:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
       - ./logs:/var/log/nginx
       
 volumes:
