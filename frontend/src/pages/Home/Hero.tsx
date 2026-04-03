@@ -15,7 +15,7 @@ export default function Hero() {
           <h1 className="font-title text-4xl sm:text-5xl lg:text-6xl leading-tight">
             Louez votre matériel outdoor
             <br />
-            en toute simplicité !
+            en toute simplicité
           </h1>
 
           <p className="mt-6 text-lg sm:text-xl font-medium leading-relaxed text-white/90">
