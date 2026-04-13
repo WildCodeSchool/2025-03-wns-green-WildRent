@@ -1,7 +1,7 @@
 name: Tests, Compile and push images
 
 on:
-  pull_request: 
+  push: 
     branches: ["main"]
 
 jobs:
