@@ -13,7 +13,7 @@ export default function Hero() {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 pt-12 lg:pt-16 xl:pt-20">
         <div className="max-w-2xl text-white">
           <h1 className="font-title text-4xl sm:text-5xl lg:text-6xl leading-tight">
-            Louez votre matériel outdoor avec nginx
+            Louez votre matériel outdoor
             <br />
             en toute simplicité
           </h1>
