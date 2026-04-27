@@ -8,25 +8,31 @@ export function customErrorFormatter(formattedError:GraphQLFormattedError, error
 
     if (original instanceof AppError) {
         return {
-        message: original.message,
-        code: original.codeError,
+            message: original.message,
+            extensions: {
+                code: original.codeError,
+            },
         };
     }
 
     if (original instanceof Error && original.message === "Argument Validation Error") {
         const validationErrors = (original as ArgumentValidationError).extensions?.validationErrors || [];
         return {
-            message: "Validation Error",
-            code: "BAD_USER_INPUT",
-            fields: validationErrors.map(err => ({
-            property: err.property,
-            constraints: err.constraints,
-            })),
+            message: "Erreur de validation",
+            extensions: {
+                code: "BAD_USER_INPUT",
+                fields: validationErrors.map(err => ({
+                    property: err.property,
+                    constraints: err.constraints,
+                })),
+            },
         };
     }
 
-    return{
+    return {
         message: "Internal server error",
-        code: "INTERNAL_SERVER_ERROR",
-    }    
+        extensions: {
+            code: "INTERNAL_SERVER_ERROR",
+        },
+    };    
 }
