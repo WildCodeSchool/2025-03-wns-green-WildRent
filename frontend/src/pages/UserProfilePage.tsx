@@ -1,44 +1,30 @@
 import { useState } from "react";
-import { useQuery } from "@apollo/client/react";
-import { GET_USER_BY_ID } from "../graphql/operations";
 import { UserProfileHeader } from "../components/UserProfileHeader";
 import { UserInfoCard } from "../components/UserInfoCard";
 import { UserEditForm } from "../components/UserEditForm";
+import { useAuth } from "../context/AuthContext";
 import type { User } from "../types/user.types";
 
 export const UserProfilePage = () => {
   const [activeTab, setActiveTab] = useState<"info" | "orders">("info");
   const [isEditing, setIsEditing] = useState(false);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const { user, refetchUser } = useAuth();
 
-  const { data, loading, error } = useQuery<{ getUserById: User }>(GET_USER_BY_ID, {
-    variables: { getUserByIdId: 20 },
-  });
+  if (!user) return null;
 
-  if (loading) {
-    return (
-      <section className="flex justify-center px-4 py-12">
-        <p className="text-sm font-[family-name:var(--font-text)] text-[#acaf91]">
-          Chargement...
-        </p>
-      </section>
-    );
-  }
-
-  if (error || !data?.getUserById) {
-    return (
-      <section className="flex justify-center px-4 py-12">
-        <p className="text-sm font-[family-name:var(--font-text)] text-red-500">
-          Impossible de charger le profil utilisateur.
-        </p>
-      </section>
-    );
-  }
-
-  const user = currentUser ?? data.getUserById;
+  const profileUser: User = {
+    id: user.id,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    email: user.email,
+    address: user.address ?? "",
+    postalCode: user.postalCode ?? "",
+    city: user.city ?? "",
+    avatar: user.avatar,
+  };
 
   return (
-    <section className="flex justify-center px-4 py-12">
+    <section className="flex justify-center px-4 py-8 sm:py-12">
       <div className="w-full max-w-2xl">
         <UserProfileHeader
           firstname={user.firstname}
@@ -50,22 +36,22 @@ export const UserProfilePage = () => {
 
         {activeTab === "info" && !isEditing && (
           <UserInfoCard
-            firstname={user.firstname}
-            lastname={user.lastname}
-            email={user.email}
-            address={user.address}
-            postalCode={user.postalCode}
-            city={user.city}
+            firstname={profileUser.firstname}
+            lastname={profileUser.lastname}
+            email={profileUser.email}
+            address={profileUser.address}
+            postalCode={profileUser.postalCode}
+            city={profileUser.city}
             onEdit={() => setIsEditing(true)}
           />
         )}
 
         {activeTab === "info" && isEditing && (
           <UserEditForm
-            user={user}
+            user={profileUser}
             onCancel={() => setIsEditing(false)}
-            onSuccess={(updatedUser) => {
-              setCurrentUser(updatedUser);
+            onSuccess={() => {
+              refetchUser();
               setIsEditing(false);
             }}
           />
