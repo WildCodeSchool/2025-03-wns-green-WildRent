@@ -16,7 +16,7 @@ jest.mock("../entities/User", () => ({
 
 jest.mock("../entities/Role", () => ({
   Role: {
-    findOne: jest.fn().mockResolvedValue({ id: 1, roleName: "USER" }),
+    findOne: jest.fn().mockResolvedValue({ id: 1, roleName: "user" }),
   },
 }));
 
@@ -43,11 +43,12 @@ describe("UserService", () => {
       expect.objectContaining({
         email: "test@example.com",
         password: "hashed-password",
-        firstname: "non renseignée",
-        lastname: "non renseignée",
+        firstname: "non renseigné",
+        lastname: "non renseigné",
         phoneNumber: "0000000000",
-        address: "non renseignée",
-        city: "non renseignée",
+        address: "non renseigné",
+        city: "non renseigné",
+        postalCode: "00000",
       })
     );
 
