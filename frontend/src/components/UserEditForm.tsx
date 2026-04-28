@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { Camera, User } from "lucide-react";
 import { UPDATE_USER } from "../graphql/operations";
 import type { User as UserType, UpdateUserInput } from "../types/user.types";
+import { handleGraphQLError } from "../utils/handleGraphQLError";
 
 interface UserEditFormProps {
   user: UserType;
@@ -65,10 +66,10 @@ export const UserEditForm = ({ user, onCancel, onSuccess }: UserEditFormProps) =
         toast.success("Photo de profil mise à jour !");
         setAvatarPreview(data.avatar);
       } else {
-        toast.error("Erreur lors de l'upload");
+        toast.error(data.error ?? "Erreur lors de l'upload");
       }
     } catch {
-      toast.error("Erreur lors de l'upload");
+      toast.error("Erreur de connexion au serveur");
     } finally {
       setUploading(false);
     }
@@ -86,21 +87,7 @@ export const UserEditForm = ({ user, onCancel, onSuccess }: UserEditFormProps) =
         onSuccess(data.updateUser);
       }
     } catch (error: any) {
-      const gqlErrors = error?.graphQLErrors || error?.errors;
-      if (gqlErrors?.length) {
-        const firstError = gqlErrors[0];
-        const fields = firstError.extensions?.fields;
-        if (fields?.length) {
-          fields.forEach((field: any) => {
-            const messages = Object.values(field.constraints || {}) as string[];
-            messages.forEach((msg: string) => toast.error(msg));
-          });
-        } else {
-          toast.error(firstError.message);
-        }
-      } else {
-        toast.error("Une erreur est survenue, veuillez réessayer.");
-      }
+      handleGraphQLError(error);
     }
   };
 

@@ -14,7 +14,7 @@ const upload = multer({
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (_req, file, cb) => {
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      cb(new Error("Unsupported format. Use JPG, PNG or WebP."));
+      cb(new Error("Format non supporté. Utilisez JPG, PNG ou WebP."));
       return;
     }
     cb(null, true);
@@ -30,12 +30,12 @@ router.post("/upload/avatar/:userId", upload.single("avatar"), async (req, res) 
     const userId = Number(req.params.userId);
 
     if (isNaN(userId)) {
-      res.status(400).json({ error: "Invalid user ID" });
+      res.status(400).json({ error: "ID utilisateur invalide" });
       return;
     }
 
     if (!req.file) {
-      res.status(400).json({ error: "No file provided" });
+      res.status(400).json({ error: "Aucun fichier envoyé" });
       return;
     }
 
@@ -47,7 +47,7 @@ router.post("/upload/avatar/:userId", upload.single("avatar"), async (req, res) 
       return;
     }
     console.error("Avatar upload error:", error);
-    res.status(500).json({ error: "Upload failed" });
+    res.status(500).json({ error: "Échec de l'upload" });
   }
 });
 
