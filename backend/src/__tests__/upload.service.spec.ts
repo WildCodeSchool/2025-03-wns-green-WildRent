@@ -27,7 +27,7 @@ describe("UploadService", () => {
 
     await expect(
       service.uploadAvatar(999, Buffer.from("fake-image"))
-    ).rejects.toThrow("User not found");
+    ).rejects.toThrow("User introuvable");
 
     await expect(
       service.uploadAvatar(999, Buffer.from("fake-image"))
