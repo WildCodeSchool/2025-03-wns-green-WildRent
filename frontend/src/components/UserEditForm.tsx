@@ -101,8 +101,8 @@ export const UserEditForm = ({ user, onCancel, onSuccess }: UserEditFormProps) =
   ];
 
   return (
-    <div className="w-full border border-[#87a700] rounded-2xl bg-white p-8">
-      <h3 className="text-lg font-bold font-[family-name:var(--font-title)] text-[#31380d] uppercase tracking-wide mb-6">
+    <div className="w-full border border-[#87a700] rounded-2xl bg-white p-5 sm:p-8">
+      <h3 className="text-base sm:text-lg font-bold font-[family-name:var(--font-title)] text-[#31380d] uppercase tracking-wide mb-5 sm:mb-6">
         Modifier mes informations
       </h3>
 
@@ -138,7 +138,7 @@ export const UserEditForm = ({ user, onCancel, onSuccess }: UserEditFormProps) =
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-y-5 gap-x-8 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 sm:gap-y-5 gap-x-8 mb-5 sm:mb-6">
           {fields.map(({ name, label }) => (
             <div key={name}>
               <label className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1 block">
@@ -156,7 +156,7 @@ export const UserEditForm = ({ user, onCancel, onSuccess }: UserEditFormProps) =
         </div>
 
 
-        <div className="flex justify-end gap-3">
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-3">
           <button
             type="button"
             onClick={onCancel}

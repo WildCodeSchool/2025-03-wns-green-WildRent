@@ -20,7 +20,24 @@ import ProductVariantResolver from "./resolvers/ProductVariantResolver";
 import { BookingProductsResolver } from "./resolvers/BookingProductsResolver";
 import { customErrorFormatter } from "./errors/customErrorFormatter";
 import { AnonContext, AuthContext } from "./types/types";
+import { AuthService } from "./services/auth.service";
 import uploadRouter from "./routes/upload";
+
+const authService = new AuthService();
+
+/**
+ * Parses cookies from the request headers.
+ * Returns a key-value map of cookie names and values.
+ */
+function parseCookies(cookieHeader: string | undefined): Record<string, string> {
+  if (!cookieHeader) return {};
+  return Object.fromEntries(
+    cookieHeader.split(";").map((c) => {
+      const [key, ...rest] = c.trim().split("=");
+      return [key, rest.join("=")];
+    })
+  );
+}
 
 const PORT = process.env.PORT ?? 4200;
 
@@ -59,9 +76,18 @@ async function startServer() {
   app.use(express.json());
   app.use("/api", uploadRouter);
   app.use("/graphql", expressMiddleware(apolloServer, {
-    context: async ({ req, res }) => {
-      const context: AnonContext | AuthContext = { req, res };
-      return context;
+    context: async ({ req, res }): Promise<AnonContext | AuthContext> => {
+      const cookies = parseCookies(req.headers.cookie);
+      const token = cookies["WildRentAuthToken"];
+
+      if (token) {
+        const user = authService.verifyToken(token);
+        if (user) {
+          return { req, res, user };
+        }
+      }
+
+      return { req, res };
     },
   }));
 

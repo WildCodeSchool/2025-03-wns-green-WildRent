@@ -1,5 +1,12 @@
 import { Pencil } from "lucide-react";
 
+const DEFAULT_VALUES = ["non renseigné", "0000000000", "00000"];
+
+/** Returns true if the value is a default placeholder. */
+function isDefault(value: string): boolean {
+  return DEFAULT_VALUES.includes(value);
+}
+
 interface UserInfoCardProps {
   firstname: string;
   lastname: string;
@@ -19,46 +26,45 @@ export const UserInfoCard = ({
   city,
   onEdit,
 }: UserInfoCardProps) => {
+  const fields: { label: string; value: string }[] = [
+    { label: "Nom", value: lastname },
+    { label: "Prénom", value: firstname },
+    { label: "Email", value: email },
+    { label: "Adresse", value: address },
+    { label: "Code postal", value: postalCode },
+    { label: "Ville", value: city },
+  ];
+
   return (
-    <div className="w-full border border-[#87a700] rounded-2xl bg-white p-8">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-bold font-[family-name:var(--font-title)] text-[#31380d] uppercase tracking-wide">
+    <div className="w-full border border-[#87a700] rounded-2xl bg-white p-5 sm:p-8">
+      <div className="flex items-center justify-between mb-5 sm:mb-6">
+        <h3 className="text-base sm:text-lg font-bold font-[family-name:var(--font-title)] text-[#31380d] uppercase tracking-wide">
           Informations personnelles
         </h3>
         <button
           onClick={onEdit}
-          className="flex items-center gap-2 px-4 py-1.5 text-xs font-medium font-[family-name:var(--font-text)] bg-[#87a700] text-[#fdffe9] rounded-full hover:bg-[#31380d] transition-colors"
+          className="flex items-center gap-2 px-3 sm:px-4 py-1.5 text-xs font-medium font-[family-name:var(--font-text)] bg-[#87a700] text-[#fdffe9] rounded-full hover:bg-[#31380d] transition-colors"
         >
           <Pencil size={12} />
           Modifier
         </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-y-5 gap-x-8">
-        <div>
-          <p className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1">Nom</p>
-          <p className="text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d]">{lastname}</p>
-        </div>
-        <div>
-          <p className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1">Prénom</p>
-          <p className="text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d]">{firstname}</p>
-        </div>
-        <div>
-          <p className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1">Email</p>
-          <p className="text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d]">{email}</p>
-        </div>
-        <div>
-          <p className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1">Adresse</p>
-          <p className="text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d]">{address}</p>
-        </div>
-        <div>
-          <p className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1">Code postal</p>
-          <p className="text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d]">{postalCode}</p>
-        </div>
-        <div>
-          <p className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1">Ville</p>
-          <p className="text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d]">{city}</p>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 sm:gap-y-5 gap-x-8">
+        {fields.map(({ label, value }) => (
+          <div key={label}>
+            <p className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1">
+              {label}
+            </p>
+            <p className={`text-sm font-medium font-[family-name:var(--font-text)] ${
+              isDefault(value)
+                ? "text-[#acaf91] italic"
+                : "text-[#31380d]"
+            }`}>
+              {isDefault(value) ? "À renseigner" : value}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );
