@@ -1,0 +1,7 @@
+[
+  {
+    "id": "update",
+    "execute-command": "/home/wns_student/wns-deploy-staging/fetch-and-deploy.sh",
+    "command-working-directory": "/home/wns_student/wns-deploy-staging"
+  }
+]

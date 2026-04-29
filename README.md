@@ -345,3 +345,8 @@ feat(auth): implement JWT authentication and token refresh (WIP)
 * Noms de variables et fonctions clairs et explicites (ex. `calculateTotalPrice()` plutôt que `calc()`)
 * Respect des standards ESLint / Prettier
 * Revue de code obligatoire avant fusion sur `develop`
+
+### Development
+```bash
+npm run docker-up
+npm run docker-down

@@ -1,42 +1,61 @@
 import argon2 from "argon2";
 import { User } from "../entities/User";
 import { Role } from "../entities/Role";
-import { CreateUserDto,CreateUserByAdminDto,UpdateUserDto,UpdateUserByAdminDto,UpdateUserPasswordDto } from "../dtos/user.dto";
+import {
+  CreateUserDto,
+  CreateUserByAdminDto,
+  UpdateUserDto,
+  UpdateUserByAdminDto,
+  UpdateUserPasswordDto,
+} from "../dtos/user.dto";
 import { Errors } from "../errors/errors";
 
-
 const DEFAULT_ROLE = "user";
+
+const DEFAULT_VALUES = {
+  firstname: "non renseigné",
+  lastname: "non renseigné",
+  phoneNumber: "0000000000",
+  address: "non renseigné",
+  city: "non renseigné",
+  postalCode: "00000",
+} as const;
+
 export class UserService {
+  /**
+   * Creates a standard user (registration).
+   * Only email and password are required, other fields use default values.
+   */
   async createUser(data: CreateUserDto): Promise<User> {
     const existingUser = await User.findOne({ where: { email: data.email } });
     if (existingUser) throw Errors.alreadyExists("User");
 
     const hashedPassword = await argon2.hash(data.password);
-    let DefaultRole = await Role.findOne({ where: { roleName: DEFAULT_ROLE } });
-    if (!DefaultRole) throw Errors.notFound("Role");
+    const defaultRole = await Role.findOne({ where: { roleName: DEFAULT_ROLE } });
+    if (!defaultRole) throw Errors.notFound("Role");
 
     const user = User.create({
       email: data.email,
       password: hashedPassword,
-      firstname: "non renseignée",
-      lastname: "non renseignée",
-      phoneNumber: "0000000000",
-      address: "non renseignée",
-      city: "non renseignée",
-      role: DefaultRole,
+      ...DEFAULT_VALUES,
+      role: defaultRole,
     });
 
     await user.save();
     return user;
   }
 
+  /**
+   * Creates a user as an administrator.
+   * Allows setting all fields and assigning a specific role.
+   */
   async createUserByAdmin(data: CreateUserByAdminDto): Promise<User> {
-    const exists = await User.findOne({ where: { email: data.email } });
-    if (exists) throw Errors.alreadyExists("User");
+    const existingUser = await User.findOne({ where: { email: data.email } });
+    if (existingUser) throw Errors.alreadyExists("User");
 
     const hashedPassword = await argon2.hash(data.password);
-    
-    const role = data.roleId 
+
+    const role = data.roleId
       ? await Role.findOne({ where: { id: data.roleId } })
       : await Role.findOne({ where: { roleName: DEFAULT_ROLE } });
 
@@ -45,12 +64,13 @@ export class UserService {
     const user = User.create({
       email: data.email,
       password: hashedPassword,
-      firstname: data.firstname ?? "non renseignée",
-      lastname: data.lastname ?? "non renseignée",
-      phoneNumber: data.phoneNumber ?? "0000000000",
-      address: data.address ?? "non renseignée",
-      city: data.city ?? "non renseignée",
-      role: role,
+      firstname: data.firstname ?? DEFAULT_VALUES.firstname,
+      lastname: data.lastname ?? DEFAULT_VALUES.lastname,
+      phoneNumber: data.phoneNumber ?? DEFAULT_VALUES.phoneNumber,
+      address: data.address ?? DEFAULT_VALUES.address,
+      city: data.city ?? DEFAULT_VALUES.city,
+      postalCode: data.postalCode ?? DEFAULT_VALUES.postalCode,
+      role,
     });
 
     await user.save();
@@ -68,7 +88,7 @@ export class UserService {
   async findByMail(email: string): Promise<User | null> {
     return User.findOne({
       select: ["id", "email", "password", "firstname", "lastname"],
-      where: { "email": email },
+      where: { email },
       relations: ["role"],
     });
   }
@@ -77,13 +97,13 @@ export class UserService {
     return User.find({ relations: ["role"] });
   }
 
-    async getUserById(id: number): Promise<User> {
+  async getUserById(id: number): Promise<User> {
     const user = await User.findOne({ where: { id }, relations: ["role"] });
     if (!user) throw Errors.notFound("User");
     return user;
   }
 
-    async updateUser(id: number, data: UpdateUserDto): Promise<User> {
+  async updateUser(id: number, data: UpdateUserDto): Promise<User> {
     const user = await User.findOne({ where: { id } });
     if (!user) throw Errors.notFound("User");
 
@@ -93,13 +113,13 @@ export class UserService {
     return user;
   }
 
-    async updateUserByAdmin(id: number, data: UpdateUserByAdminDto): Promise<User> {
+  async updateUserByAdmin(id: number, data: UpdateUserByAdminDto): Promise<User> {
     const user = await User.findOne({ where: { id }, relations: ["role"] });
     if (!user) throw Errors.notFound("User");
 
-  const role = data.roleId 
+    const role = data.roleId
       ? await Role.findOne({ where: { id: data.roleId } })
-      : await Role.findOne({ where: { roleName: DEFAULT_ROLE } });
+      : user.role;
 
     if (!role) throw Errors.notFound("Role");
     user.role = role;
@@ -119,5 +139,4 @@ export class UserService {
 
     return true;
   }
-
 }

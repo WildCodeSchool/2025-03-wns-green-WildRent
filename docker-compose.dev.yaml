@@ -1,7 +1,9 @@
 services:
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     command: sh -c "npm run build && npm run prod"
     ports:
       - "4200:4200"
@@ -17,19 +19,25 @@ services:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
       JWT_SECRET: ${JWT_SECRET}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
       
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
       - "5173:5173"
     command: sh -c "npm run dev"
     volumes:
     - ./frontend:/app
     - /app/node_modules
-      # - web-client-build:/app
     depends_on:
       - backend
+    environment:
+      VITE_API_URL: http://localhost:4200
 
   database:
     image: postgres
