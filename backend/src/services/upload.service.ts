@@ -4,7 +4,6 @@ import { Errors } from "../errors/errors";
 import type { UploadApiResponse } from "cloudinary";
 
 export class UploadService {
-  /** Uploads a user's avatar to Cloudinary and saves the URL in the database. */
   async uploadAvatar(userId: number, fileBuffer: Buffer): Promise<string> {
     const user = await User.findOne({ where: { id: userId } });
     if (!user) throw Errors.notFound("User");

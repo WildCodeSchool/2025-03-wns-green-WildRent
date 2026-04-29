@@ -53,7 +53,7 @@ export const Navbar = () => {
   return (
     <>
       {/* ===== NAVBAR ===== */}
-      <nav className={`fixed top-0 inset-x-0 z-50 bg-[#fdffe9] shadow-sm overflow-hidden transition-transform duration-300 ${visible ? "translate-y-0" : "-translate-y-full"
+      <nav className={`fixed top-0 inset-x-0 z-50 bg-[#fdffe9] shadow-sm overflow-visible transition-transform duration-300 ${visible ? "translate-y-0" : "-translate-y-full"
         }`}>
         <div className="px-4 xl:px-6 2xl:px-24 py-3 lg:py-4">
           <div className="flex items-center justify-between">

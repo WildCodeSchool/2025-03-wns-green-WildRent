@@ -86,7 +86,7 @@ function createMockContext(userToken?: any) {
 
 describe("Auth Integration - Login", () => {
   const LOGIN_MUTATION = `
-    mutation Login($data: LoginInput!) {
+    mutation Login($data: LoginDto!) {
       login(data: $data) {
         id
         firstname
@@ -280,7 +280,7 @@ describe("Auth Integration - Full Flow", () => {
     const loginCtx = createMockContext();
     const loginResult = await server.executeOperation(
       {
-        query: `mutation Login($data: LoginInput!) { login(data: $data) { id firstname } }`,
+        query: `mutation Login($data: LoginDto!) { login(data: $data) { id firstname } }`,
         variables: { data: { mail: "alice@example.com", password: "Password123!" } },
       },
       loginCtx,

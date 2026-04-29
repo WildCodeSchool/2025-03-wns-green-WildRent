@@ -1,18 +1,21 @@
-import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Query, Resolver } from "type-graphql";
-import { IsEmail, IsNotEmpty } from "class-validator";
+import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { AuthService } from "../services/auth.service";
 import { UserService } from "../services/user.service";
 import { AnonContext, AuthContext } from "../types/types";
 import { Errors } from "../errors/errors";
 import { User } from "../entities/User";
+import { LoginDto, DeleteAccountDto } from "../dtos/auth.dto";
+import { UpdateUserDto } from "../dtos/user.dto";
 
 const COOKIE_NAME = "WildRentAuthToken";
 const isProduction = process.env.NODE_ENV === "production";
 
 /** Builds cookie attributes based on environment. */
 function buildCookieAttributes(maxAge: number): string {
-  const attrs = [`HttpOnly`, `SameSite=Lax`, `Path=/`, `Max-Age=${maxAge}`];
-  if (isProduction) attrs.push("Secure");
+  const attrs = [`HttpOnly`, `SameSite=None`, `Path=/`, `Max-Age=${maxAge}`, `Secure`];
+  if (!isProduction) {
+    return [`HttpOnly`, `SameSite=Lax`, `Path=/`, `Max-Age=${maxAge}`].join("; ");
+  }
   return attrs.join("; ");
 }
 
@@ -30,17 +33,6 @@ function clearCookie(context: AnonContext | AuthContext, name: string) {
     "Set-Cookie",
     `${name}=; ${buildCookieAttributes(0)}`
   );
-}
-
-@InputType()
-export class LoginInput {
-  @Field()
-  @IsEmail({}, { message: "L'email doit être valide" })
-  mail!: string;
-
-  @Field()
-  @IsNotEmpty({ message: "Le mot de passe ne doit pas être vide" })
-  password!: string;
 }
 
 @ObjectType()
@@ -76,7 +68,7 @@ export default class AuthResolver {
 
   /** Authenticates a user and sets a JWT cookie. */
   @Mutation(() => UserLogin)
-  async login(@Arg("data") data: LoginInput, @Ctx() context: AnonContext): Promise<UserLogin> {
+  async login(@Arg("data") data: LoginDto, @Ctx() context: AnonContext): Promise<UserLogin> {
     const { token, user } = await this.authService.login(data.mail, data.password);
 
     setCookie(context, COOKIE_NAME, token);
@@ -104,5 +96,35 @@ export default class AuthResolver {
     if (!userToken) throw Errors.notAuthenticated();
 
     return this.userService.getUserById(userToken.id);
+  }
+
+  /** Updates the authenticated user's profile using the ID from the JWT. */
+  @Mutation(() => User)
+  async updateMyProfile(
+    @Arg("data") data: UpdateUserDto,
+    @Ctx() context: AnonContext | AuthContext,
+  ): Promise<User> {
+    const userToken = (context as AuthContext).user;
+    if (!userToken) throw Errors.notAuthenticated();
+
+    return this.userService.updateUser(userToken.id, data);
+  }
+
+  /** Deletes the authenticated user's account after password verification. */
+  @Mutation(() => Boolean)
+  async deleteMyAccount(
+    @Arg("data") data: DeleteAccountDto,
+    @Ctx() context: AnonContext | AuthContext,
+  ): Promise<boolean> {
+    const userToken = (context as AuthContext).user;
+    if (!userToken) throw Errors.notAuthenticated();
+
+    const isValid = await this.authService.verifyPassword(userToken.id, data.password);
+    if (!isValid) throw Errors.invalidCredentials();
+
+    await this.userService.deleteUser(userToken.id);
+    clearCookie(context, COOKIE_NAME);
+
+    return true;
   }
 }

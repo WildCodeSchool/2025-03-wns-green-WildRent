@@ -77,7 +77,6 @@ export class UserService {
     return user;
   }
 
-  /** Deletes a user by ID. */
   async deleteUser(id: number): Promise<boolean> {
     const user = await User.findOne({ where: { id } });
     if (!user) throw Errors.notFound("User");
@@ -86,7 +85,6 @@ export class UserService {
     return true;
   }
 
-  /** Finds a user by email (used for authentication). */
   async findByMail(email: string): Promise<User | null> {
     return User.findOne({
       select: ["id", "email", "password", "firstname", "lastname"],
@@ -95,19 +93,16 @@ export class UserService {
     });
   }
 
-  /** Returns all users with their role. */
   async getAllUsers(): Promise<User[]> {
     return User.find({ relations: ["role"] });
   }
 
-  /** Returns a user by ID with their role. */
   async getUserById(id: number): Promise<User> {
     const user = await User.findOne({ where: { id }, relations: ["role"] });
     if (!user) throw Errors.notFound("User");
     return user;
   }
 
-  /** Updates a user's information (by the user themselves). */
   async updateUser(id: number, data: UpdateUserDto): Promise<User> {
     const user = await User.findOne({ where: { id } });
     if (!user) throw Errors.notFound("User");
@@ -118,7 +113,6 @@ export class UserService {
     return user;
   }
 
-  /** Updates a user as an administrator (can change role). */
   async updateUserByAdmin(id: number, data: UpdateUserByAdminDto): Promise<User> {
     const user = await User.findOne({ where: { id }, relations: ["role"] });
     if (!user) throw Errors.notFound("User");
@@ -136,7 +130,6 @@ export class UserService {
     return user;
   }
 
-  /** Updates a user's password. */
   async updateUserPassword(id: number, data: UpdateUserPasswordDto): Promise<boolean> {
     const user = await User.findOne({ where: { id } });
     if (!user) throw Errors.notFound("User");
