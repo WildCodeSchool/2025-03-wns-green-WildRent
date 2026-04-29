@@ -28,6 +28,19 @@ export class AuthService {
   }
 
   /**
+   * Verifies a user's password against the stored hash.
+   * Used for sensitive operations like account deletion.
+   */
+  async verifyPassword(userId: number, password: string): Promise<boolean> {
+    const user = await this.userService.findByMail(
+      (await this.userService.getUserById(userId)).email
+    );
+    if (!user) throw Errors.notFound("User");
+
+    return argon2.verify(user.password, password);
+  }
+
+  /**
    * Verifies a JWT token and returns the decoded payload.
    * Returns null if the token is invalid or expired.
    */

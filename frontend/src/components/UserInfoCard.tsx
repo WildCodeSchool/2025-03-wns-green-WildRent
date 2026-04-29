@@ -1,4 +1,4 @@
-import { Pencil } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 
 const DEFAULT_VALUES = ["non renseigné", "0000000000", "00000"];
 
@@ -15,6 +15,7 @@ interface UserInfoCardProps {
   postalCode: string;
   city: string;
   onEdit: () => void;
+  onDeleteAccount: () => void;
 }
 
 export const UserInfoCard = ({
@@ -25,6 +26,7 @@ export const UserInfoCard = ({
   postalCode,
   city,
   onEdit,
+  onDeleteAccount,
 }: UserInfoCardProps) => {
   const fields: { label: string; value: string }[] = [
     { label: "Nom", value: lastname },
@@ -65,6 +67,17 @@ export const UserInfoCard = ({
             </p>
           </div>
         ))}
+      </div>
+
+      {/* Delete account */}
+      <div className="mt-8 pt-6 border-t border-gray-200">
+        <button
+          onClick={onDeleteAccount}
+          className="flex items-center gap-2 text-sm font-[family-name:var(--font-text)] text-red-500 hover:text-red-600 transition-colors"
+        >
+          <Trash2 size={14} />
+          Supprimer mon compte
+        </button>
       </div>
     </div>
   );

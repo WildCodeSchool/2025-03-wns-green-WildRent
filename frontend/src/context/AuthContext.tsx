@@ -29,17 +29,15 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const [user, setUser] = useState<AuthUser | null>(null);
 
-  const { loading, refetch } = useQuery(WHO_AM_I, {
+  const { data: whoAmIData, loading, refetch } = useQuery(WHO_AM_I, {
     fetchPolicy: "network-only",
-    onCompleted: (data) => {
-      if (data?.whoAmI) {
-        setUser(data.whoAmI);
-      }
-    },
-    onError: () => {
-      setUser(null);
-    },
   });
+
+  useEffect(() => {
+    if (whoAmIData?.whoAmI) {
+      setUser(whoAmIData.whoAmI);
+    }
+  }, [whoAmIData]);
 
   const [loginMutation] = useMutation(LOGIN);
   const [logoutMutation] = useMutation(LOGOUT);

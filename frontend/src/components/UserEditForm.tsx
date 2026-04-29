@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { useMutation } from "@apollo/client/react";
 import { toast } from "react-toastify";
 import { Camera, User } from "lucide-react";
-import { UPDATE_USER } from "../graphql/operations";
+import { UPDATE_MY_PROFILE } from "../graphql/operations";
 import type { User as UserType, UpdateUserInput } from "../types/user.types";
 import { handleGraphQLError } from "../utils/handleGraphQLError";
 
@@ -22,20 +22,20 @@ export const UserEditForm = ({ user, onCancel, onSuccess }: UserEditFormProps) =
     city: user.city,
   });
   const [avatarPreview, setAvatarPreview] = useState<string | null>(user.avatar ?? null);
-  const [uploading, setUploading] = useState(false);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [updateUser, { loading }] = useMutation<{ updateUser: UserType }>(UPDATE_USER);
+  const [updateMyProfile, { loading }] = useMutation<{ updateMyProfile: UserType }>(UPDATE_MY_PROFILE);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const maxSize = 5 * 1024 * 1024; // 5 Mo
+    const maxSize = 5 * 1024 * 1024;
     const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
 
     if (!allowedTypes.includes(file.type)) {
@@ -48,43 +48,45 @@ export const UserEditForm = ({ user, onCancel, onSuccess }: UserEditFormProps) =
       return;
     }
 
+    setAvatarFile(file);
     setAvatarPreview(URL.createObjectURL(file));
-    setUploading(true);
+  };
 
-    try {
-      const formData = new FormData();
-      formData.append("avatar", file);
+  const uploadAvatar = async (): Promise<string | null> => {
+    if (!avatarFile) return null;
 
-      const apiUrl = import.meta.env.VITE_API_URL ?? "";
-      const res = await fetch(`${apiUrl}/api/upload/avatar/${user.id}`, {
-        method: "POST",
-        body: formData,
-      });
+    const body = new FormData();
+    body.append("avatar", avatarFile);
 
-      const data = await res.json();
-      if (data.avatar) {
-        toast.success("Photo de profil mise à jour !");
-        setAvatarPreview(data.avatar);
-      } else {
-        toast.error(data.error ?? "Erreur lors de l'upload");
-      }
-    } catch {
-      toast.error("Erreur de connexion au serveur");
-    } finally {
-      setUploading(false);
-    }
+    const apiUrl = import.meta.env.VITE_API_URL ?? "";
+    const res = await fetch(`${apiUrl}/api/upload/avatar/${user.id}`, {
+      method: "POST",
+      body,
+      credentials: "include",
+    });
+
+    const data = await res.json();
+    return data.avatar ?? null;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { data } = await updateUser({
-        variables: { id: user.id, data: formData },
+      if (avatarFile) {
+        const uploadedUrl = await uploadAvatar();
+        if (!uploadedUrl) {
+          toast.error("Erreur lors de l'upload de l'image");
+          return;
+        }
+      }
+
+      const { data } = await updateMyProfile({
+        variables: { data: formData },
       });
-      if (data?.updateUser) {
-        if (avatarPreview) data.updateUser.avatar = avatarPreview;
-        toast.success("Mises à jour avec succès !");
-        onSuccess(data.updateUser);
+      if (data?.updateMyProfile) {
+        if (avatarPreview) data.updateMyProfile.avatar = avatarPreview;
+        toast.success("Profil mis à jour avec succès !");
+        onSuccess(data.updateMyProfile);
       }
     } catch (error: any) {
       handleGraphQLError(error);
@@ -123,7 +125,7 @@ export const UserEditForm = ({ user, onCancel, onSuccess }: UserEditFormProps) =
           </div>
           <div>
             <p className="text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d]">
-              {uploading ? "Upload en cours..." : "Changer la photo"}
+              {avatarFile ? "Image sélectionnée" : "Changer la photo"}
             </p>
             <p className="text-xs font-[family-name:var(--font-text)] text-[#acaf91]">
               Cliquez sur l'image
@@ -134,7 +136,7 @@ export const UserEditForm = ({ user, onCancel, onSuccess }: UserEditFormProps) =
             type="file"
             accept="image/*"
             className="hidden"
-            onChange={handleAvatarUpload}
+            onChange={handleAvatarSelect}
           />
         </div>
 
