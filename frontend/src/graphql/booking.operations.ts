@@ -15,3 +15,34 @@ export const CREATE_BOOKING_PRODUCT = gql`
     }
   }
 `;
+
+export const GET_MY_BOOKINGS = gql`
+  query GetMyBookings {
+    getMyBookings {
+      id
+      bookingRef
+      totalPrice
+      startDate
+      endDate
+      status {
+        statusName
+      }
+      bookingsProducts {
+        productQuantity
+        productVariant {
+          id
+          color
+          size
+          image
+          product {
+            id
+            name
+            productRef
+            price
+            brand
+          }
+        }
+      }
+    }
+  }
+`;

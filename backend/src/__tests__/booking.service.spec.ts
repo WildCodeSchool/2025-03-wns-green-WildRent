@@ -1,6 +1,7 @@
 import { BookingService } from "../services/booking.service";
 import { Booking } from "../entities/Booking";
 import { Status } from "../entities/Status";
+import { User } from "../entities/User";
 
 jest.mock("../entities/Booking", () => ({
   Booking: {
@@ -18,6 +19,12 @@ jest.mock("../entities/Booking", () => ({
 jest.mock("../entities/Status", () => ({
   Status: {
     findOne: jest.fn().mockResolvedValue(undefined),
+  },
+}));
+
+jest.mock("../entities/User", () => ({
+  User: {
+    findOne: jest.fn().mockResolvedValue({ id: 1, email: "test@test.com" }),
   },
 }));
 
@@ -61,11 +68,13 @@ describe("BookingService", () => {
       statusName: "En attente",
     });
 
-    const result = await service.createBooking({
-      startDate: new Date("2026-01-01"),
-      endDate: new Date("2026-01-05"),
-    });
-
+    const result = await service.createBooking(
+      {
+        startDate: new Date("2026-01-01"),
+        endDate: new Date("2026-01-05"),
+      },
+      1, 
+    );
     expect(Booking.create).toHaveBeenCalledWith(
       expect.objectContaining({
         startDate: expect.any(Date),
@@ -78,11 +87,14 @@ describe("BookingService", () => {
 
   it("should throw error if end date is before start date on create", async () => {
     await expect(
-      service.createBooking({
-        startDate: new Date("2026-01-05"),
-        endDate: new Date("2026-01-01"),
-      })
-    ).rejects.toThrow("End date must be after start date");
+      service.createBooking(
+        {
+          startDate: new Date("2026-01-05"),
+          endDate: new Date("2026-01-01"),
+        },
+        1, // userId
+      )
+    ).rejects.toThrow("La date de fin doit être après la date de début");
   });
 
   it("should update a booking", async () => {

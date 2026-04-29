@@ -6,15 +6,17 @@ import { useMutation } from "@apollo/client/react";
 import { useNavigate } from "react-router";
 import { useCart } from "../context/CartContext";
 import { CREATE_BOOKING, CREATE_BOOKING_PRODUCT } from "../graphql/booking.operations";
+import { handleGraphQLError } from "../utils/handleGraphQLError";
 
 export function PaymentPage() {
 
   const { items, clearCart } = useCart();
   const navigate = useNavigate();
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const [createBooking] = useMutation(CREATE_BOOKING);
+  const [createBooking] = useMutation(CREATE_BOOKING, {
+    refetchQueries: ["GetMyBookings"],
+  });
   const [createBookingProduct] = useMutation(CREATE_BOOKING_PRODUCT);
 
 
@@ -48,7 +50,6 @@ export function PaymentPage() {
   }
 
   async function handlePayment() {
-    setError("");
     setLoading(true);
 
     try {
@@ -74,7 +75,7 @@ export function PaymentPage() {
             variables: {
               data: {
                 bookingId: Number(newBookingId),
-                productId: item.productId,
+                productVariantId: item.variantId,   
                 productQuantity: item.quantity,
               }
             }
@@ -83,6 +84,7 @@ export function PaymentPage() {
       }
 
       clearCart();
+      
 
       navigate("/confirmation", {
         state: {
@@ -101,11 +103,12 @@ export function PaymentPage() {
         }
       });
 
-    } catch (err) {
-      setError("Une erreur est survenue lors du paiement");
+    } catch (err: any) {
+      handleGraphQLError(err);
     } finally {
       setLoading(false);
     }
+    
   }
 
   return (
@@ -121,11 +124,6 @@ export function PaymentPage() {
         </div>
       </div>
 
-      {error && (
-        <div className="mt-4 rounded-xl bg-red-100 border border-red-300 text-red-700 px-4 py-3 text-sm">
-          {error}
-        </div>
-      )}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { Field, ObjectType } from "type-graphql";
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Product } from "./Product";
+import { BookingProducts } from "./BookingProducts";
 
 @Entity()
 @ObjectType()
@@ -40,4 +41,8 @@ export class ProductVariant extends BaseEntity {
     @ManyToOne(() => Product, (product) => product.productVariant)
     @Field(() => Product)
     product!: Product; 
+
+      @OneToMany(() => BookingProducts, (bp) => bp.productVariant)
+      @Field(() => [BookingProducts])
+      bookingsProducts!: BookingProducts[];
 }

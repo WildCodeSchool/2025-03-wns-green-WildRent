@@ -1,7 +1,8 @@
-import { FindManyOptions } from "typeorm";
+import { FindManyOptions, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { CreateProductVariantInput, UpdateProductVariantInput } from "../dtos/product-variant.dto";
 import { Product } from "../entities/Product";
 import { ProductVariant } from "../entities/ProductVariant";
+import { BookingProducts } from "../entities/BookingProducts";
 
 export class ProductVariantService {
     async getAllProductsVariant(): Promise<ProductVariant[]> {
@@ -17,6 +18,36 @@ export class ProductVariantService {
         if(!productVariant) throw new Error("PRODUCT_VARIANT NOT FOUND"); 
         return productVariant
     }
+
+    async getAvailableStock(
+        productVariantId: number,
+        startDate: Date,
+        endDate: Date
+    ): Promise<number> {
+        
+        const productVariant = await ProductVariant.findOne({ where: { id: productVariantId } });
+        if (!productVariant) throw new Error("PRODUCT_VARIANT NOT FOUND");
+
+        const overlappingBookings = await BookingProducts.find({
+            where: {
+                productVariant: { id: productVariantId },
+                booking: {
+                    startDate: LessThanOrEqual(endDate),
+                    endDate: MoreThanOrEqual(startDate),
+                },
+            },
+            relations: ["booking"],
+        });
+
+
+        const reservedQuantity = overlappingBookings.reduce(
+            (sum, bp) => sum + bp.productQuantity,
+            0
+        );
+
+        return productVariant.quantity - reservedQuantity;
+    }
+
 
     async createProductVariant(data: CreateProductVariantInput): Promise<ProductVariant> {
         let randomRef = ""; 

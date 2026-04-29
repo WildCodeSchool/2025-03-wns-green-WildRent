@@ -44,6 +44,14 @@ export class User extends BaseEntity {
   @Column({ length: 50 })
   city!: string;
 
+  @Field()
+  @Column({ length: 5 })
+  postalCode!: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  avatar?: string;
+  
   @OneToMany(() => Booking, (booking) => booking.user)
   @Field(() => [Booking])
   bookings!: Booking[];

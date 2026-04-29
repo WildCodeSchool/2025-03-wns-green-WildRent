@@ -26,7 +26,7 @@ export class Booking extends BaseEntity {
 	@Generated("increment")
     bookingRef!: number;
     
-    @Field()
+    @Field({ nullable: true }) 
     @Column({ nullable: true })
     totalPrice?: number;
 

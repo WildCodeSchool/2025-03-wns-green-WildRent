@@ -1,75 +1,120 @@
 import { Booking } from "../entities/Booking";
 import { BookingProducts } from "../entities/BookingProducts";
-import { Product } from "../entities/Product";
-import { CreateBookingProductsInput, UpdateBookingProductsInput } from "../dtos/booking-products.dto";
 import { ProductVariant } from "../entities/ProductVariant";
+import { CreateBookingProductsInput, UpdateBookingProductsInput } from "../dtos/booking-products.dto";
+import { ProductVariantService } from "./product-variant.service";
 
 export class BookingProductsService {
+	private readonly productVariantService = new ProductVariantService();
   async getAllBookingProducts(): Promise<BookingProducts[]> {
     return BookingProducts.find({
-      relations: ["booking", "product"],
+      relations: ["booking", "productVariant", "productVariant.product"],
     });
   }
 
-	async getBookingProductsByBookingId(bookingId: number): Promise<BookingProducts[]> {
-		return BookingProducts.find({
-			where: { booking: { id: bookingId } },
-			relations: ["booking", "product"],
-		});
-	}
+  async getBookingProductsByBookingId(bookingId: number): Promise<BookingProducts[]> {
+    return BookingProducts.find({
+      where: { booking: { id: bookingId } },
+      relations: ["booking", "productVariant", "productVariant.product"],
+    });
+  }
 
   async createBookingProduct(data: CreateBookingProductsInput): Promise<BookingProducts> {
 		const productQuantity = data.productQuantity;
-	  if (productQuantity <= 0) throw new Error("productQuantity must be > 0");
+		if (productQuantity <= 0) throw new Error("productQuantity must be > 0");
 	
 		const booking = await Booking.findOne({ where: { id: data.bookingId } });
 		if (!booking) throw new Error("Booking not found");
 	
-		const product = await Product.findOne({ where: { id: data.productId } });
-		if (!product) throw new Error("Product not found");
-
-		const variants = await ProductVariant.find({ where: { product: { id: product.id } } });
-		const totalStock = variants.reduce((sum, variant) => sum + variant.quantity, 0);
+		const productVariant = await ProductVariant.findOne({
+			where: { id: data.productVariantId },
+			relations: ["product"],
+		});
+		if (!productVariant) throw new Error("ProductVariant not found");
 	
-		if (totalStock < productQuantity) {
-			throw new Error("Not enough stock available");
+		const availableStock = await this.productVariantService.getAvailableStock(
+			data.productVariantId,
+			booking.startDate,
+			booking.endDate
+		);
+	
+		if (availableStock < productQuantity) {
+			throw new Error(
+				`Stock insuffisant : seulement ${availableStock} disponible(s) sur cette période`
+			);
 		}
 	
 		const bookingProduct = BookingProducts.create({
 			productQuantity,
 			booking,
-			product,
+			productVariant,
 		});
 	
 		await bookingProduct.save();
+		await this.recalculateBookingTotal(booking.id);
 		return bookingProduct;
 	}
 
-  async updateBookingProduct(id: number, data: UpdateBookingProductsInput ): Promise<BookingProducts> {
-    const bookingProduct = await BookingProducts.findOne({ where: { id },relations: ["booking", "product"], });
-    if (!bookingProduct) { throw new Error("BookingProduct not found"); }
+  async updateBookingProduct(id: number, data: UpdateBookingProductsInput): Promise<BookingProducts> {
+    const bookingProduct = await BookingProducts.findOne({
+      where: { id },
+      relations: ["booking", "productVariant"],
+    });
+    if (!bookingProduct) throw new Error("BookingProduct not found");
 
-		if (data.productQuantity !== undefined) {
-		const productQuantity = data.productQuantity;
-	
-		if (productQuantity <= 0) throw new Error("productQuantity must be > 0");
+    if (data.productQuantity !== undefined) {
+      const productQuantity = data.productQuantity;
 
-		if (bookingProduct.product.quantityVariants < productQuantity) {
-      throw new Error("Not enough stock available");
+      if (productQuantity <= 0) throw new Error("productQuantity must be > 0");
+
+      if (bookingProduct.productVariant.quantity < productQuantity) {
+        throw new Error("Stock insuffisant pour ce produit");
+      }
+
+      bookingProduct.productQuantity = productQuantity;
     }
-	
-		bookingProduct.productQuantity = productQuantity;
-		}
 
     await bookingProduct.save();
+		await this.recalculateBookingTotal(bookingProduct.booking.id);
     return bookingProduct;
   }
 
-  async deleteBookingProduct(id: number): Promise<number> {
-    const bookingProduct = await BookingProducts.findOne({ where: { id } });
+	async deleteBookingProduct(id: number): Promise<number> {
+    const bookingProduct = await BookingProducts.findOne({
+        where: { id },
+        relations: ["booking"],  
+    });
     if (!bookingProduct) throw new Error("BookingProduct not found");
 
+    const bookingId = bookingProduct.booking.id;  
+
     await BookingProducts.remove(bookingProduct);
+    await this.recalculateBookingTotal(bookingId);
     return id;
+}
+
+	private async recalculateBookingTotal(bookingId: number): Promise<void> {
+    const booking = await Booking.findOne({
+      where: { id: bookingId },
+      relations: [
+        "bookingsProducts",
+        "bookingsProducts.productVariant",
+        "bookingsProducts.productVariant.product",
+      ],
+    });
+
+    if (!booking) return;
+
+    const startDate = new Date(booking.startDate);
+    const endDate = new Date(booking.endDate);
+    const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+
+    let total = 0;
+    for (const bp of booking.bookingsProducts) {
+      total += bp.productQuantity * bp.productVariant.product.price * days;
+    }
+
+    booking.totalPrice = total;
+    await booking.save();
   }
 }

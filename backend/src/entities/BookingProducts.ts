@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 
 import { Booking } from "./Booking";
-import { Product } from "./Product";
+import { ProductVariant } from "./ProductVariant";
 
 @Entity()
 @ObjectType()
@@ -22,12 +22,12 @@ export class BookingProducts extends BaseEntity {
     @Column({ unsigned: true })
     productQuantity!: number;
 
-    @ManyToOne(() => Product, (product) => product.bookingsProducts)
-    @Field(() => Product)
-    product!: Product;
-
     @ManyToOne(() => Booking, (booking) => booking.bookingsProducts)
     @Field(() => Booking)
     booking!: Booking;
+
+    @ManyToOne(() => ProductVariant, (variant) => variant.bookingsProducts)
+    @Field(() => ProductVariant)
+    productVariant!: ProductVariant;
 
 }
