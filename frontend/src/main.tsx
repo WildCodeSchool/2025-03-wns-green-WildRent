@@ -40,10 +40,24 @@ const router = createBrowserRouter([
         { path: "products", element: <ProductPages /> },
         { path: "products/:id", element: <ProductDetailsPage /> },
         { path: "cart", element: <CartPage /> },
-        { path: "payment", element: <PaymentPage /> },
         { path: "login", element: <LoginPage /> },
         { path: "register", element: <RegisterPage /> },
-        { path: "confirmation", element: <ConfirmationPage /> },
+        {
+          path: "payment",
+          element: (
+            <ProtectedRoute>
+              <PaymentPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "confirmation",
+          element: (
+            <ProtectedRoute>
+              <ConfirmationPage />
+            </ProtectedRoute>
+          ),
+        },
         {
           path: "profile",
           element: (
