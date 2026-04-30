@@ -43,6 +43,7 @@ const router = createBrowserRouter([
         { path: "payment", element: <PaymentPage /> },
         { path: "login", element: <LoginPage /> },
         { path: "register", element: <RegisterPage /> },
+        { path: "confirmation", element: <ConfirmationPage /> },
         {
           path: "profile",
           element: (

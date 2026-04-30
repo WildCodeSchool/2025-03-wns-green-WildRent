@@ -3,6 +3,7 @@ import { BookingProducts } from "../entities/BookingProducts";
 import { ProductVariant } from "../entities/ProductVariant";
 import { CreateBookingProductsInput, UpdateBookingProductsInput } from "../dtos/booking-products.dto";
 import { ProductVariantService } from "./product-variant.service";
+import { Errors } from "../errors/errors";
 
 export class BookingProductsService {
 	private readonly productVariantService = new ProductVariantService();
@@ -21,16 +22,16 @@ export class BookingProductsService {
 
   async createBookingProduct(data: CreateBookingProductsInput): Promise<BookingProducts> {
 		const productQuantity = data.productQuantity;
-		if (productQuantity <= 0) throw new Error("productQuantity must be > 0");
+    if (productQuantity <= 0) throw Errors.badRequest("La quantité doit être supérieure à 0");
 	
 		const booking = await Booking.findOne({ where: { id: data.bookingId } });
-		if (!booking) throw new Error("Booking not found");
+	  if (!booking) throw Errors.notFound("Booking");
 	
 		const productVariant = await ProductVariant.findOne({
 			where: { id: data.productVariantId },
 			relations: ["product"],
 		});
-		if (!productVariant) throw new Error("ProductVariant not found");
+    if (!productVariant) throw Errors.notFound("ProductVariant");
 	
 		const availableStock = await this.productVariantService.getAvailableStock(
 			data.productVariantId,
@@ -39,9 +40,9 @@ export class BookingProductsService {
 		);
 	
 		if (availableStock < productQuantity) {
-			throw new Error(
-				`Stock insuffisant : seulement ${availableStock} disponible(s) sur cette période`
-			);
+      throw Errors.badRequest( 
+        `Stock insuffisant : seulement ${availableStock} disponible(s) sur cette période`
+      );
 		}
 	
 		const bookingProduct = BookingProducts.create({
@@ -60,15 +61,17 @@ export class BookingProductsService {
       where: { id },
       relations: ["booking", "productVariant"],
     });
-    if (!bookingProduct) throw new Error("BookingProduct not found");
+    if (!bookingProduct) throw Errors.notFound("BookingProduct");
 
     if (data.productQuantity !== undefined) {
       const productQuantity = data.productQuantity;
 
-      if (productQuantity <= 0) throw new Error("productQuantity must be > 0");
+      if (productQuantity <= 0) {
+        throw Errors.badRequest("La quantité doit être supérieure à 0");
+      }
 
       if (bookingProduct.productVariant.quantity < productQuantity) {
-        throw new Error("Stock insuffisant pour ce produit");
+        throw Errors.badRequest("Stock insuffisant pour ce produit");
       }
 
       bookingProduct.productQuantity = productQuantity;
@@ -84,7 +87,7 @@ export class BookingProductsService {
         where: { id },
         relations: ["booking"],  
     });
-    if (!bookingProduct) throw new Error("BookingProduct not found");
+    if (!bookingProduct) throw Errors.notFound("BookingProduct");
 
     const bookingId = bookingProduct.booking.id;  
 

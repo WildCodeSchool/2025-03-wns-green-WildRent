@@ -18,7 +18,13 @@ export class BookingResolver {
   private readonly bookingService = new BookingService();
   
   @Query(() => [Booking])
-  async getAllBookings(): Promise<Booking[]> {
+  async getAllBookings(
+    @Ctx() context: AnonContext | AuthContext,
+  ): Promise<Booking[]> {
+    const userToken = (context as AuthContext).user;
+    if (!userToken) throw Errors.notAuthenticated();
+    if (userToken.role !== "admin") throw Errors.unauthorized();
+  
     return this.bookingService.getAllBookings();
   }
 

@@ -6,6 +6,7 @@ import { UserEditForm } from "../components/UserEditForm";
 import { DeleteAccountModal } from "../components/DeleteAccountModal";
 import { useAuth } from "../context/AuthContext";
 import type { User } from "../types/user.types";
+import { MyBookings } from "../components/Booking/MyBooking";
 
 export const UserProfilePage = () => {
   const [activeTab, setActiveTab] = useState<"info" | "orders">("info");
@@ -61,7 +62,15 @@ export const UserProfilePage = () => {
             }}
           />
         )}
+        
+         {activeTab === "orders" && (
+          <div className="mt-6">
+            <MyBookings />
+         </div>
+        )}
       </div>
+
+      
 
       {showDeleteModal && (
         <DeleteAccountModal

@@ -3,9 +3,10 @@ import { useCart } from "../../context/CartContext";
 type PaymentSummaryProps = {
   onPayment: () => void;
   loading: boolean;
+  disabled: boolean;
 };
 
-export default function PaymentSummary({ onPayment, loading }: Readonly<PaymentSummaryProps>) {
+export default function PaymentSummary({ onPayment, loading, disabled }: Readonly<PaymentSummaryProps>) {
   const { items } = useCart();
 
   const total = items.reduce((sum, item) => {
@@ -32,16 +33,22 @@ export default function PaymentSummary({ onPayment, loading }: Readonly<PaymentS
         </p>
 
         <p className="mt-6 text-base leading-8 text-[var(--beige)] ">
-          En cliquant sur Payer, j’accepte les conditions générales de Wild Rent
+          En cliquant sur Payer, j'accepte les conditions générales de Wild Rent
         </p>
 
         <button
-         onClick={onPayment}
-         disabled={loading}
-         className="mt-8 w-full rounded-full bg-[var(--beige)] py-4 text-xl font-bold text-[var(--dark-green)] cursor-pointer disabled:opacity-50"
-         >
-            {loading ? "Traitement..." : "Payer"}
+          onClick={onPayment}
+          disabled={loading || disabled}
+          className="mt-8 w-full rounded-full bg-[var(--beige)] py-4 text-xl font-bold text-[var(--dark-green)] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? "Traitement..." : "Payer"}
         </button>
+
+        {disabled && !loading && (
+          <p className="mt-3 text-center text-sm text-[var(--beige)]">
+            Veuillez remplir tous les champs de paiement
+          </p>
+        )}
       </div>
     </div>
   );

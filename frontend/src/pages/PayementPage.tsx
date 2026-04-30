@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import { useNavigate } from "react-router";
 import { useCart } from "../context/CartContext";
-import { CREATE_BOOKING, CREATE_BOOKING_PRODUCT } from "../graphql/booking.operations";
+import { CREATE_BOOKING, CREATE_BOOKING_PRODUCT, DELETE_BOOKING } from "../graphql/booking.operations";
 import { handleGraphQLError } from "../utils/handleGraphQLError";
 
 export function PaymentPage() {
@@ -13,11 +13,13 @@ export function PaymentPage() {
   const { items, clearCart } = useCart();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
 
   const [createBooking] = useMutation(CREATE_BOOKING, {
     refetchQueries: ["GetMyBookings"],
   });
   const [createBookingProduct] = useMutation(CREATE_BOOKING_PRODUCT);
+  const [deleteBooking] = useMutation(DELETE_BOOKING);
 
 
   function groupItemsByDates() {
@@ -57,7 +59,6 @@ export function PaymentPage() {
       const bookingIds: number[] = [];
 
       for (const group of Object.values(groups)) {
-
         const res = await createBooking({
           variables: {
             data: {
@@ -66,25 +67,29 @@ export function PaymentPage() {
             }
           }
         });
-
         const newBookingId = (res.data as { createBooking: { id: number } }).createBooking.id;
         bookingIds.push(newBookingId);
 
-        for (const item of group) {
-          await createBookingProduct({
-            variables: {
-              data: {
-                bookingId: Number(newBookingId),
-                productVariantId: item.variantId,   
-                productQuantity: item.quantity,
+        try {
+          for (const item of group) {
+            await createBookingProduct({
+              variables: {
+                data: {
+                  bookingId: Number(newBookingId),
+                  productVariantId: item.variantId,
+                  productQuantity: item.quantity,
+                }
               }
-            }
-          });
+            });
+          }
+        } catch (innerErr) {
+          await deleteBooking({ variables: { id: newBookingId } });
+          bookingIds.pop();
+          throw innerErr;
         }
       }
 
       clearCart();
-      
 
       navigate("/confirmation", {
         state: {
@@ -108,22 +113,24 @@ export function PaymentPage() {
     } finally {
       setLoading(false);
     }
-    
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <PaymentForm />
+          <PaymentForm onValidityChange={setIsFormValid} />
         </div>
 
         <div className="flex flex-col gap-8">
-          <PaymentSummary onPayment={handlePayment} loading={loading} />
+          <PaymentSummary
+            onPayment={handlePayment}
+            loading={loading}
+            disabled={!isFormValid}
+          />
           <BillingAddress />
         </div>
       </div>
-
     </div>
   );
 }

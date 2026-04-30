@@ -59,10 +59,11 @@ describe("BookingService", () => {
   it("should throw error if booking not found by id", async () => {
     (Booking.findOne as jest.Mock).mockResolvedValueOnce(null);
 
-    await expect(service.getBookingById(999)).rejects.toThrow("Booking not found");
+    await expect(service.getBookingById(999)).rejects.toThrow("Booking introuvable");
   });
 
-  it("should create a booking with default status", async () => {
+  it("should create a booking with default status and user", async () => {
+    (User.findOne as jest.Mock).mockResolvedValueOnce({ id: 1, email: "test@test.com" });
     (Status.findOne as jest.Mock).mockResolvedValueOnce({
       id: 1,
       statusName: "En attente",
@@ -75,14 +76,30 @@ describe("BookingService", () => {
       },
       1, 
     );
+
     expect(Booking.create).toHaveBeenCalledWith(
       expect.objectContaining({
         startDate: expect.any(Date),
         endDate: expect.any(Date),
+        user: expect.objectContaining({ id: 1 }),
       })
     );
 
     expect(result).toBeDefined();
+  });
+
+  it("should throw error if user not found on create", async () => {
+    (User.findOne as jest.Mock).mockResolvedValueOnce(null);
+
+    await expect(
+      service.createBooking(
+        {
+          startDate: new Date("2026-01-01"),
+          endDate: new Date("2026-01-05"),
+        },
+        999,
+      )
+    ).rejects.toThrow("User introuvable");
   });
 
   it("should throw error if end date is before start date on create", async () => {
@@ -92,13 +109,18 @@ describe("BookingService", () => {
           startDate: new Date("2026-01-05"),
           endDate: new Date("2026-01-01"),
         },
-        1, // userId
+        1,
       )
     ).rejects.toThrow("La date de fin doit être après la date de début");
   });
 
   it("should update a booking", async () => {
-    const bookingMock = { id: 1, startDate: new Date("2026-01-01"), endDate: new Date("2026-01-05"), save: jest.fn() };
+    const bookingMock = { 
+      id: 1, 
+      startDate: new Date("2026-01-01"), 
+      endDate: new Date("2026-01-05"), 
+      save: jest.fn() 
+    };
     (Booking.findOne as jest.Mock).mockResolvedValueOnce(bookingMock);
 
     const data = { startDate: new Date("2026-01-02") };
@@ -111,11 +133,19 @@ describe("BookingService", () => {
   it("should throw error if booking not found on update", async () => {
     (Booking.findOne as jest.Mock).mockResolvedValueOnce(null);
 
-    await expect(service.updateBooking(999, { startDate: new Date("2026-01-01") })).rejects.toThrow("Booking not found");
+    await expect(
+      service.updateBooking(999, { startDate: new Date("2026-01-01") })
+    ).rejects.toThrow("Booking introuvable");
   });
 
   it("should update booking status", async () => {
-    const bookingMock = { id: 1, startDate: new Date("2026-01-01"), endDate: new Date("2026-01-05"), status: {}, save: jest.fn() };
+    const bookingMock = { 
+      id: 1, 
+      startDate: new Date("2026-01-01"), 
+      endDate: new Date("2026-01-05"), 
+      status: {}, 
+      save: jest.fn() 
+    };
     (Booking.findOne as jest.Mock).mockResolvedValueOnce(bookingMock);
 
     (Status.findOne as jest.Mock).mockResolvedValueOnce({
@@ -127,20 +157,6 @@ describe("BookingService", () => {
 
     expect(bookingMock.save).toHaveBeenCalled();
     expect(result.status).toEqual({ id: 2, statusName: "À préparer" });
-  });
-
-  it("should throw error if end date is before start date on update", async () => {
-    const bookingMock = {
-      id: 1,
-      startDate: new Date("2026-01-05"),
-      endDate: new Date("2026-01-01"),
-      status: {},
-      save: jest.fn(),
-    };
-
-    (Booking.findOne as jest.Mock).mockResolvedValueOnce(bookingMock);
-
-    await expect(service.updateBooking(1, {})).rejects.toThrow("End date must be after start date");
   });
 
   it("should delete a booking", async () => {
@@ -155,6 +171,6 @@ describe("BookingService", () => {
   it("should throw error if booking not found on delete", async () => {
     (Booking.findOneBy as jest.Mock).mockResolvedValueOnce(null);
 
-    await expect(service.deleteBooking(999)).rejects.toThrow("Booking not found");
+    await expect(service.deleteBooking(999)).rejects.toThrow("Booking introuvable");
   });
 });

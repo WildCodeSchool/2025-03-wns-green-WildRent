@@ -21,9 +21,10 @@ export default function CartSummary() {
       </div>
 
       <button 
-       onClick={() => navigate("/payment")}
-       className="mt-4 w-full rounded-xl py-4 font-bold bg-white border-2 border-[var(--dark-green)] text-[var(--dark-green)] cursor-pointer">
-        Paiement
+        onClick={() => navigate("/payment")}
+        disabled={items.length === 0}
+        className="mt-4 w-full rounded-xl py-4 font-bold bg-white border-2 border-[var(--dark-green)] text-[var(--dark-green)] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+         Paiement
       </button>
     </div>
   );

@@ -39,7 +39,7 @@ export class BookingService {
   async createBooking(data: CreateBookingInput, userId: number): Promise<Booking> {
 
     if (data.endDate <= data.startDate) {
-      throw new Error("La date de fin doit être après la date de début");
+      throw Errors.badRequest("La date de fin doit être après la date de début");
     }
 
     const user = await User.findOne({ where: { id: userId } });
@@ -69,7 +69,7 @@ export class BookingService {
     }
 
     if (booking.endDate <= booking.startDate) {
-      throw new Error("La date de fin doit être après la date de début");
+      throw Errors.badRequest("La date de fin doit être après la date de début");
     }
 
     if (data.statusId) {
