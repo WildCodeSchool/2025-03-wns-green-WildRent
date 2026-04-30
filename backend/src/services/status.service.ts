@@ -1,7 +1,6 @@
 import { StatusInput } from "../dtos/status.dto";
 import { Status } from "../entities/Status";
 
-
 export class StatusService {
   async getAllStatus(): Promise<Status[]> {
     return Status.find();

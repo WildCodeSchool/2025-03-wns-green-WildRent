@@ -10,10 +10,6 @@ export class CreateBookingInput {
   @Field(() => Date)
   @IsDate()
   endDate!: Date;
-
-  // @Field(() => Float, { nullable: true })
-  // @IsOptional()
-  // totalPrice?: number;
 }
 
 @InputType()
