@@ -11,6 +11,7 @@ import {
 
 import { Status } from "./Status";
 import { BookingProducts } from "./BookingProducts";
+import { User } from "./User";
 
 @Entity()
 @ObjectType()
@@ -25,7 +26,7 @@ export class Booking extends BaseEntity {
 	@Generated("increment")
     bookingRef!: number;
     
-    @Field()
+    @Field({ nullable: true }) 
     @Column({ nullable: true })
     totalPrice?: number;
 
@@ -40,6 +41,10 @@ export class Booking extends BaseEntity {
     @ManyToOne(() => Status, (status) => status.bookings)
     @Field(() => Status)
     status!: Status;
+
+    @ManyToOne(() => User, (user) => user.bookings)
+    @Field(() => User)
+    user!: User;
 
     @OneToMany(() => BookingProducts, (bookingProducts) => bookingProducts.booking)
     @Field(() => [BookingProducts])

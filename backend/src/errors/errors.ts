@@ -18,4 +18,7 @@ export const Errors = {
 
     mustRegister: () =>
         new AppError("MUST_REGISTER", "Aucun compte trouvé avec cet email, veuillez vous inscrire"),
+
+    badRequest: (message: string) =>       
+        new AppError("BAD_REQUEST", message),
 };

@@ -8,3 +8,17 @@ export const GET_PRODUCT_VARIANT_STOCK = gql`
 		}
 	}
 `;
+
+export const GET_AVAILABLE_STOCK = gql`
+  query GetAvailableStock(
+    $productVariantId: Float!
+    $startDate: DateTimeISO!
+    $endDate: DateTimeISO!
+  ) {
+    getAvailableStock(
+      productVariantId: $productVariantId
+      startDate: $startDate
+      endDate: $endDate
+    )
+  }
+`;

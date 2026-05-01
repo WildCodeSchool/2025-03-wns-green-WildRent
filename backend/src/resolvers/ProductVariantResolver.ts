@@ -1,4 +1,4 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Int, Mutation, Query, Resolver } from "type-graphql";
 import { ProductVariant } from "../entities/ProductVariant";
 import { ProductVariantService } from "../services/product-variant.service";
 import { CreateProductVariantInput, UpdateProductVariantInput } from "../dtos/product-variant.dto";
@@ -15,6 +15,15 @@ export default class ProductVariantResolver {
     @Query(() => ProductVariant)
     async getProductVariantById(@Arg("id") id: number) {
         return this.productVariantService.getProductVariantById(id); 
+    }
+
+    @Query(() => Int)
+    async getAvailableStock(
+        @Arg("productVariantId") productVariantId: number,
+        @Arg("startDate") startDate: Date,
+        @Arg("endDate") endDate: Date,
+    ): Promise<number> {
+        return this.productVariantService.getAvailableStock(productVariantId, startDate, endDate);
     }
     
     @Mutation(() => ProductVariant)

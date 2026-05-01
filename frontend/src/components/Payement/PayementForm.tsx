@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type PaymentFormData = {
   cardNumber: string;
@@ -7,13 +7,27 @@ type PaymentFormData = {
   cardName: string;
 };
 
-export default function PaymentForm() {
+type PaymentFormProps = {
+  onValidityChange: (isValid: boolean) => void;
+};
+
+export default function PaymentForm({ onValidityChange }: Readonly<PaymentFormProps>) {
   const [formData, setFormData] = useState<PaymentFormData>({
     cardNumber: "",
     expiry: "",
     cvc: "",
     cardName: "",
   });
+
+  useEffect(() => {
+    const isValid =
+      formData.cardNumber.trim().length >= 16 &&
+      formData.expiry.trim().length >= 5 &&
+      formData.cvc.trim().length >= 3 &&
+      formData.cardName.trim().length > 0;
+
+    onValidityChange(isValid);
+  }, [formData, onValidityChange]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -132,7 +146,7 @@ export default function PaymentForm() {
 
               <p className="text-sm leading-relaxed text-[var(--beige)]">
                 Le paiement se fait sur les serveurs de votre banque. Wild Rent
-                n’a pas accès à vos données bancaires.
+                n'a pas accès à vos données bancaires.
               </p>
             </div>
 

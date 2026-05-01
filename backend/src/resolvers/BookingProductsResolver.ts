@@ -30,7 +30,7 @@ export class BookingProductsResolver {
   }
 
 	@Mutation(() => BookingProducts)
-async updateBookingProduct(@Arg("id", () => ID) id: number,@Arg("data") data: UpdateBookingProductsInput): Promise<BookingProducts> {
+  async updateBookingProduct(@Arg("id", () => ID) id: number,@Arg("data") data: UpdateBookingProductsInput): Promise<BookingProducts> {
   return this.bookingProductsService.updateBookingProduct(id, data);
 }
 

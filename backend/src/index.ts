@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import { dataSource } from "./config/db";
+import { seedStatuses } from "./seeds/status_seed";
 import { buildSchema } from "type-graphql";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
@@ -43,6 +44,7 @@ const PORT = process.env.PORT ?? 4200;
 
 async function startServer() {
   await dataSource.initialize();
+  await seedStatuses();
 
   const schema = await buildSchema({
     resolvers: [

@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client/react";
 import { useCart } from "../../context/CartContext";
-import { GET_PRODUCT_VARIANT_STOCK } from "../../graphql/ProductVariantOperations";
+import { GET_AVAILABLE_STOCK } from "../../graphql/ProductVariantOperations";
 
 type CartItemProps = {
   productId: number;
@@ -26,14 +26,19 @@ export default function CartItem({ variantId, productName, productRef, image, pr
   const millisecondsPerDay = 1000 * 60 * 60 * 24;
   const days = Math.ceil(differenceMilliseconds / millisecondsPerDay);
 
-
-  const { data } = useQuery<{ getProductVariantById: { id: number; quantity: number } }>(
-    GET_PRODUCT_VARIANT_STOCK,
-    { variables: { id: variantId } }
+  const { data } = useQuery<{ getAvailableStock: number }>(
+    GET_AVAILABLE_STOCK,
+    { 
+      variables: { 
+        productVariantId: variantId,
+        startDate: startDateObj.toISOString(),
+        endDate: endDateObj.toISOString(),
+      } 
+    }
   );
 
-  const stock = data?.getProductVariantById?.quantity ?? 0;
-  const isMaxStock = quantity >= stock; 
+  const availableStock = data?.getAvailableStock ?? 0;
+  const isMaxStock = quantity >= availableStock; 
 
   return (
     <div className="flex items-center gap-4 p-4 bg-[var(--dark-green)] rounded-xl text-white">
@@ -48,10 +53,9 @@ export default function CartItem({ variantId, productName, productRef, image, pr
         <p className="text-xs">Début de location : {startDate}</p>
         <p className="text-xs">Fin de location : {endDate}</p>
         
-    
         {isMaxStock && (
           <p className="text-red-400 text-xs mt-1">
-             Stock maximum atteint ({stock} disponibles)
+             Stock maximum atteint ({availableStock} disponible{availableStock > 1 ? "s" : ""} sur cette période)
           </p>
         )}
       </div>

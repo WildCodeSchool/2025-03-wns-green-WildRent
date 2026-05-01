@@ -13,6 +13,7 @@ type ProductVariant = {
 };
 
 type ProductData = {
+  id: number;
   name: string;
   brand: string;
   price: number;
@@ -50,6 +51,7 @@ export function ProductDetailsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <ProductDetailsCarousel images={images} productName={product.name} />
         <ProductDetailsDescription
+          productId={product.id}
           title={product.name}
           brand={product.brand}
           pricePerDay={product.price}
