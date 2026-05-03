@@ -22,6 +22,7 @@ export class BookingService {
       }
       return booking;
   }
+
   async getMyBookings(userId: number): Promise<Booking[]> {
     return Booking.find({
       where: { user: { id: userId } },
@@ -58,7 +59,7 @@ export class BookingService {
     return booking;
   }
 
-  async updateBooking(id: number, data: UpdateBookingInput): Promise<Booking> {
+  async updateBooking(id: number, data: UpdateBookingInput, userId: number): Promise<Booking> {
     const booking = await Booking.findOne({
       where: { id },
       relations: ["status", "user"],
@@ -68,8 +69,12 @@ export class BookingService {
       throw Errors.notFound("Booking");
     }
 
-    if (booking.endDate <= booking.startDate) {
-      throw Errors.badRequest("La date de fin doit être après la date de début");
+    if (booking.user.id !== userId) {
+      throw Errors.unauthorized();
+    }
+
+    if (booking.status.statusName !== "En attente") {
+      throw Errors.badRequest("Seules les réservations en attente peuvent être modifiées");
     }
 
     if (data.statusId) {
@@ -77,8 +82,13 @@ export class BookingService {
       booking.status = status;
     }
 
-    Object.assign(booking, data);
-    
+    if (data.startDate) booking.startDate = data.startDate;
+    if (data.endDate) booking.endDate = data.endDate;
+
+    if (booking.endDate <= booking.startDate) {
+      throw Errors.badRequest("La date de fin doit être après la date de début");
+    }
+
     await booking.save();
     return booking;
   }
@@ -90,6 +100,4 @@ export class BookingService {
     await Booking.delete({ id });
     return id;
   }
-
-  
 }

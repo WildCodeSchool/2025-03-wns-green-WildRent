@@ -1,4 +1,4 @@
-import { Field, InputType, ID, Float } from "type-graphql";
+import { Field, InputType, Int} from "type-graphql";
 import { IsInt, Min, IsOptional, IsDate } from "class-validator";
 
 @InputType()
@@ -24,7 +24,7 @@ export class UpdateBookingInput {
   @IsOptional()
   endDate?: Date;
 
-  @Field(() => ID, { nullable: true })
+  @Field(() => Int, { nullable: true })
   @IsInt()
   @IsOptional()
   @Min(1)
