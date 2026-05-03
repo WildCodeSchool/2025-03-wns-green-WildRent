@@ -56,9 +56,13 @@ export class BookingResolver {
   @Mutation(() => Booking)
   async updateBooking(
     @Arg("id", () => ID) id: number,
-    @Arg("data") data: UpdateBookingInput
+    @Arg("data") data: UpdateBookingInput,
+    @Ctx() context: AuthContext | AnonContext,
   ): Promise<Booking> {
-    return this.bookingService.updateBooking(id, data);
+    const userToken = (context as AuthContext).user;
+    if (!userToken) throw Errors.notAuthenticated();
+    
+    return this.bookingService.updateBooking(id, data, userToken.id);
   }
 
   @Mutation(() => ID)

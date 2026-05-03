@@ -52,3 +52,26 @@ export const DELETE_BOOKING = gql`
     deleteBooking(id: $id)
   }
 `;
+
+export const UPDATE_BOOKING = gql`
+  mutation UpdateBooking($id: ID!, $data: UpdateBookingInput!) {
+    updateBooking(id: $id, data: $data) {
+      id
+      startDate
+      endDate
+      totalPrice
+      status {
+        statusName
+      }
+    }
+  }
+`;
+
+export const GET_ALL_STATUS = gql`
+  query GetAllStatus {
+    getAllStatus {
+      id
+      statusName
+    }
+  }
+`;
