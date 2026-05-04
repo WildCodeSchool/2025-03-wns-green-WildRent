@@ -1,20 +1,23 @@
 import { useState } from "react";
 import { useQuery } from "@apollo/client/react";
 import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router";
 import { GET_AVAILABLE_STOCK } from "../../graphql/ProductVariantOperations";
+import { getEffectiveDiscount } from "../../utils/getEffectiveDiscount";
 
 type ProductDescriptionProps = {
   productId: number;
   title: string;
   brand: string;
   pricePerDay: number;
+  productDiscount: number;
   reference: string;
   description: string;
   colors: string[];
   sizes: string[];
   image: string;
-  variants: { id: number; color: string; size: string; quantity: number }[];
+  variants: { id: number; color: string; size: string; quantity: number; discount: number }[];
 };
 
 export default function ProductDetailsDescription({
@@ -22,6 +25,7 @@ export default function ProductDetailsDescription({
   title,
   brand,
   pricePerDay,
+  productDiscount,
   reference,
   description,
   colors,
@@ -35,6 +39,7 @@ export default function ProductDetailsDescription({
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const { addItem, items } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
@@ -67,7 +72,12 @@ export default function ProductDetailsDescription({
     }
   }
 
-  function handleAddToCart() {
+  async function handleAddToCart() {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
     if (!color || !size || !startDate || !endDate) {
       setError("Veuillez remplir tous les champs avant d'ajouter le produit au panier");
       return;
@@ -78,7 +88,9 @@ export default function ProductDetailsDescription({
       return;
     }
 
-    const quantityInCart = items.find((i) => i.variantId === selectedVariant.id)?.quantity ?? 0;
+    const quantityInCart = items
+      .filter((i) => i.variantId === selectedVariant.id && i.startDate === startDate && i.endDate === endDate)
+      .reduce((sum, i) => sum + i.quantity, 0);
     if (quantityInCart >= availableStock) {
       setError(
         availableStock === 0
@@ -90,29 +102,47 @@ export default function ProductDetailsDescription({
 
     setError("");
 
-    addItem({
-      productId: productId,
-      variantId: selectedVariant.id,
-      productName: title,
-      productRef: reference,
-      image,
-      price: pricePerDay,
-      color,
-      size,
-      startDate,
-      endDate,
-      quantity: 1,
-    });
-    navigate("/cart");
+    try {
+      await addItem({
+        productVariantId: selectedVariant.id,
+        quantity: 1,
+        startDate,
+        endDate,
+      });
+      navigate("/cart");
+    } catch {
+      setError("Erreur lors de l'ajout au panier");
+    }
   }
 
   const isUnavailable = !!selectedVariant && !!startDate && !!endDate && availableStock === 0;
+
+  const effectiveDiscount = selectedVariant
+    ? getEffectiveDiscount(productDiscount, selectedVariant.discount)
+    : productDiscount;
+  const hasDiscount = effectiveDiscount > 0;
+  const discountedPrice = hasDiscount ? Math.round(pricePerDay * (1 - effectiveDiscount / 100)) : pricePerDay;
 
   return (
     <section className="w-full text-left">
       <h1 className="text-3xl font-bold font-[family-name:var(--font-title)] text-[var(--dark-green)]">{title}</h1>
       <p className="mt-1 text-sm font-[family-name:var(--font-text)] text-[var(--light-green)]">{brand}</p>
-      <p className="mt-2 text-2xl font-[family-name:var(--font-text)] font-bold text-[var(--dark-green)]">{pricePerDay}€/jour</p>
+      <div className="mt-2 flex items-center gap-3">
+        {hasDiscount ? (
+          <>
+            <p className="text-2xl font-[family-name:var(--font-text)] font-bold text-[var(--dark-green)]">{discountedPrice}€/jour</p>
+            <span className="relative text-sm text-gray-400 font-[family-name:var(--font-text)]">
+              {pricePerDay}€
+              <span className="absolute left-0 top-1/2 w-full h-[2px] bg-red-500 -rotate-12" />
+            </span>
+            <span className="text-xs font-bold font-[family-name:var(--font-text)] text-white bg-[#87a700] px-2 py-0.5 rounded-full">
+              -{effectiveDiscount}%
+            </span>
+          </>
+        ) : (
+          <p className="text-2xl font-[family-name:var(--font-text)] font-bold text-[var(--dark-green)]">{pricePerDay}€/jour</p>
+        )}
+      </div>
       <p className="mt-2 text-sm font-[family-name:var(--font-text)] text-[var(--light-green)]">Réf: {reference}</p>
 
       <div className="mt-6 rounded-xl bg-[var(--dark-green)] p-6 text-[var(--beige)]">

@@ -1,23 +1,34 @@
 import { useCart } from "../../context/CartContext";
 import CartItem from "./CartItem";
+import { calculateDays } from "../../utils/calculateDays";
 
 export default function CartItemList() {
-  const { items } = useCart();
+  const { items, loading } = useCart();
   const total = items.reduce((sum, item) => {
-    const start = new Date(item.startDate);
-    const end = new Date(item.endDate);
-    const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    const days = calculateDays(item.startDate, item.endDate);
     return sum + item.price * item.quantity * days;
   }, 0);
 
+  if (loading) {
+    return (
+      <div className="flex flex-col gap-3">
+        <div className="rounded-xl bg-[var(--dark-green)] p-6 flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-white font-[family-name:var(--font-title)]">Mon Panier</h1>
+        </div>
+        <div className="rounded-xl bg-[var(--dark-green)] p-6">
+          <p className="text-white text-center py-8">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-3">
-      
+
       <div className="rounded-xl bg-[var(--dark-green)] p-6 flex justify-between items-center">
         <h1 className="text-2xl font-bold text-white font-[family-name:var(--font-title)]">Mon Panier</h1>
       </div>
 
- 
       {items.length === 0 ? (
         <div className="rounded-xl bg-[var(--dark-green)] p-6">
           <p className="text-white text-center py-8">Votre panier est vide</p>
@@ -25,7 +36,7 @@ export default function CartItemList() {
       ) : (
         <>
           {items.map((item) => (
-            <CartItem key={`${item.productId}-${item.color}-${item.size}-${item.startDate}-${item.endDate}`} {...item} />
+            <CartItem key={item.bookingProductId} {...item} />
           ))}
         </>
       )}
