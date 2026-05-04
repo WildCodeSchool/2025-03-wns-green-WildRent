@@ -1,5 +1,6 @@
 import {
   Arg,
+  Authorized,
   Ctx,
   ID,
   Mutation,
@@ -15,99 +16,78 @@ import {
   UpdateCartItemDatesInput,
   RemoveCartItemInput,
 } from "../dtos/cart.dto";
-import { AnonContext, AuthContext } from "../types/types";
-import { Errors } from "../errors/errors";
+import { AuthContext } from "../types/types";
 
 @Resolver()
 export class CartResolver {
   private readonly cartService = new CartService();
 
+  @Authorized()
   @Query(() => [Booking])
-  async getMyCart(
-    @Ctx() context: AnonContext | AuthContext
-  ): Promise<Booking[]> {
-    const userToken = (context as AuthContext).user;
-    if (!userToken) throw Errors.notAuthenticated();
-
-    return this.cartService.getMyCart(userToken.id);
+  async getMyCart(@Ctx() context: AuthContext): Promise<Booking[]> {
+    return this.cartService.getMyCart(context.user.id);
   }
 
+  @Authorized()
   @Mutation(() => Booking)
   async addToCart(
     @Arg("data") data: AddToCartInput,
-    @Ctx() context: AnonContext | AuthContext
+    @Ctx() context: AuthContext,
   ): Promise<Booking> {
-    const userToken = (context as AuthContext).user;
-    if (!userToken) throw Errors.notAuthenticated();
-
     return this.cartService.addToCart(
-      userToken.id,
+      context.user.id,
       data.productVariantId,
       data.quantity,
       data.startDate,
-      data.endDate
+      data.endDate,
     );
   }
 
+  @Authorized()
   @Mutation(() => Booking)
   async updateCartItemQuantity(
     @Arg("data") data: UpdateCartItemQuantityInput,
-    @Ctx() context: AnonContext | AuthContext
+    @Ctx() context: AuthContext,
   ): Promise<Booking> {
-    const userToken = (context as AuthContext).user;
-    if (!userToken) throw Errors.notAuthenticated();
-
     return this.cartService.updateCartItemQuantity(
-      userToken.id,
+      context.user.id,
       data.bookingProductId,
-      data.quantity
+      data.quantity,
     );
   }
 
+  @Authorized()
   @Mutation(() => Booking)
   async updateCartItemDates(
     @Arg("data") data: UpdateCartItemDatesInput,
-    @Ctx() context: AnonContext | AuthContext
+    @Ctx() context: AuthContext,
   ): Promise<Booking> {
-    const userToken = (context as AuthContext).user;
-    if (!userToken) throw Errors.notAuthenticated();
-
     return this.cartService.updateCartItemDates(
-      userToken.id,
+      context.user.id,
       data.bookingProductId,
       data.startDate,
-      data.endDate
+      data.endDate,
     );
   }
 
+  @Authorized()
   @Mutation(() => ID)
   async removeCartItem(
     @Arg("data") data: RemoveCartItemInput,
-    @Ctx() context: AnonContext | AuthContext
+    @Ctx() context: AuthContext,
   ): Promise<number> {
-    const userToken = (context as AuthContext).user;
-    if (!userToken) throw Errors.notAuthenticated();
-
-    return this.cartService.removeCartItem(userToken.id, data.bookingProductId);
+    return this.cartService.removeCartItem(context.user.id, data.bookingProductId);
   }
 
+  @Authorized()
   @Mutation(() => Boolean)
-  async clearCart(
-    @Ctx() context: AnonContext | AuthContext
-  ): Promise<boolean> {
-    const userToken = (context as AuthContext).user;
-    if (!userToken) throw Errors.notAuthenticated();
-
-    return this.cartService.clearCart(userToken.id);
+  async clearCart(@Ctx() context: AuthContext): Promise<boolean> {
+    return this.cartService.clearCart(context.user.id);
   }
 
+  @Authorized()
   @Mutation(() => [Booking])
-  async validateCart(
-    @Ctx() context: AnonContext | AuthContext
-  ): Promise<Booking[]> {
-    const userToken = (context as AuthContext).user;
-    if (!userToken) throw Errors.notAuthenticated();
-
-    return this.cartService.validateCart(userToken.id);
+  async validateCart(@Ctx() context: AuthContext): Promise<Booking[]> {
+    return this.cartService.validateCart(context.user.id);
   }
 }

@@ -1,4 +1,4 @@
-import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Ctx, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { AuthService } from "../services/auth.service";
 import { UserService } from "../services/user.service";
 import { AnonContext, AuthContext } from "../types/types";
@@ -83,6 +83,7 @@ export default class AuthResolver {
   }
 
   /** Clears the JWT cookie (logout). */
+  @Authorized()
   @Mutation(() => Boolean)
   async logout(@Ctx() context: AnonContext | AuthContext): Promise<boolean> {
     clearCookie(context, COOKIE_NAME);
@@ -90,39 +91,33 @@ export default class AuthResolver {
   }
 
   /** Returns the currently authenticated user, or throws if not connected. */
+  @Authorized()
   @Query(() => User)
-  async whoAmI(@Ctx() context: AnonContext | AuthContext): Promise<User> {
-    const userToken = (context as AuthContext).user;
-    if (!userToken) throw Errors.notAuthenticated();
-
-    return this.userService.getUserById(userToken.id);
+  async whoAmI(@Ctx() context: AuthContext): Promise<User> {
+    return this.userService.getUserById(context.user.id);
   }
 
   /** Updates the authenticated user's profile using the ID from the JWT. */
+  @Authorized()
   @Mutation(() => User)
   async updateMyProfile(
     @Arg("data") data: UpdateUserDto,
-    @Ctx() context: AnonContext | AuthContext,
+    @Ctx() context: AuthContext,
   ): Promise<User> {
-    const userToken = (context as AuthContext).user;
-    if (!userToken) throw Errors.notAuthenticated();
-
-    return this.userService.updateUser(userToken.id, data);
+    return this.userService.updateUser(context.user.id, data);
   }
 
   /** Deletes the authenticated user's account after password verification. */
+  @Authorized()
   @Mutation(() => Boolean)
   async deleteMyAccount(
     @Arg("data") data: DeleteAccountDto,
-    @Ctx() context: AnonContext | AuthContext,
+    @Ctx() context: AuthContext,
   ): Promise<boolean> {
-    const userToken = (context as AuthContext).user;
-    if (!userToken) throw Errors.notAuthenticated();
-
-    const isValid = await this.authService.verifyPassword(userToken.id, data.password);
+    const isValid = await this.authService.verifyPassword(context.user.id, data.password);
     if (!isValid) throw Errors.invalidCredentials();
 
-    await this.userService.deleteUser(userToken.id);
+    await this.userService.deleteUser(context.user.id);
     clearCookie(context, COOKIE_NAME);
 
     return true;
