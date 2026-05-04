@@ -1,5 +1,6 @@
-import { AuthChecker } from "type-graphql";
+import { AuthCheckerFn } from "type-graphql";
 import { AnonContext, AuthContext } from "../types/types";
+import { Errors } from "../errors/errors";
 
 /**
  * Custom auth checker for type-graphql @Authorized() decorator.
@@ -7,19 +8,19 @@ import { AnonContext, AuthContext } from "../types/types";
  * - @Authorized()          → requires any authenticated user
  * - @Authorized("admin")   → requires admin role
  * - @Authorized("admin", "manager") → requires admin OR manager role
+ *
+ * Throws typed AppErrors so the customErrorFormatter can return
+ * proper NOT_AUTHENTICATED / UNAUTHORIZED codes to the client.
  */
-export const authChecker: AuthChecker<AnonContext | AuthContext> = (
+export const authChecker: AuthCheckerFn<AnonContext | AuthContext> = (
   { context },
   roles,
 ) => {
   const user = (context as AuthContext).user;
 
-  // No token → not authenticated
-  if (!user) return false;
-
-  // No roles specified → just needs to be logged in
+  if (!user) throw Errors.notAuthenticated();
   if (roles.length === 0) return true;
+  if (!roles.includes(user.role)) throw Errors.unauthorized();
 
-  // Check if user's role matches any of the required roles
-  return roles.includes(user.role);
+  return true;
 };
