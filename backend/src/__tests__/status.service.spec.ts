@@ -4,8 +4,8 @@ import { Status } from "../entities/Status";
 
 jest.mock("../entities/Status", () => ({
   Status: {
-    create: jest.fn().mockImplementation((data: any) => ({
-      ...data,
+    create: jest.fn().mockImplementation((data: unknown) => ({
+      ...data as object,
       save: jest.fn().mockResolvedValue(undefined),
     })),
     findOne: jest.fn().mockResolvedValue(null),
@@ -48,7 +48,7 @@ describe("StatusService", () => {
   it("should throw error if status not found by ID", async () => {
     (Status.findOne as jest.Mock).mockResolvedValueOnce(null);
 
-    await expect(service.getStatusById(999)).rejects.toThrow("Status not found");
+    await expect(service.getStatusById(999)).rejects.toThrow("Status introuvable");
   });
 
   it("should get status by name", async () => {
@@ -84,7 +84,7 @@ describe("StatusService", () => {
     (Status.findOne as jest.Mock).mockResolvedValueOnce(null);
 
     await expect(service.updateStatus(999, { statusName: "x" })).rejects.toThrow(
-      "Status not found"
+      "Status introuvable"
     );
   });
 
@@ -103,6 +103,6 @@ describe("StatusService", () => {
   it("should throw error if status not found on delete", async () => {
     (Status.findOne as jest.Mock).mockResolvedValueOnce(null);
 
-    await expect(service.deleteStatus(999)).rejects.toThrow("Status not found");
+    await expect(service.deleteStatus(999)).rejects.toThrow("Status introuvable");
   });
 });

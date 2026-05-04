@@ -5,8 +5,8 @@ import { User } from "../entities/User";
 
 jest.mock("../entities/Booking", () => ({
   Booking: {
-    create: jest.fn().mockImplementation((data: any) => ({
-      ...data,
+    create: jest.fn().mockImplementation((data: unknown) => ({
+      ...data as object,
       save: jest.fn().mockResolvedValue(undefined),
     })),
     findOne: jest.fn().mockResolvedValue(null),
@@ -32,7 +32,7 @@ describe("BookingService", () => {
   let service: BookingService;
 
   beforeEach(() => {
-    service = new BookingService();  
+    service = new BookingService();
     jest.clearAllMocks();
   });
 
@@ -62,6 +62,18 @@ describe("BookingService", () => {
     await expect(service.getBookingById(999)).rejects.toThrow("Booking introuvable");
   });
 
+  it("should get user bookings excluding cart (En attente)", async () => {
+    (Status.findOne as jest.Mock).mockResolvedValueOnce({ id: 1, statusName: "En attente" });
+    (Booking.find as jest.Mock).mockResolvedValueOnce([
+      { id: 2, status: { id: 2, statusName: "À préparer" } },
+    ]);
+
+    const result = await service.getMyBookings(1);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].status.statusName).toBe("À préparer");
+  });
+
   it("should create a booking with default status and user", async () => {
     (User.findOne as jest.Mock).mockResolvedValueOnce({ id: 1, email: "test@test.com" });
     (Status.findOne as jest.Mock).mockResolvedValueOnce({
@@ -74,7 +86,7 @@ describe("BookingService", () => {
         startDate: new Date("2026-01-01"),
         endDate: new Date("2026-01-05"),
       },
-      1, 
+      1,
     );
 
     expect(Booking.create).toHaveBeenCalledWith(
@@ -83,6 +95,20 @@ describe("BookingService", () => {
         endDate: expect.any(Date),
         user: expect.objectContaining({ id: 1 }),
       })
+    );
+
+    expect(result).toBeDefined();
+  });
+
+  it("should allow same-day booking (start === end)", async () => {
+    (User.findOne as jest.Mock).mockResolvedValueOnce({ id: 1, email: "test@test.com" });
+    (Status.findOne as jest.Mock).mockResolvedValueOnce({ id: 1, statusName: "En attente" });
+
+    const sameDate = new Date("2026-05-04");
+
+    const result = await service.createBooking(
+      { startDate: sameDate, endDate: sameDate },
+      1,
     );
 
     expect(result).toBeDefined();
@@ -111,17 +137,17 @@ describe("BookingService", () => {
         },
         1,
       )
-    ).rejects.toThrow("La date de fin doit être après la date de début");
+    ).rejects.toThrow("La date de fin ne peut pas être avant la date de début");
   });
 
   it("should update a booking", async () => {
-    const bookingMock = { 
-      id: 1, 
-      startDate: new Date("2026-01-01"), 
-      endDate: new Date("2026-01-05"), 
+    const bookingMock = {
+      id: 1,
+      startDate: new Date("2026-01-01"),
+      endDate: new Date("2026-01-05"),
       status: { id: 1, statusName: "En attente" },
       user: { id: 1 },
-      save: jest.fn() 
+      save: jest.fn(),
     };
     (Booking.findOne as jest.Mock).mockResolvedValueOnce(bookingMock);
 
@@ -140,14 +166,46 @@ describe("BookingService", () => {
     ).rejects.toThrow("Booking introuvable");
   });
 
-  it("should update booking status", async () => {
-    const bookingMock = { 
-      id: 1, 
-      startDate: new Date("2026-01-01"), 
-      endDate: new Date("2026-01-05"), 
-      status: { id: 1, statusName: "En attente" }, 
+  it("should throw error if user does not own the booking", async () => {
+    const bookingMock = {
+      id: 1,
+      startDate: new Date("2026-01-01"),
+      endDate: new Date("2026-01-05"),
+      status: { id: 1, statusName: "En attente" },
+      user: { id: 2 },
+      save: jest.fn(),
+    };
+    (Booking.findOne as jest.Mock).mockResolvedValueOnce(bookingMock);
+
+    await expect(
+      service.updateBooking(1, { startDate: new Date("2026-01-02") }, 1)
+    ).rejects.toThrow();
+  });
+
+  it("should throw error if booking is not pending on update", async () => {
+    const bookingMock = {
+      id: 1,
+      startDate: new Date("2026-01-01"),
+      endDate: new Date("2026-01-05"),
+      status: { id: 2, statusName: "À préparer" },
       user: { id: 1 },
-      save: jest.fn() 
+      save: jest.fn(),
+    };
+    (Booking.findOne as jest.Mock).mockResolvedValueOnce(bookingMock);
+
+    await expect(
+      service.updateBooking(1, { startDate: new Date("2026-01-02") }, 1)
+    ).rejects.toThrow("Seules les réservations en attente peuvent être modifiées");
+  });
+
+  it("should update booking status", async () => {
+    const bookingMock = {
+      id: 1,
+      startDate: new Date("2026-01-01"),
+      endDate: new Date("2026-01-05"),
+      status: { id: 1, statusName: "En attente" },
+      user: { id: 1 },
+      save: jest.fn(),
     };
     (Booking.findOne as jest.Mock).mockResolvedValueOnce(bookingMock);
 
@@ -160,7 +218,6 @@ describe("BookingService", () => {
 
     expect(bookingMock.save).toHaveBeenCalled();
     expect(result.status).toEqual({ id: 5, statusName: "Annulée" });
-
   });
 
   it("should delete a booking", async () => {
