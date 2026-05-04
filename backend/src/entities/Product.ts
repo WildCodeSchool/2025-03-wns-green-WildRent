@@ -10,10 +10,6 @@ export class Product extends BaseEntity {
     @Field()
     @PrimaryGeneratedColumn()
     id!: number;
-    
-    @Field()
-    @Column({ unique: true,unsigned: true })
-    productRef!: number;
 
     @Field()
     @Column({ length: 20 })
@@ -46,6 +42,10 @@ export class Product extends BaseEntity {
     @Field({ nullable: true })
     @Column({ nullable: true })
     image3?: string;
+
+    @Field()
+    @Column({ unique: true })
+    productRef!: string;
 
     @Field()
     @Column({ length: 20 })

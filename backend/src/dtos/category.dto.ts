@@ -7,4 +7,8 @@ export class CategoryInput {
   @IsNotEmpty({message: "Category name must not be empty" })
   @Length(4,20, {message: "Category name length must be between 4 and 20 characters"})
   name!: string;
+
+  @Field()
+  @IsNotEmpty({ message: "L'image de la catégorie est obligatoire" })
+  image!: string;
 }
