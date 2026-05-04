@@ -1,21 +1,18 @@
 import { useCart } from "../../context/CartContext";
+import { calculateDays } from "../../utils/calculateDays";
 
 type PaymentSummaryProps = {
   onPayment: () => void;
   loading: boolean;
   disabled: boolean;
+  billingComplete?: boolean;
 };
 
-export default function PaymentSummary({ onPayment, loading, disabled }: Readonly<PaymentSummaryProps>) {
+export default function PaymentSummary({ onPayment, loading, disabled, billingComplete = true }: Readonly<PaymentSummaryProps>) {
   const { items } = useCart();
 
   const total = items.reduce((sum, item) => {
-    const start = new Date(item.startDate);
-    const end = new Date(item.endDate);
-    const days = Math.ceil(
-      (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
-    );
-
+    const days = calculateDays(item.startDate, item.endDate);
     return sum + item.price * item.quantity * days;
   }, 0);
 
@@ -45,8 +42,10 @@ export default function PaymentSummary({ onPayment, loading, disabled }: Readonl
         </button>
 
         {disabled && !loading && (
-          <p className="mt-3 text-center text-sm text-[var(--beige)]">
-            Veuillez remplir tous les champs de paiement
+          <p className="mt-3 text-center text-sm text-red-300">
+            {!billingComplete
+              ? "Veuillez compléter votre adresse de facturation"
+              : "Veuillez remplir tous les champs de paiement"}
           </p>
         )}
       </div>
