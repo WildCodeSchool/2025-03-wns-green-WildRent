@@ -22,18 +22,18 @@ describe("CategoryService", () => {
   it("should create a new category", async () => {
     (Category.findOne as jest.Mock).mockResolvedValueOnce(null);
 
-    (Category.create as jest.Mock).mockImplementation((data: any) => ({
-      ...data,
+    (Category.create as jest.Mock).mockImplementation((data: unknown) => ({
+      ...data as object,
       save: jest.fn().mockResolvedValue(undefined),
     }));
 
-    const result = await service.createCategory({ name: "Tennis" });
+    const result = await service.createCategory({ name: "Tennis", image: "/images/tennis.png" });
 
     expect(Category.findOne).toHaveBeenCalledWith({
       where: { name: "tennis" },
     });
 
-    expect(Category.create).toHaveBeenCalledWith({ name: "tennis" });
+    expect(Category.create).toHaveBeenCalledWith({ name: "tennis", image: "/images/tennis.png" });
     expect(result.name).toBe("tennis");
   });
 
@@ -43,9 +43,20 @@ describe("CategoryService", () => {
       name: "tennis",
     });
 
-    await expect(service.createCategory({ name: "Tennis" })).rejects.toThrow(
-      "category already exists",
+    await expect(service.createCategory({ name: "Tennis", image: "/images/tennis.png" })).rejects.toThrow(
+      "Category existe déjà",
     );
+  });
+
+  it("should get all categories", async () => {
+    (Category.find as jest.Mock).mockResolvedValueOnce([
+      { id: 1, name: "ski" },
+      { id: 2, name: "randonnée" },
+    ]);
+
+    const result = await service.getAllCategories();
+
+    expect(result).toHaveLength(2);
   });
 
   it("should get category by id", async () => {
@@ -66,7 +77,7 @@ describe("CategoryService", () => {
     (Category.findOne as jest.Mock).mockResolvedValueOnce(null);
 
     await expect(service.getCategoryById(1)).rejects.toThrow(
-      "category not found",
+      "Category introuvable",
     );
   });
 
@@ -81,7 +92,7 @@ describe("CategoryService", () => {
       .mockResolvedValueOnce(categoryMock)
       .mockResolvedValueOnce(null);
 
-    const result = await service.updateCategory(1, { name: "Hiver" });
+    const result = await service.updateCategory(1, { name: "Hiver", image: "/images/hiver.png" });
 
     expect(Category.findOne).toHaveBeenCalledWith({
       where: { id: 1 },
@@ -89,6 +100,19 @@ describe("CategoryService", () => {
 
     expect(categoryMock.save).toHaveBeenCalled();
     expect(result.name).toBe("hiver");
+  });
+
+  it("should throw error if duplicate name on update", async () => {
+    const categoryMock = { id: 1, name: "ski", save: jest.fn() };
+    const duplicateMock = { id: 2, name: "randonnée" };
+
+    (Category.findOne as jest.Mock)
+      .mockResolvedValueOnce(categoryMock)
+      .mockResolvedValueOnce(duplicateMock);
+
+    await expect(
+      service.updateCategory(1, { name: "randonnée", image: "" })
+    ).rejects.toThrow("Category existe déjà");
   });
 
   it("should delete a category", async () => {
@@ -109,12 +133,9 @@ describe("CategoryService", () => {
     expect(result).toBe(true);
   });
 
-  it("should return false if category not found on delete", async () => {
+  it("should throw error if category not found on delete", async () => {
     (Category.findOne as jest.Mock).mockResolvedValueOnce(null);
 
-    const result = await service.deleteCategory(1);
-
-    expect(result).toBe(false);
-    expect(Category.remove).not.toHaveBeenCalled();
+    await expect(service.deleteCategory(1)).rejects.toThrow("Category introuvable");
   });
 });

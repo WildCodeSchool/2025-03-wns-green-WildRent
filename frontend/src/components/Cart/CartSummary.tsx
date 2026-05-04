@@ -1,15 +1,13 @@
 import { useCart } from "../../context/CartContext";
 import { useNavigate } from "react-router";
+import { calculateItemTotal } from "../../utils/calculateItemTotal";
 
 export default function CartSummary() {
   const { items } = useCart();
   const navigate = useNavigate();
 
   const total = items.reduce((sum, item) => {
-    const start = new Date(item.startDate);
-    const end = new Date(item.endDate);
-    const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-    return sum + item.price * item.quantity * days;
+    return sum + calculateItemTotal(item.price, item.quantity, item.startDate, item.endDate);
   }, 0);
 
   return (

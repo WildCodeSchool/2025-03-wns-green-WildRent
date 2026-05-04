@@ -88,7 +88,7 @@ export const UserEditForm = ({ user, onCancel, onSuccess }: UserEditFormProps) =
         toast.success("Profil mis à jour avec succès !");
         onSuccess(data.updateMyProfile);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       handleGraphQLError(error);
     }
   };

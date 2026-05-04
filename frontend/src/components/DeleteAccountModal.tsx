@@ -27,7 +27,7 @@ export const DeleteAccountModal = ({ onClose, onDeleted }: DeleteAccountModalPro
         toast.success("Votre compte a été supprimé avec succès");
         onDeleted();
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       handleGraphQLError(error);
     }
   };

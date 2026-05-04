@@ -3,19 +3,19 @@ import { Field, ID, InputType } from "type-graphql";
 @InputType()
 export class CreateProductVariantInput {
     @Field()
-    name!: string;
-
-    @Field()
     color!: string;
 
     @Field()
     size!: string;
 
-    @Field()
+    @Field({ nullable: true })
     image?: string;
 
     @Field()
     quantity!: number;
+
+    @Field({ nullable: true, defaultValue: 0 })
+    discount?: number;
 
     @Field(() => ID)
     productId!: number;
@@ -23,21 +23,18 @@ export class CreateProductVariantInput {
 
 @InputType()
 export class UpdateProductVariantInput {
-    @Field()
-    name?: string;
-    
-    @Field()
+    @Field({ nullable: true })
     color?: string;
-    
-    @Field()
+
+    @Field({ nullable: true })
     size?: string;
-    
-    @Field()
+
+    @Field({ nullable: true })
     image?: string;
-    
-    @Field()
+
+    @Field({ nullable: true })
     quantity?: number;
 
-    @Field()
-    price_overide?: number;
+    @Field({ nullable: true })
+    discount?: number;
 }

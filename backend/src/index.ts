@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import { dataSource } from "./config/db";
+import { seedRoles } from "./seeds/role_seed";
 import { seedStatuses } from "./seeds/status_seed";
 import { buildSchema } from "type-graphql";
 import { ApolloServer } from "@apollo/server";
@@ -19,6 +20,7 @@ import { StatusResolver } from "./resolvers/StatusResolver";
 import ProductResolver from "./resolvers/ProductResolver";
 import ProductVariantResolver from "./resolvers/ProductVariantResolver";
 import { BookingProductsResolver } from "./resolvers/BookingProductsResolver";
+import { CartResolver } from "./resolvers/CartResolver";
 import { customErrorFormatter } from "./errors/customErrorFormatter";
 import { AnonContext, AuthContext } from "./types/types";
 import { AuthService } from "./services/auth.service";
@@ -44,6 +46,7 @@ const PORT = process.env.PORT ?? 4200;
 
 async function startServer() {
   await dataSource.initialize();
+  await seedRoles();
   await seedStatuses();
 
   const schema = await buildSchema({
@@ -57,6 +60,7 @@ async function startServer() {
       RoleResolver,
       ProductVariantResolver,
       BookingProductsResolver,
+      CartResolver,
     ],
     validate: true,
   });

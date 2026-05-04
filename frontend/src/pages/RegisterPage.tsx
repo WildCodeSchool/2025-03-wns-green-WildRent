@@ -26,7 +26,7 @@ export const RegisterPage = () => {
 
       toast.success("Compte créé avec succès ! Connectez-vous.");
       navigate("/login");
-    } catch (error: any) {
+    } catch (error: unknown) {
       handleGraphQLError(error);
     }
   };

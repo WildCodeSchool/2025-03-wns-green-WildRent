@@ -1,5 +1,7 @@
-import { Field, ID, InputType } from "type-graphql";
+import { Field, ID, InputType, Int, ObjectType } from "type-graphql";
+import { IsOptional, Min, Max, IsString } from "class-validator";
 import { Category } from "../entities/Category";
+import { Product } from "../entities/Product";
 
 @InputType()
 export class NewProductInput {
@@ -74,4 +76,37 @@ export class UpdateProductInput {
 export class UpdateRatingProductInput {
     @Field()
     note!: number;
+}
+
+@InputType()
+export class PaginationInput {
+    @Field(() => Int, { defaultValue: 20 })
+    @IsOptional()
+    @Min(1)
+    @Max(100)
+    limit?: number;
+
+    @Field(() => Int, { defaultValue: 0 })
+    @IsOptional()
+    @Min(0)
+    offset?: number;
+}
+
+@InputType()
+export class SearchProductsInput extends PaginationInput {
+    @Field()
+    @IsString()
+    query!: string;
+}
+
+@ObjectType()
+export class PaginatedProducts {
+    @Field(() => [Product])
+    products!: Product[];
+
+    @Field(() => Int)
+    total!: number;
+
+    @Field()
+    hasMore!: boolean;
 }

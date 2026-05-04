@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@apollo/client/react";
 import { toast } from "react-toastify";
-import { 
-  GET_MY_BOOKINGS, 
-  UPDATE_BOOKING, 
-  GET_ALL_STATUS 
+import {
+  GET_MY_BOOKINGS,
+  UPDATE_BOOKING,
+  GET_ALL_STATUS,
 } from "../../graphql/booking.operations";
 import { handleGraphQLError } from "../../utils/handleGraphQLError";
 import { ConfirmModal } from "../../components/Booking/ConfirmModal";
+import { formatDate } from "../../utils/formatDate";
+import { calculateItemTotal } from "../../utils/calculateItemTotal";
 
 type Booking = {
   id: string;
@@ -49,30 +51,21 @@ type GetAllStatusData = {
   getAllStatus: Status[];
 };
 
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("fr-FR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-}
-
 function calculateBookingTotal(booking: Booking): number {
   if (booking.totalPrice !== null) return booking.totalPrice;
 
-  const start = new Date(booking.startDate);
-  const end = new Date(booking.endDate);
-  const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-
   return booking.bookingsProducts.reduce((sum, bp) => {
-    return sum + bp.productQuantity * bp.productVariant.product.price * days;
+    return sum + calculateItemTotal(
+      bp.productVariant.product.price,
+      bp.productQuantity,
+      booking.startDate,
+      booking.endDate
+    );
   }, 0);
 }
 
-/** Carte d'une réservation avec gestion de l'annulation */
-const BookingCard = ({ booking, statuses, onUpdate }: { 
-  booking: Booking; 
+const BookingCard = ({ booking, statuses, onUpdate }: {
+  booking: Booking;
   statuses: Status[];
   onUpdate: () => void;
 }) => {
@@ -99,7 +92,7 @@ const BookingCard = ({ booking, statuses, onUpdate }: {
       });
       toast.success("Réservation annulée avec succès");
       onUpdate();
-    } catch (err: any) {
+    } catch (err: unknown) {
       handleGraphQLError(err);
     }
   };
@@ -116,8 +109,8 @@ const BookingCard = ({ booking, statuses, onUpdate }: {
           </p>
         </div>
         <span className={`self-start sm:self-auto px-3 py-1 rounded-full text-xs font-medium font-[family-name:var(--font-text)] ${
-          booking.status.statusName === "Annulée" 
-            ? "bg-red-200 text-red-800" 
+          booking.status.statusName === "Annulée"
+            ? "bg-red-200 text-red-800"
             : "bg-[#87a700] text-[#fdffe9]"
         }`}>
           {booking.status.statusName}
