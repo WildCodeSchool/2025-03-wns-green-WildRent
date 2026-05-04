@@ -57,7 +57,7 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
         return true;
       }
       return false;
-    } catch (error: any) {
+    } catch (error: unknown) {
       handleGraphQLError(error);
       return false;
     }
@@ -68,7 +68,7 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
       await logoutMutation();
       setUser(null);
       toast.success("Vous avez été déconnecté");
-    } catch (error: any) {
+    } catch (error: unknown) {
       handleGraphQLError(error);
     }
   };
@@ -89,6 +89,6 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth doit être utilisé dans un AuthProvider");
+  if (!context) throw new Error("useAuth must be used within an AuthProvider");
   return context;
 }

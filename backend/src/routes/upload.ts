@@ -41,9 +41,10 @@ router.post("/upload/avatar/:userId", upload.single("avatar"), async (req, res) 
 
     const avatarUrl = await uploadService.uploadAvatar(userId, req.file.buffer);
     res.json({ avatar: avatarUrl });
-  } catch (error: any) {
-    if (error.codeError === "NOT_FOUND") {
-      res.status(404).json({ error: error.message });
+  } catch (error: unknown) {
+    const appError = error as { codeError?: string; message?: string };
+    if (appError.codeError === "NOT_FOUND") {
+      res.status(404).json({ error: appError.message });
       return;
     }
     console.error("Avatar upload error:", error);
