@@ -1,5 +1,15 @@
 import { gql } from "@apollo/client";
 
+export const GET_ALL_CATEGORIES = gql`
+  query GetAllCategories {
+    getAllCategories {
+      id
+      name
+      image
+    }
+  }
+`;
+
 export const GET_PRODUCTS_BY_CATEGORY = gql`
   query GetProductsByCategory($categoryId: Float!) {
     getProductsByCategory(categoryId: $categoryId) {
@@ -9,6 +19,12 @@ export const GET_PRODUCTS_BY_CATEGORY = gql`
       price
       image
       gender
+      productRef
+      discount
+      category {
+        id
+        name
+      }
       productVariant {
         color
         size
