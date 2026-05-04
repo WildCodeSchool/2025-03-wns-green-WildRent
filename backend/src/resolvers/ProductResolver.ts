@@ -1,4 +1,4 @@
-import { Arg, Int, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { Product } from "../entities/Product";
 import { ProductService } from "../services/product.service";
 import {
@@ -43,11 +43,13 @@ export default class ProductResolver {
     return this.productService.getProductsByCategory(categoryId);
   }
 
+  @Authorized("admin")
   @Mutation(() => Product)
   async createProduct(@Arg("data") data: NewProductInput): Promise<Product> {
     return this.productService.createProduct(data);
   }
 
+  @Authorized("admin")
   @Mutation(() => Product)
   async updateProduct(
     @Arg("id") id: number,
@@ -56,6 +58,7 @@ export default class ProductResolver {
     return this.productService.updateProduct(id, data);
   }
 
+  @Authorized("admin")
   @Mutation(() => Product)
   async deleteProduct(@Arg("id") id: number): Promise<Boolean> {
     return this.productService.deleteProduct(id);
