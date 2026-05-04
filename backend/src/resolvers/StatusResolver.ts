@@ -1,5 +1,6 @@
 import {
 	Arg,
+	Authorized,
 	ID,
 	Mutation,
 	Resolver,
@@ -26,11 +27,13 @@ async getStatusById(
 		return this.statusService.getStatusById(id);
 }
 
+@Authorized("admin")
 @Mutation(() => Status)
 async createStatus(@Arg("data") data: StatusInput): Promise<Status> {
  return this.statusService.createStatus(data);
 }
 
+@Authorized("admin")
 @Mutation(() => Status)
 async updateStatus(
 	@Arg("id", () => ID) id: number,
@@ -38,6 +41,7 @@ async updateStatus(
 return this.statusService.updateStatus(id, data);
 }
 
+@Authorized("admin")
 @Mutation(() => Status)
 async deleteStatus(
   @Arg("id", () => ID) id: number): Promise<Status> {

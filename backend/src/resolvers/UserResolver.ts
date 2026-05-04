@@ -1,4 +1,4 @@
-import { Arg, ID, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, ID, Mutation, Query, Resolver } from "type-graphql";
 import { User } from "../entities/User";
 import { UserService } from "../services/user.service";
 import {
@@ -18,26 +18,31 @@ export default class UserResolver {
     return this.userService.createUser(data);
   }
 
+  @Authorized("admin")
   @Mutation(() => User)
   async createUserByAdmin(@Arg("data") data: CreateUserByAdminDto): Promise<User> {
     return this.userService.createUserByAdmin(data);
   }
 
+  @Authorized("admin")
   @Mutation(() => Boolean)
   async deleteUser(@Arg("id", () => ID) id: number): Promise<boolean> {
     return this.userService.deleteUser(id);
   }
 
+  @Authorized("admin")
   @Query(() => [User])
   async getAllUsers(): Promise<User[]> {
     return this.userService.getAllUsers();
   }
 
+  @Authorized("admin")
   @Query(() => User)
   async getUserById(@Arg("id", () => Number) id: number): Promise<User> {
     return this.userService.getUserById(id);
   }
 
+  @Authorized("admin")
   @Mutation(() => User)
   async updateUser(
     @Arg("id", () => ID) id: number,
@@ -46,6 +51,7 @@ export default class UserResolver {
     return this.userService.updateUser(id, data);
   }
 
+  @Authorized("admin")
   @Mutation(() => User)
   async updateUserByAdmin(
     @Arg("id", () => ID) id: number,
@@ -54,6 +60,7 @@ export default class UserResolver {
     return this.userService.updateUserByAdmin(id, data);
   }
 
+  @Authorized("admin")
   @Mutation(() => Boolean)
   async updateUserPassword(
     @Arg("id", () => ID) id: number,

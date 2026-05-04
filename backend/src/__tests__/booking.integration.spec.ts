@@ -4,6 +4,7 @@ import { buildSchema } from "type-graphql";
 import { BookingResolver } from "../resolvers/BookingResolver";
 import { BookingService } from "../services/booking.service";
 import { customErrorFormatter } from "../errors/customErrorFormatter";
+import { authChecker } from "../auth/authChecker";
 
 
 const mockBooking = {
@@ -38,6 +39,7 @@ beforeAll(async () => {
   const schema = await buildSchema({
     resolvers: [BookingResolver],
     validate: true,
+    authChecker,
   });
 
   server = new ApolloServer({

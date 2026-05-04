@@ -5,6 +5,7 @@ import argon2 from "argon2";
 import AuthResolver from "../resolvers/AuthResolver";
 import { UserService } from "../services/user.service";
 import { customErrorFormatter } from "../errors/customErrorFormatter";
+import { authChecker } from "../auth/authChecker";
 
 /**
  * Integration tests for the authentication flow.
@@ -58,6 +59,7 @@ beforeAll(async () => {
   const schema = await buildSchema({
     resolvers: [AuthResolver],
     validate: true,
+    authChecker,
   });
 
   server = new ApolloServer({
@@ -200,7 +202,9 @@ describe("Auth Integration - Logout", () => {
   `;
 
   it("should clear the JWT cookie on logout", async () => {
-    const ctx = createMockContext();
+    const ctx = createMockContext({
+      id: 1, mail: "alice@example.com", firstName: "Alice", lastName: "Dupont", role: "user",
+    });
     const result = await server.executeOperation(
       { query: LOGOUT_MUTATION },
       ctx,

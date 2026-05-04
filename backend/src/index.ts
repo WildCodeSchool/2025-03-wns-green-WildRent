@@ -24,6 +24,7 @@ import { CartResolver } from "./resolvers/CartResolver";
 import { customErrorFormatter } from "./errors/customErrorFormatter";
 import { AnonContext, AuthContext } from "./types/types";
 import { AuthService } from "./services/auth.service";
+import { authChecker } from "./auth/authChecker";
 import uploadRouter from "./routes/upload";
 
 const authService = new AuthService();
@@ -63,6 +64,7 @@ async function startServer() {
       CartResolver,
     ],
     validate: true,
+    authChecker,
   });
 
   const apolloServer = new ApolloServer({
