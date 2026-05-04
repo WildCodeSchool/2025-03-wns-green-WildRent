@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { ActiveFilters, FilterCounts } from "../types/filters";
 import { emptyFilters } from "../types/filters";
+import { COLOR_CLASS_MAP } from "../constants/colors";
 
 type ProductFilterProps = {
     onApply: (filters: ActiveFilters) => void;
@@ -8,10 +9,67 @@ type ProductFilterProps = {
     counts: FilterCounts;
 };
 
+type SectionKey = "genders" | "sizes" | "colors" | "brands" | "price";
+
+/** Section accordion réutilisable */
+function FilterSection({ title, isOpen, onToggle, children }: {
+    title: string;
+    isOpen: boolean;
+    onToggle: () => void;
+    children: React.ReactNode;
+}) {
+    return (
+        <div className="flex flex-col">
+            <button
+                onClick={onToggle}
+                className="flex items-center justify-between border-b border-[var(--kaki)] pb-2 cursor-pointer"
+            >
+                <h2 className="text-[var(--beige)] text-xl font-[family-name:var(--font-title)]">{title}</h2>
+                <span className="text-[var(--beige)] text-xl font-bold">
+                    {isOpen ? "−" : "+"}
+                </span>
+            </button>
+            <div className={`flex flex-col gap-2 mx-3 overflow-hidden transition-all duration-300 ${isOpen ? "max-h-96 mt-3 opacity-100" : "max-h-0 opacity-0"}`}>
+                {children}
+            </div>
+        </div>
+    );
+}
+
+/** Ligne checkbox */
+function FilterCheckbox({ label, count, checked, onChange, colorDot }: {
+    label: string;
+    count: number;
+    checked: boolean;
+    onChange: () => void;
+    colorDot?: string;
+}) {
+    return (
+        <div className="flex flex-row justify-between">
+            <div className="flex flex-row gap-3 items-center">
+                <input type="checkbox" checked={checked} onChange={onChange} />
+                {colorDot && <div className={`w-4 h-4 rounded-full ${colorDot}`}></div>}
+                <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{label}</p>
+            </div>
+            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{count}</p>
+        </div>
+    );
+}
+
 export const ProductFilter = ({ onApply, onReset, counts }: ProductFilterProps) => {
     const [pending, setPending] = useState<ActiveFilters>(emptyFilters);
+    const [openSections, setOpenSections] = useState<Set<SectionKey>>(new Set());
+    const [mobileOpen, setMobileOpen] = useState(false);
 
-    const toggle = (key: keyof Omit<ActiveFilters, 'priceMin' | 'priceMax'>, value: string) => {
+    const toggleSection = (section: SectionKey) => {
+        setOpenSections((prev) => {
+            const next = new Set(prev);
+            next.has(section) ? next.delete(section) : next.add(section);
+            return next;
+        });
+    };
+
+    const toggleFilter = (key: keyof Omit<ActiveFilters, "priceMin" | "priceMax">, value: string) => {
         setPending((prev) => ({
             ...prev,
             [key]: prev[key].includes(value)
@@ -25,222 +83,122 @@ export const ProductFilter = ({ onApply, onReset, counts }: ProductFilterProps) 
         onReset();
     };
 
-    return(
-        <div className="w-1/4 h-full sticky top-2 bg-[var(--dark-green)] rounded-2xl flex flex-col gap-3">
-            <div className="m-4 flex flex-col gap-6">
+    const handleApply = () => {
+        onApply(pending);
+        setMobileOpen(false);
+    };
 
-                {/* Filtre par genre */}
-                <div className="flex flex-col gap-3">
-                    <div className="border-b-1 border-[var(--kaki)]">
-                        <h1 className="pb-2 text-[var(--beige)] text-xl font-[family-name:var(--font-title)]">Filtrer par genre</h1>
+    const genderEntries = Object.entries(counts.genders).sort((a, b) => b[1] - a[1]);
+    const sizeEntries = Object.entries(counts.sizes).sort((a, b) => b[1] - a[1]);
+    const colorEntries = Object.entries(counts.colors).sort((a, b) => b[1] - a[1]);
+    const brandEntries = Object.entries(counts.brands).sort((a, b) => b[1] - a[1]);
+
+    const hasFilters = !Object.values(pending).every((v) => Array.isArray(v) ? v.length === 0 : v === undefined);
+
+    const filterContent = (
+        <div className="flex flex-col gap-4">
+            {genderEntries.length > 0 && (
+                <FilterSection title="Genre" isOpen={openSections.has("genders")} onToggle={() => toggleSection("genders")}>
+                    {genderEntries.map(([gender, count]) => (
+                        <FilterCheckbox key={gender} label={gender} count={count} checked={pending.genders.includes(gender)} onChange={() => toggleFilter("genders", gender)} />
+                    ))}
+                </FilterSection>
+            )}
+
+            {sizeEntries.length > 0 && (
+                <FilterSection title="Taille" isOpen={openSections.has("sizes")} onToggle={() => toggleSection("sizes")}>
+                    {sizeEntries.map(([size, count]) => (
+                        <FilterCheckbox key={size} label={size} count={count} checked={pending.sizes.includes(size)} onChange={() => toggleFilter("sizes", size)} />
+                    ))}
+                </FilterSection>
+            )}
+
+            {colorEntries.length > 0 && (
+                <FilterSection title="Couleur" isOpen={openSections.has("colors")} onToggle={() => toggleSection("colors")}>
+                    {colorEntries.map(([color, count]) => (
+                        <FilterCheckbox key={color} label={color} count={count} checked={pending.colors.includes(color)} onChange={() => toggleFilter("colors", color)} colorDot={COLOR_CLASS_MAP[color] ?? "bg-gray-300"} />
+                    ))}
+                </FilterSection>
+            )}
+
+            {brandEntries.length > 0 && (
+                <FilterSection title="Marque" isOpen={openSections.has("brands")} onToggle={() => toggleSection("brands")}>
+                    {brandEntries.map(([brand, count]) => (
+                        <FilterCheckbox key={brand} label={brand} count={count} checked={pending.brands.includes(brand)} onChange={() => toggleFilter("brands", brand)} />
+                    ))}
+                </FilterSection>
+            )}
+
+            <FilterSection title="Prix" isOpen={openSections.has("price")} onToggle={() => toggleSection("price")}>
+                <div className="flex flex-row gap-6 justify-center items-center">
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[var(--beige)] text-xs font-[family-name:var(--font-text)]">Min (€)</label>
+                        <input
+                            type="number"
+                            min={0}
+                            value={pending.priceMin ?? ""}
+                            onChange={(e) => setPending((prev) => ({ ...prev, priceMin: e.target.value === "" ? undefined : Number(e.target.value) }))}
+                            className="w-20 bg-[var(--beige)] text-[var(--dark-green)] text-sm rounded px-2 py-1"
+                        />
                     </div>
-                    <div className="flex flex-col gap-2 mx-3">
-                        <div className="flex flex-row justify-between">
-                            <div className="flex flex-row gap-3">
-                                <input type="checkbox" checked={pending.genders.includes("Femme")} onChange={() => toggle("genders", "Femme")} />
-                                <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Femme</p>
-                            </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.genders["Femme"] ?? 0}</p>
-                        </div>
-
-                        <div className="flex flex-row justify-between">
-                            <div className="flex flex-row gap-3">
-                                <input type="checkbox" checked={pending.genders.includes("Homme")} onChange={() => toggle("genders", "Homme")} />
-                                <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Homme</p>
-                            </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.genders["Homme"] ?? 0}</p>
-                        </div>
-
-                        <div className="flex flex-row justify-between">
-                            <div className="flex flex-row gap-3">
-                                <input type="checkbox" checked={pending.genders.includes("Enfant")} onChange={() => toggle("genders", "Enfant")} />
-                                <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Enfant</p>
-                            </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.genders["Enfant"] ?? 0}</p>
-                        </div>
-                        
-                    </div>
-                </div>
-
-                {/* Filtre par taille */}
-                <div className="flex flex-col gap-3">
-                    <div className="border-b-1 border-[var(--kaki)]">
-                        <h1 className="pb-2 text-[var(--beige)] text-xl font-[family-name:var(--font-title)]">Filtrer par taille</h1>
-                    </div>
-                    <div className="flex flex-col gap-2 mx-3">
-                        <div className="flex flex-row justify-between">
-                            <div className="flex flex-row gap-3">
-                                <input type="checkbox" checked={pending.sizes.includes("Taille unique")} onChange={() => toggle("sizes", "Taille unique")} />
-                                <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Taille unique</p>
-                            </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.sizes["Taille unique"] ?? 0}</p>
-                        </div>
-
-                        <div className="flex flex-row justify-between">
-                            <div className="flex flex-row gap-3">
-                                <input type="checkbox" checked={pending.sizes.includes("150cm")} onChange={() => toggle("sizes", "150cm")} />
-                                <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">150cm</p>
-                            </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.sizes["150cm"] ?? 0}</p>
-                        </div>
-
-                        <div className="flex flex-row justify-between">
-                            <div className="flex flex-row gap-3">
-                                <input type="checkbox" checked={pending.sizes.includes("140cm")} onChange={() => toggle("sizes", "140cm")} />
-                                <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">140cm</p>
-                            </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.sizes["140cm"] ?? 0}</p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Filtre par couleur */}
-                <div className="flex flex-col gap-3">
-                    <div className="border-b-1 border-[var(--kaki)]">
-                        <h1 className="pb-2 text-[var(--beige)] text-xl font-[family-name:var(--font-title)]">Filtrer par couleur</h1>
-                    </div>
-
-                    <div className="flex flex-col gap-2 mx-3">
-
-                        <div className="flex flex-row justify-between">
-                            <div className="flex flex-row gap-3 items-center">
-                                <input type="checkbox" checked={pending.colors.includes("Bleu")} onChange={() => toggle("colors", "Bleu")} />
-                                <div className="w-4 h-4 rounded-full bg-blue-500"></div>
-                                <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Bleu</p>
-                            </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.colors["Bleu"] ?? 0}</p>
-                        </div>
-                        <div className="flex flex-row justify-between">
-                            <div className="flex flex-row gap-3 items-center">
-                                <input type="checkbox" checked={pending.colors.includes("Noir")} onChange={() => toggle("colors", "Noir")} />
-                                <div className="w-4 h-4 rounded-full bg-black"></div>
-                                <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Noir</p>
-                            </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.colors["Noir"] ?? 0}</p>
-                        </div>
-                        <div className="flex flex-row justify-between">
-                            <div className="flex flex-row gap-3 items-center">
-                                <input type="checkbox" checked={pending.colors.includes("Orange")} onChange={() => toggle("colors", "Orange")} />
-                                <div className="w-4 h-4 rounded-full bg-orange-500"></div>
-                                <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Orange</p>
-                            </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.colors["Orange"] ?? 0}</p>
-                        </div>
-                        <div className="flex flex-row justify-between">
-                            <div className="flex flex-row gap-3 items-center">
-                                <input type="checkbox" checked={pending.colors.includes("Jaune")} onChange={() => toggle("colors", "Jaune")} />
-                                <div className="w-4 h-4 rounded-full bg-yellow-500"></div>
-                                <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Jaune</p>
-                            </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.colors["Jaune"] ?? 0}</p>
-                        </div>
-                        <div className="flex flex-row justify-between">
-                            <div className="flex flex-row gap-3 items-center">
-                                <input type="checkbox" checked={pending.colors.includes("Rouge")} onChange={() => toggle("colors", "Rouge")} />
-                                <div className="w-4 h-4 rounded-full bg-red-500"></div>
-                                <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Rouge</p>
-                            </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.colors["Rouge"] ?? 0}</p>
-                        </div>
-                        <div className="flex flex-row justify-between">
-                            <div className="flex flex-row gap-3 items-center">
-                                <input type="checkbox" checked={pending.colors.includes("Vert")} onChange={() => toggle("colors", "Vert")} />
-                                <div className="w-4 h-4 rounded-full bg-green-500"></div>
-                                <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Vert</p>
-                            </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.colors["Vert"] ?? 0}</p>
-                        </div>
-                        <div className="flex flex-row justify-between">
-                            <div className="flex flex-row gap-3 items-center">
-                                <input type="checkbox" checked={pending.colors.includes("Blanc")} onChange={() => toggle("colors", "Blanc")} />
-                                <div className="w-4 h-4 rounded-full bg-white"></div>
-                                <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Blanc</p>
-                            </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.colors["Blanc"] ?? 0}</p>
-                        </div>
-
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[var(--beige)] text-xs font-[family-name:var(--font-text)]">Max (€)</label>
+                        <input
+                            type="number"
+                            min={0}
+                            value={pending.priceMax ?? ""}
+                            onChange={(e) => setPending((prev) => ({ ...prev, priceMax: e.target.value === "" ? undefined : Number(e.target.value) }))}
+                            className="w-20 bg-[var(--beige)] text-[var(--dark-green)] text-sm rounded px-2 py-1"
+                        />
                     </div>
                 </div>
+            </FilterSection>
 
-                {/* Filtre par marque */}
-                <div className="flex flex-col gap-3">
-                    <div className="border-b-1 border-[var(--kaki)]">
-                        <h1 className="pb-2 text-[var(--beige)] text-xl font-[family-name:var(--font-title)]">Filtrer par marque</h1>
-                    </div>
-                    <div className="flex flex-col gap-2 mx-3">
-                        <div className="flex flex-row justify-between">
-                            <div className="flex flex-row gap-3">
-                                <input type="checkbox" checked={pending.brands.includes("Salomon")} onChange={() => toggle("brands", "Salomon")} />
-                                <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Salomon</p>
-                            </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.brands["Salomon"] ?? 0}</p>
-                        </div>
-
-                        <div className="flex flex-row justify-between">
-                            <div className="flex flex-row gap-3">
-                                <input type="checkbox" checked={pending.brands.includes("Rossignol")} onChange={() => toggle("brands", "Rossignol")} />
-                                <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Rossignol</p>
-                            </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.brands["Rossignol"] ?? 0}</p>
-                        </div>
-
-                        <div className="flex flex-row justify-between">
-                            <div className="flex flex-row gap-3">
-                                <input type="checkbox" checked={pending.brands.includes("Lange")} onChange={() => toggle("brands", "Lange")} />
-                                <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">Lange</p>
-                            </div>
-                            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{counts.brands["Lange"] ?? 0}</p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Filtrer par prix */}
-                <div className="flex flex-col gap-3">
-                    <div className="border-b-1 border-[var(--kaki)]">
-                        <h1 className="pb-2 text-[var(--beige)] text-xl font-[family-name:var(--font-title)]">Filtrer par prix</h1>
-                    </div>
-                    <div className="flex flex-row gap-6 justify-center items-center">
-                        <div className="flex flex-col gap-1">
-                            <label className="text-[var(--beige)] text-xs font-[family-name:var(--font-text)]">Min (€)</label>
-                            <input
-                                type="number"
-                                min={0}
-                                value={pending.priceMin ?? ""}
-                                onChange={(e) => setPending((prev) => ({ ...prev, priceMin: e.target.value === "" ? undefined : Number(e.target.value) }))}
-                                className="w-20 bg-[var(--beige)] text-[var(--dark-green)] text-sm rounded px-2 py-1"
-                            />
-                        </div>
-                        <div className="flex flex-col gap-1">
-                            <label className="text-[var(--beige)] text-xs font-[family-name:var(--font-text)]">Max (€)</label>
-                            <input
-                                type="number"
-                                min={0}
-                                value={pending.priceMax ?? ""}
-                                onChange={(e) => setPending((prev) => ({ ...prev, priceMax: e.target.value === "" ? undefined : Number(e.target.value) }))}
-                                className="w-20 bg-[var(--beige)] text-[var(--dark-green)] text-sm rounded px-2 py-1"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                {/* Boutons */}
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 lg:gap-10 justify-center items-center my-2">
-                    <button
-                        onClick={handleReset}
-                        disabled={Object.values(pending).every((v) => Array.isArray(v) ? v.length === 0 : v === undefined)}
-                        className="transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
-                    >
-                        <p className="text-[var(--light-green)]">Réinitialiser</p>
-                    </button>
-                    <button
-                        onClick={() => onApply(pending)}
-                        className="bg-[#fdffe9] text-[#31380d] border-2 border-[#87a700] text-xs font-[family-name:var(--font-text)] font-bold px-3 sm:px-5 py-1.5 sm:py-2 rounded-full whitespace-nowrap shadow-sm hover:bg-[#87a700] hover:text-[#fdffe9] transition-colors"
-                    >
-                        <p>Appliquer</p>
-                    </button>
-                </div>
-
+            <div className="flex flex-row gap-6 justify-center items-center my-2">
+                <button
+                    onClick={handleReset}
+                    disabled={!hasFilters}
+                    className="transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                    <p className="text-[var(--light-green)] text-sm font-[family-name:var(--font-text)]">Réinitialiser</p>
+                </button>
+                <button
+                    onClick={handleApply}
+                    className="bg-[#fdffe9] text-[#31380d] border-2 border-[#87a700] text-xs font-[family-name:var(--font-text)] font-bold px-5 py-2 rounded-full whitespace-nowrap shadow-sm hover:bg-[#87a700] hover:text-[#fdffe9] transition-colors"
+                >
+                    Appliquer
+                </button>
             </div>
         </div>
-    )
+    );
+
+    return (
+        <>
+            {/* Desktop */}
+            <div className="hidden lg:flex lg:flex-col lg:w-1/4 gap-3">
+                <h1 className="text-[var(--dark-green)] text-2xl font-[family-name:var(--font-title)]">Filtres</h1>
+                <div className="h-full sticky top-2 bg-[var(--dark-green)] rounded-2xl">
+                    <div className="m-4">
+                        {filterContent}
+                    </div>
+                </div>
+            </div>
+
+            {/* Mobile */}
+            <div className="lg:hidden w-full">
+                <button
+                    onClick={() => setMobileOpen(!mobileOpen)}
+                    className="w-full flex items-center justify-center gap-2 bg-[var(--dark-green)] text-[var(--beige)] font-[family-name:var(--font-title)] text-lg py-3 rounded-xl"
+                >
+                    FILTRES
+                    <span className="text-sm">{mobileOpen ? "▲" : "▼"}</span>
+                </button>
+                <div className={`overflow-hidden transition-all duration-300 ${mobileOpen ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"}`}>
+                    <div className="bg-[var(--dark-green)] rounded-b-xl p-4 mt-1">
+                        {filterContent}
+                    </div>
+                </div>
+            </div>
+        </>
+    );
 };
