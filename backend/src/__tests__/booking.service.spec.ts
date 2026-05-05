@@ -199,23 +199,28 @@ describe("BookingService", () => {
   });
 
   it("should update booking status", async () => {
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 5);
+    const futureEndDate = new Date();
+    futureEndDate.setDate(futureEndDate.getDate() + 10);
+
     const bookingMock = {
       id: 1,
-      startDate: new Date("2026-01-01"),
-      endDate: new Date("2026-01-05"),
-      status: { id: 2, statusName: "À préparer" },  
+      startDate: futureDate,
+      endDate: futureEndDate,
+      status: { id: 2, statusName: "À préparer" },
       user: { id: 1 },
       save: jest.fn(),
     };
     (Booking.findOne as jest.Mock).mockResolvedValueOnce(bookingMock);
-  
+
     (Status.findOne as jest.Mock).mockResolvedValueOnce({
       id: 5,
       statusName: "Annulée",
     });
-  
+
     const result = await service.updateBooking(1, { statusId: 5 }, 1);
-  
+
     expect(bookingMock.save).toHaveBeenCalled();
     expect(result.status).toEqual({ id: 5, statusName: "Annulée" });
   });

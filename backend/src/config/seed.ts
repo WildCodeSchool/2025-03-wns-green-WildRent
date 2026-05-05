@@ -316,7 +316,6 @@ export async function seedDatabase() {
             } while (usedCombos.has(`${size}-${color}`));
             usedCombos.add(`${size}-${color}`);
 
-            // ~15% des variants ont une réduction spécifique (écoulement de stock)
             const variantDiscount = Math.random() < 0.15 ? [10, 15, 25, 30, 40][Math.floor(Math.random() * 5)] : 0;
 
             variants.push({
@@ -331,66 +330,57 @@ export async function seedDatabase() {
     }
 
     // --- Variants fixes pour tester la logique de réduction ---
-    // Règle : variant.discount = 0 (hérite du produit) OU >= product.discount (déstockage)
-
-    // Cas 1 : product=20%, variant=40% → affiche 40% sur détail
     variants.push({
         color: "Rouge",
         size: "M",
         quantity: 3,
         discount: 40,
         productRef: generateProductRef(),
-        product: products[1], // Snowboard Freestyle (discount produit = 20%)
+        product: products[1],
     });
-
-    // Cas 2 : product=20%, variant=0% → hérite du produit, affiche 20% sur détail
     variants.push({
         color: "Noir",
         size: "XL",
         quantity: 2,
         discount: 0,
         productRef: generateProductRef(),
-        product: products[1], // Snowboard Freestyle (discount produit = 20%)
+        product: products[1], 
     });
 
-    // Cas 3 : product=0%, variant=35% → affiche 0% sur carte, 35% sur détail
     variants.push({
         color: "Bleu",
         size: "L",
         quantity: 1,
         discount: 35,
         productRef: generateProductRef(),
-        product: products[2], // Snowboard Freeride (discount produit = 0%)
+        product: products[2],
     });
 
-    // Cas 4 : product=15%, variant=50% → affiche 15% sur carte, 50% sur détail
     variants.push({
         color: "Vert",
         size: "S",
         quantity: 4,
         discount: 50,
         productRef: generateProductRef(),
-        product: products[4], // Boots de Ski (discount produit = 15%)
+        product: products[4],
     });
 
-    // Cas 5 : product=30%, variant=45% → affiche 30% sur carte, 45% sur détail
     variants.push({
         color: "Gris",
         size: "L",
         quantity: 2,
         discount: 45,
         productRef: generateProductRef(),
-        product: products[9], // Chaussures Trail (discount produit = 30%)
+        product: products[9],
     });
 
-    // Cas 6 : product=25%, variant=60% → affiche 25% sur carte, 60% sur détail (déstockage)
     variants.push({
         color: "Rouge",
         size: "S",
         quantity: 1,
         discount: 60,
         productRef: generateProductRef(),
-        product: products[18], // Bottines Néoprène (discount produit = 25%)
+        product: products[18], 
     });
 
     await ProductVariant.save(variants as ProductVariant[]);

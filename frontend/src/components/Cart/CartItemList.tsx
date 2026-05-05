@@ -1,12 +1,12 @@
 import { useCart } from "../../context/CartContext";
 import CartItem from "./CartItem";
-import { calculateDays } from "../../utils/calculateDays";
+import { calculateItemTotal } from "../../utils/calculateItemTotal";
+import { formatPrice } from "../../utils/formatPrice";
 
 export default function CartItemList() {
   const { items, loading } = useCart();
   const total = items.reduce((sum, item) => {
-    const days = calculateDays(item.startDate, item.endDate);
-    return sum + item.price * item.quantity * days;
+    return sum + calculateItemTotal(item.price, item.quantity, item.startDate, item.endDate, item.discount);
   }, 0);
 
   if (loading) {
@@ -42,7 +42,7 @@ export default function CartItemList() {
       )}
 
       <div className="rounded-xl bg-[var(--dark-green)] p-6 flex justify-end">
-        <p className="text-white font-bold text-xl">Total : <span className="text-[var(--light-green)]">{total}€</span></p>
+        <p className="text-white font-bold text-xl">Total : <span className="text-[var(--light-green)]">{formatPrice(total)}€</span></p>
       </div>
 
     </div>

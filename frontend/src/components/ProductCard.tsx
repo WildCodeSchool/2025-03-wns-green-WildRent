@@ -1,3 +1,6 @@
+import { formatPrice } from "../utils/formatPrice";
+import { calculateDiscountedPrice } from "../utils/calculateDiscountedPrice";
+
 type ProductCardProps = {
     title: string;
     brand: string;
@@ -8,7 +11,7 @@ type ProductCardProps = {
 
 export const ProductCard = ({ title, brand, price, discount, image }: ProductCardProps) => {
     const hasDiscount = discount > 0;
-    const discountedPrice = hasDiscount ? Math.round(price * (1 - discount / 100)) : price;
+    const discountedPrice = calculateDiscountedPrice(price, discount);
 
     return (
         <div className="w-auto bg-white">
@@ -30,15 +33,15 @@ export const ProductCard = ({ title, brand, price, discount, image }: ProductCar
                     {hasDiscount ? (
                         <div className="flex items-center gap-2">
                             <span className="text-[#87a700] font-[family-name:var(--font-text)]">
-                                <strong>{discountedPrice}€</strong>
+                                <strong>{formatPrice(discountedPrice)}€</strong>
                             </span>
                             <span className="relative text-xs text-[#acaf91] font-[family-name:var(--font-text)]">
-                                {price}€
+                                {formatPrice(price)}€
                                 <span className="absolute left-0 top-1/2 w-full h-[2px] bg-red-500 -rotate-12" />
                             </span>
                         </div>
                     ) : (
-                        <p className="text-[#87a700] font-[family-name:var(--font-text)]"><strong>{price}€</strong></p>
+                        <p className="text-[#87a700] font-[family-name:var(--font-text)]"><strong>{formatPrice(price)}€</strong></p>
                     )}
                 </div>
             </div>

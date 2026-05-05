@@ -34,6 +34,7 @@ export const GET_MY_BOOKINGS = gql`
           color
           size
           image
+          discount
           product {
             id
             name
@@ -41,6 +42,7 @@ export const GET_MY_BOOKINGS = gql`
             price
             brand
             image
+            discount
           }
         }
       }

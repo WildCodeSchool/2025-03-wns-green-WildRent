@@ -11,6 +11,7 @@ import {
   VALIDATE_CART,
 } from "../graphql/cart.operations";
 import { handleGraphQLError } from "../utils/handleGraphQLError";
+import { getEffectiveDiscount } from "../utils/getEffectiveDiscount";
 import type {
   CartBooking,
   CartBookingProduct,
@@ -62,6 +63,7 @@ export function CartProvider({ children }: Readonly<{ children: React.ReactNode 
       productName: bp.productVariant.product.name,
       image: bp.productVariant.image || bp.productVariant.product.image || "",
       price: bp.productVariant.product.price,
+      discount: getEffectiveDiscount(bp.productVariant.product.discount, bp.productVariant.discount),
       productRef: bp.productVariant.productRef,
       color: bp.productVariant.color,
       size: bp.productVariant.size,

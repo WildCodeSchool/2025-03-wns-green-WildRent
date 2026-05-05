@@ -2,19 +2,40 @@ import { Category } from "../entities/Category";
 import { Product } from "../entities/Product";
 import { ProductService } from "../services/product.service";
 
-jest.mock("../entities/Product", () => ({
-    Product: {
-        find: jest.fn().mockResolvedValue(undefined),
-        findAndCount: jest.fn().mockResolvedValue([[], 0]),
-        findOne: jest.fn().mockResolvedValue(undefined),
-        findOneBy: jest.fn().mockResolvedValue(null),
-        create: jest.fn().mockImplementation((data: unknown) => ({
-            ...data as object,
-            save: jest.fn().mockResolvedValue(undefined),
-        })),
-        remove: jest.fn().mockResolvedValue(undefined),
-    },
-}));
+const mockQueryBuilder = {
+    leftJoinAndSelect: jest.fn().mockReturnThis(),
+    andWhere: jest.fn().mockReturnThis(),
+    orderBy: jest.fn().mockReturnThis(),
+    skip: jest.fn().mockReturnThis(),
+    take: jest.fn().mockReturnThis(),
+    getManyAndCount: jest.fn().mockResolvedValue([[], 0]),
+};
+
+jest.mock("../entities/Product", () => {
+    const qb = {
+        leftJoinAndSelect: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        orderBy: jest.fn().mockReturnThis(),
+        skip: jest.fn().mockReturnThis(),
+        take: jest.fn().mockReturnThis(),
+        getManyAndCount: jest.fn().mockResolvedValue([[], 0]),
+    };
+    return {
+        Product: {
+            find: jest.fn().mockResolvedValue(undefined),
+            findAndCount: jest.fn().mockResolvedValue([[], 0]),
+            findOne: jest.fn().mockResolvedValue(undefined),
+            findOneBy: jest.fn().mockResolvedValue(null),
+            create: jest.fn().mockImplementation((data: unknown) => ({
+                ...data as object,
+                save: jest.fn().mockResolvedValue(undefined),
+            })),
+            remove: jest.fn().mockResolvedValue(undefined),
+            createQueryBuilder: jest.fn().mockReturnValue(qb),
+        },
+        __mockQueryBuilder: qb,
+    };
+});
 
 jest.mock("../entities/Category", () => ({
     Category: {
@@ -152,24 +173,16 @@ describe("ProductService", () => {
         const mockProducts = [
             { id: 1, name: "Escalade Pro", brand: "Petzl" },
         ];
-        (Product.findAndCount as jest.Mock).mockResolvedValueOnce([mockProducts, 1]);
+        const { __mockQueryBuilder: qb } = jest.requireMock("../entities/Product");
+        qb.getManyAndCount.mockResolvedValueOnce([mockProducts, 1]);
 
         const result = await service.searchProducts("esca", 20, 0);
 
         expect(result.products).toHaveLength(1);
         expect(result.total).toBe(1);
         expect(result.hasMore).toBe(false);
-        expect(Product.findAndCount).toHaveBeenCalledWith(
-            expect.objectContaining({
-                where: expect.arrayContaining([
-                    expect.objectContaining({ name: expect.anything() }),
-                    expect.objectContaining({ brand: expect.anything() }),
-                    expect.objectContaining({ productRef: expect.anything() }),
-                ]),
-                take: 20,
-                skip: 0,
-            })
-        );
+        expect(Product.createQueryBuilder).toHaveBeenCalledWith("product");
+        expect(qb.andWhere).toHaveBeenCalled();
     });
 
     it("should get products by category", async () => {

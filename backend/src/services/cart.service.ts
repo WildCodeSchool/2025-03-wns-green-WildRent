@@ -153,7 +153,8 @@ export class CartService {
       bookingProduct.productVariant.id,
       quantity,
       booking.startDate,
-      booking.endDate
+      booking.endDate,
+      booking.id
     );
 
     await this.bookingProductsService.updateBookingProduct(bookingProductId, {
@@ -297,19 +298,19 @@ export class CartService {
     return cartBookings;
   }
 
-  // ─── Private methods ─────────────────────────────────────────────────
-
   /** Checks that sufficient stock is available for a variant over a given rental period. */
   private async checkStock(
     productVariantId: number,
     quantity: number,
     startDate: Date,
-    endDate: Date
+    endDate: Date,
+    excludeBookingId?: number
   ): Promise<void> {
     const availableStock = await this.productVariantService.getAvailableStock(
       productVariantId,
       startDate,
-      endDate
+      endDate,
+      excludeBookingId
     );
 
     if (availableStock < quantity) {

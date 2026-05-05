@@ -5,6 +5,8 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router";
 import { GET_AVAILABLE_STOCK } from "../../graphql/ProductVariantOperations";
 import { getEffectiveDiscount } from "../../utils/getEffectiveDiscount";
+import { formatPrice } from "../../utils/formatPrice";
+import { calculateDiscountedPrice } from "../../utils/calculateDiscountedPrice";
 
 type ProductDescriptionProps = {
   productId: number;
@@ -121,7 +123,7 @@ export default function ProductDetailsDescription({
     ? getEffectiveDiscount(productDiscount, selectedVariant.discount)
     : productDiscount;
   const hasDiscount = effectiveDiscount > 0;
-  const discountedPrice = hasDiscount ? Math.round(pricePerDay * (1 - effectiveDiscount / 100)) : pricePerDay;
+  const discountedPrice = calculateDiscountedPrice(pricePerDay, effectiveDiscount);
 
   return (
     <section className="w-full text-left">
@@ -130,9 +132,9 @@ export default function ProductDetailsDescription({
       <div className="mt-2 flex items-center gap-3">
         {hasDiscount ? (
           <>
-            <p className="text-2xl font-[family-name:var(--font-text)] font-bold text-[var(--dark-green)]">{discountedPrice}€/jour</p>
+            <p className="text-2xl font-[family-name:var(--font-text)] font-bold text-[var(--dark-green)]">{formatPrice(discountedPrice)}€/jour</p>
             <span className="relative text-sm text-gray-400 font-[family-name:var(--font-text)]">
-              {pricePerDay}€
+              {formatPrice(pricePerDay)}€
               <span className="absolute left-0 top-1/2 w-full h-[2px] bg-red-500 -rotate-12" />
             </span>
             <span className="text-xs font-bold font-[family-name:var(--font-text)] text-white bg-[#87a700] px-2 py-0.5 rounded-full">
@@ -140,7 +142,7 @@ export default function ProductDetailsDescription({
             </span>
           </>
         ) : (
-          <p className="text-2xl font-[family-name:var(--font-text)] font-bold text-[var(--dark-green)]">{pricePerDay}€/jour</p>
+          <p className="text-2xl font-[family-name:var(--font-text)] font-bold text-[var(--dark-green)]">{formatPrice(pricePerDay)}€/jour</p>
         )}
       </div>
       <p className="mt-2 text-sm font-[family-name:var(--font-text)] text-[var(--light-green)]">Réf: {reference}</p>

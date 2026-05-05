@@ -20,6 +20,7 @@ export const GET_MY_CART = gql`
           image
           productRef
           quantity
+          discount
           product {
             id
             name

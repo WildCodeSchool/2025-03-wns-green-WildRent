@@ -1,5 +1,6 @@
 import { useCart } from "../../context/CartContext";
-import { calculateDays } from "../../utils/calculateDays";
+import { calculateItemTotal } from "../../utils/calculateItemTotal";
+import { formatPrice } from "../../utils/formatPrice";
 
 type PaymentSummaryProps = {
   onPayment: () => void;
@@ -12,8 +13,7 @@ export default function PaymentSummary({ onPayment, loading, disabled, billingCo
   const { items } = useCart();
 
   const total = items.reduce((sum, item) => {
-    const days = calculateDays(item.startDate, item.endDate);
-    return sum + item.price * item.quantity * days;
+    return sum + calculateItemTotal(item.price, item.quantity, item.startDate, item.endDate, item.discount);
   }, 0);
 
   return (
@@ -26,7 +26,7 @@ export default function PaymentSummary({ onPayment, loading, disabled, billingCo
 
       <div className="p-6">
         <p className="text-[var(--light-green)] font-bold text-2xl">
-          Total : {total}€
+          Total : {formatPrice(total)}€
         </p>
 
         <p className="mt-6 text-base leading-8 text-[var(--beige)] ">

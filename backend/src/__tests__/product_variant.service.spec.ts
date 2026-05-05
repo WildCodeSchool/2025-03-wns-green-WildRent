@@ -29,6 +29,16 @@ jest.mock("../entities/BookingProducts", () => ({
     },
 }));
 
+jest.mock("../entities/Status", () => ({
+    Status: {
+        find: jest.fn().mockResolvedValue([
+            { id: 1, statusName: "En attente" },
+            { id: 2, statusName: "À préparer" },
+            { id: 3, statusName: "En cours" },
+        ]),
+    },
+}));
+
 describe("ProductVariantService", () => {
     let service: ProductVariantService;
 
