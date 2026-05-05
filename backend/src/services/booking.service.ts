@@ -120,13 +120,18 @@ export class BookingService {
 
     if (data.statusId) {
       const status = await this.statusService.getStatusById(data.statusId);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (status.statusName === "Annulée" && booking.startDate < today) {
+        throw Errors.badRequest("Impossible d'annuler une réservation dont la date est déjà dépassée");
+      }
       booking.status = status;
     }
 
     if (data.startDate) booking.startDate = data.startDate;
     if (data.endDate) booking.endDate = data.endDate;
 
-    if (booking.endDate <= booking.startDate) {
+    if ((data.startDate || data.endDate) && booking.endDate < booking.startDate) {
       throw Errors.badRequest("La date de fin doit être après la date de début");
     }
 
