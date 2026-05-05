@@ -18,7 +18,9 @@ import { UserProfilePage } from './pages/UserProfilePage.tsx'
 import { LoginPage } from './pages/LoginPage.tsx'
 import { RegisterPage } from './pages/RegisterPage.tsx'
 import { ProtectedRoute } from './components/ProtectedRoute.tsx'
+import { GuestRoute } from './components/GuestRoute.tsx'
 import { ConfirmationPage } from './pages/ConfirmationPage.tsx'
+import { NotFoundPage } from './pages/NotFoundPage.tsx'
 
 const apiUrl = import.meta.env.VITE_API_URL ?? "";
 
@@ -39,9 +41,30 @@ const router = createBrowserRouter([
         { index: true, element: <HomePage /> },
         { path: "products", element: <ProductPages /> },
         { path: "products/:id", element: <ProductDetailsPage /> },
-        { path: "cart", element: <CartPage /> },
-        { path: "login", element: <LoginPage /> },
-        { path: "register", element: <RegisterPage /> },
+        {
+          path: "cart",
+          element: (
+            <ProtectedRoute>
+              <CartPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "login",
+          element: (
+            <GuestRoute>
+              <LoginPage />
+            </GuestRoute>
+          ),
+        },
+        {
+          path: "register",
+          element: (
+            <GuestRoute>
+              <RegisterPage />
+            </GuestRoute>
+          ),
+        },
         {
           path: "payment",
           element: (
@@ -66,6 +89,7 @@ const router = createBrowserRouter([
             </ProtectedRoute>
           ),
         },
+        { path: "*", element: <NotFoundPage /> },
       ],
   },
 ]);
