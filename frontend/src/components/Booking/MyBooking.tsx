@@ -33,6 +33,7 @@ type Booking = {
         productRef: string;
         price: number;
         brand: string;
+        image: string;
       };
     };
   }[];
@@ -72,7 +73,7 @@ const BookingCard = ({ booking, statuses, onUpdate }: {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [updateBooking, { loading }] = useMutation(UPDATE_BOOKING);
 
-  const isPending = booking.status.statusName === "En attente";
+  const isCancellable = booking.status.statusName === "À préparer";
 
   const handleConfirmCancel = async () => {
     setShowCancelModal(false);
@@ -121,9 +122,9 @@ const BookingCard = ({ booking, statuses, onUpdate }: {
         {booking.bookingsProducts.map((bp, index) => (
           <div key={index} className="flex items-center gap-4">
             <img
-              src={bp.productVariant.image || bp.productVariant.product.name}
-              alt={bp.productVariant.product.name}
-              className="h-16 w-16 object-contain bg-[#fdffe9] rounded-lg p-1 border border-[#acaf91]"
+             src={bp.productVariant.image || bp.productVariant.product.image}
+             alt={bp.productVariant.product.name}
+             className="h-16 w-16 object-contain bg-[#fdffe9] rounded-lg p-1 border border-[#acaf91]"
             />
             <div className="flex-1">
               <p className="text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d]">
@@ -152,7 +153,7 @@ const BookingCard = ({ booking, statuses, onUpdate }: {
         </p>
       </div>
 
-      {isPending && (
+      {isCancellable && (
         <div className="mt-5 pt-4 border-t border-gray-200">
           <button
             onClick={() => setShowCancelModal(true)}
@@ -179,7 +180,12 @@ const BookingCard = ({ booking, statuses, onUpdate }: {
 };
 
 export const MyBookings = () => {
-  const { data, loading, error, refetch } = useQuery<GetMyBookingsData>(GET_MY_BOOKINGS);
+  const { data, loading, error, refetch } = useQuery<GetMyBookingsData>(
+    GET_MY_BOOKINGS,
+    {
+      fetchPolicy: "cache-and-network",
+    }
+  );
   const { data: statusData } = useQuery<GetAllStatusData>(GET_ALL_STATUS);
 
   if (loading) {
