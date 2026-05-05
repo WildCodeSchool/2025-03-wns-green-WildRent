@@ -291,9 +291,7 @@ export class CartService {
     const prepareStatus = await this.statusService.getStatusByName("À préparer");
 
     for (const booking of cartBookings) {
-      await this.bookingService.updateBooking(booking.id, {
-        statusId: prepareStatus.id,
-      }, userId);
+      await this.bookingService.transitionStatus(booking.id, prepareStatus.id);
     }
 
     return cartBookings;

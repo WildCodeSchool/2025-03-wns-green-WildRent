@@ -114,8 +114,8 @@ export class BookingService {
       throw Errors.unauthorized();
     }
 
-    if (booking.status.statusName !== "En attente") {
-      throw Errors.badRequest("Seules les réservations en attente peuvent être modifiées");
+    if (booking.status.statusName !== "À préparer") {
+      throw Errors.badRequest("Seules les réservations à préparer peuvent être modifiées");
     }
 
     if (data.statusId) {
@@ -132,6 +132,24 @@ export class BookingService {
 
     await booking.save();
     return booking;
+  }
+
+/**
+   * Transitions a booking to a new status. Used by system services 
+   * (e.g., CartService) for status changes that don't require user-side 
+   * validation.
+   * @param bookingId - The booking ID
+   * @param newStatusId - The ID of the new status
+   * @returns The updated booking
+   * @throws NotFoundError if the booking or status does not exist
+   */
+  async transitionStatus(bookingId: number, newStatusId: number): Promise<Booking> {
+   const booking = await this.getBookingById(bookingId);
+   const newStatus = await this.statusService.getStatusById(newStatusId);
+
+   booking.status = newStatus;
+   await booking.save();
+   return booking;
   }
 
   /**

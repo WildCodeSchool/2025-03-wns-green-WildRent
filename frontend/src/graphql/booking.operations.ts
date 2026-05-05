@@ -40,6 +40,7 @@ export const GET_MY_BOOKINGS = gql`
             productRef
             price
             brand
+            image
           }
         }
       }
