@@ -15,7 +15,7 @@ export const ProductCard = ({ title, brand, price, discount, image }: ProductCar
 
     return (
         <div className="w-auto bg-white">
-            <img src={image} alt="" className="w-full border-x-1 border-t-1 rounded-t-2xl border-[#87a700]" />
+            <img src={image} alt={`${brand} ${title}`} className="w-full border-x-1 border-t-1 rounded-t-2xl border-[#87a700]" />
             <div className="w-full px-5 py-3 rounded-b-2xl bg-[#31380d]">
                 <div className="mb-5">
                     <div className="flex items-center justify-between gap-2">

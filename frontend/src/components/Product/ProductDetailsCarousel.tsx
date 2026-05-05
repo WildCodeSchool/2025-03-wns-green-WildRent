@@ -31,7 +31,7 @@ export default function ProductDetailsCarousel({ images, productName }: Readonly
           >
             <img
               src={img}
-              alt=""
+              alt={`${productName} - vue ${i + 1}`}
               className="w-full h-full object-cover"
             />
           </button>

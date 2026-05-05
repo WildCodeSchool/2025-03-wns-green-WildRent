@@ -33,11 +33,12 @@ export const DeleteAccountModal = ({ onClose, onDeleted }: DeleteAccountModalPro
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4" role="dialog" aria-modal="true" aria-labelledby="delete-account-title">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-6 sm:p-8 relative">
         {/* Close button */}
         <button
           onClick={onClose}
+          aria-label="Fermer"
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
         >
           <X size={20} />
@@ -51,7 +52,7 @@ export const DeleteAccountModal = ({ onClose, onDeleted }: DeleteAccountModalPro
         </div>
 
         {/* Title */}
-        <h2 className="text-lg font-bold font-[family-name:var(--font-title)] text-[#31380d] text-center mb-2">
+        <h2 id="delete-account-title" className="text-lg font-bold font-[family-name:var(--font-title)] text-[#31380d] text-center mb-2">
           Supprimer votre compte
         </h2>
 
@@ -65,21 +66,24 @@ export const DeleteAccountModal = ({ onClose, onDeleted }: DeleteAccountModalPro
         </div>
 
         {/* Password input */}
-        <label className="block text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d] mb-2">
+        <label htmlFor="delete-password" className="block text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d] mb-2">
           Confirmez votre mot de passe
         </label>
         <div className="relative mb-6">
           <input
+            id="delete-password"
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Entrez votre mot de passe"
+            autoComplete="current-password"
             className="w-full border border-gray-300 rounded-xl px-4 py-3 pr-12 text-sm font-[family-name:var(--font-text)] outline-none focus:border-red-400 focus:ring-1 focus:ring-red-400 transition-colors"
             onKeyDown={(e) => e.key === "Enter" && handleDelete()}
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
+            aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
             className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
           >
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
