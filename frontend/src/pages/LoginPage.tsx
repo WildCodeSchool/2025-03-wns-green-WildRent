@@ -31,28 +31,32 @@ export const LoginPage = () => {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <div>
-              <label className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1 block">
+              <label htmlFor="login-email" className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1 block">
                 Email
               </label>
               <input
+                id="login-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d] border border-[#acaf91] rounded-lg px-3 py-2 focus:outline-none focus:border-[#87a700]"
+                autoComplete="email"
+                className="w-full text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d] border border-[#acaf91] rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#87a700] focus:border-[#87a700]"
               />
             </div>
 
             <div>
-              <label className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1 block">
+              <label htmlFor="login-password" className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1 block">
                 Mot de passe
               </label>
               <input
+                id="login-password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d] border border-[#acaf91] rounded-lg px-3 py-2 focus:outline-none focus:border-[#87a700]"
+                autoComplete="current-password"
+                className="w-full text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d] border border-[#acaf91] rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#87a700] focus:border-[#87a700]"
               />
             </div>
 

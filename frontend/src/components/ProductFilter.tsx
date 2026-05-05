@@ -44,14 +44,15 @@ function FilterCheckbox({ label, count, checked, onChange, colorDot }: {
     onChange: () => void;
     colorDot?: string;
 }) {
+    const checkboxId = `filter-${label.toLowerCase().replace(/\s+/g, "-")}`;
     return (
         <div className="flex flex-row justify-between">
             <div className="flex flex-row gap-3 items-center">
-                <input type="checkbox" checked={checked} onChange={onChange} />
-                {colorDot && <div className={`w-4 h-4 rounded-full ${colorDot}`}></div>}
-                <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{label}</p>
+                <input id={checkboxId} type="checkbox" checked={checked} onChange={onChange} />
+                {colorDot && <div className={`w-4 h-4 rounded-full ${colorDot}`} aria-hidden="true"></div>}
+                <label htmlFor={checkboxId} className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)] cursor-pointer">{label}</label>
             </div>
-            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]">{count}</p>
+            <p className="text-[var(--beige)] text-sm font-[family-name:var(--font-text)]" aria-hidden="true">{count}</p>
         </div>
     );
 }
@@ -132,8 +133,9 @@ export const ProductFilter = ({ onApply, onReset, counts }: ProductFilterProps) 
             <FilterSection title="Prix" isOpen={openSections.has("price")} onToggle={() => toggleSection("price")}>
                 <div className="flex flex-row gap-6 justify-center items-center">
                     <div className="flex flex-col gap-1">
-                        <label className="text-[var(--beige)] text-xs font-[family-name:var(--font-text)]">Min (€)</label>
+                        <label htmlFor="filter-price-min" className="text-[var(--beige)] text-xs font-[family-name:var(--font-text)]">Min (€)</label>
                         <input
+                            id="filter-price-min"
                             type="number"
                             min={0}
                             value={pending.priceMin ?? ""}
@@ -142,8 +144,9 @@ export const ProductFilter = ({ onApply, onReset, counts }: ProductFilterProps) 
                         />
                     </div>
                     <div className="flex flex-col gap-1">
-                        <label className="text-[var(--beige)] text-xs font-[family-name:var(--font-text)]">Max (€)</label>
+                        <label htmlFor="filter-price-max" className="text-[var(--beige)] text-xs font-[family-name:var(--font-text)]">Max (€)</label>
                         <input
+                            id="filter-price-max"
                             type="number"
                             min={0}
                             value={pending.priceMax ?? ""}

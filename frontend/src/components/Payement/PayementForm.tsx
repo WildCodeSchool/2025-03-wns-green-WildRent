@@ -74,7 +74,7 @@ export default function PaymentForm({ onValidityChange }: Readonly<PaymentFormPr
                   value={formData.cardNumber}
                   onChange={handleChange}
                   placeholder="1234 5678 9012 3456"
-                  className="w-full rounded-lg border border-gray-400 px-4 py-2 outline-none"
+                  className="w-full rounded-lg border border-gray-400 px-4 py-2 outline-none focus:ring-2 focus:ring-[#87a700] focus:border-[#87a700]"
                 />
               </div>
 
@@ -93,7 +93,7 @@ export default function PaymentForm({ onValidityChange }: Readonly<PaymentFormPr
                     value={formData.expiry}
                     onChange={handleChange}
                     placeholder="MM/AA"
-                    className="w-full rounded-lg border border-gray-400 px-4 py-2 outline-none"
+                    className="w-full rounded-lg border border-gray-400 px-4 py-2 outline-none focus:ring-2 focus:ring-[#87a700] focus:border-[#87a700]"
                   />
                 </div>
 
@@ -111,7 +111,7 @@ export default function PaymentForm({ onValidityChange }: Readonly<PaymentFormPr
                     value={formData.cvc}
                     onChange={handleChange}
                     placeholder="123"
-                    className="w-full rounded-lg border border-gray-400 px-4 py-2 outline-none"
+                    className="w-full rounded-lg border border-gray-400 px-4 py-2 outline-none focus:ring-2 focus:ring-[#87a700] focus:border-[#87a700]"
                   />
                 </div>
               </div>
@@ -130,7 +130,7 @@ export default function PaymentForm({ onValidityChange }: Readonly<PaymentFormPr
                   value={formData.cardName}
                   onChange={handleChange}
                   placeholder="Nom Prénom"
-                  className="w-full rounded-lg border border-gray-400 px-4 py-2 outline-none"
+                  className="w-full rounded-lg border border-gray-400 px-4 py-2 outline-none focus:ring-2 focus:ring-[#87a700] focus:border-[#87a700]"
                 />
               </div>
 

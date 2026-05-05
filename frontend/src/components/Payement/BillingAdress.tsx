@@ -127,23 +127,27 @@ export default function BillingAddress({ onValidityChange }: BillingAddressProps
             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs font-[family-name:var(--font-text)] text-gray-600">Prénom</label>
+                  <label htmlFor="billing-firstname" className="text-xs font-[family-name:var(--font-text)] text-gray-600">Prénom</label>
                   <input
+                    id="billing-firstname"
                     type="text"
                     name="firstname"
                     value={formData.firstname}
                     onChange={handleChange}
+                    autoComplete="given-name"
                     className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
                     required
                   />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs font-[family-name:var(--font-text)] text-gray-600">Nom</label>
+                  <label htmlFor="billing-lastname" className="text-xs font-[family-name:var(--font-text)] text-gray-600">Nom</label>
                   <input
+                    id="billing-lastname"
                     type="text"
                     name="lastname"
                     value={formData.lastname}
                     onChange={handleChange}
+                    autoComplete="family-name"
                     className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
                     required
                   />
@@ -151,24 +155,28 @@ export default function BillingAddress({ onValidityChange }: BillingAddressProps
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-xs font-[family-name:var(--font-text)] text-gray-600">Email</label>
+                <label htmlFor="billing-email" className="text-xs font-[family-name:var(--font-text)] text-gray-600">Email</label>
                 <input
+                  id="billing-email"
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
+                  autoComplete="email"
                   className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
                   required
                 />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-xs font-[family-name:var(--font-text)] text-gray-600">Adresse</label>
+                <label htmlFor="billing-address" className="text-xs font-[family-name:var(--font-text)] text-gray-600">Adresse</label>
                 <input
+                  id="billing-address"
                   type="text"
                   name="address"
                   value={formData.address}
                   onChange={handleChange}
+                  autoComplete="street-address"
                   className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
                   required
                 />
@@ -176,23 +184,27 @@ export default function BillingAddress({ onValidityChange }: BillingAddressProps
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs font-[family-name:var(--font-text)] text-gray-600">Code postal</label>
+                  <label htmlFor="billing-postalCode" className="text-xs font-[family-name:var(--font-text)] text-gray-600">Code postal</label>
                   <input
+                    id="billing-postalCode"
                     type="text"
                     name="postalCode"
                     value={formData.postalCode}
                     onChange={handleChange}
+                    autoComplete="postal-code"
                     className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
                     required
                   />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs font-[family-name:var(--font-text)] text-gray-600">Ville</label>
+                  <label htmlFor="billing-city" className="text-xs font-[family-name:var(--font-text)] text-gray-600">Ville</label>
                   <input
+                    id="billing-city"
                     type="text"
                     name="city"
                     value={formData.city}
                     onChange={handleChange}
+                    autoComplete="address-level2"
                     className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
                     required
                   />

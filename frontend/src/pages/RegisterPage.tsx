@@ -41,33 +41,38 @@ export const RegisterPage = () => {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <div>
-              <label className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1 block">
+              <label htmlFor="register-email" className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1 block">
                 Email
               </label>
               <input
+                id="register-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d] border border-[#acaf91] rounded-lg px-3 py-2 focus:outline-none focus:border-[#87a700]"
+                autoComplete="email"
+                className="w-full text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d] border border-[#acaf91] rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#87a700] focus:border-[#87a700]"
               />
             </div>
 
             <div>
-              <label className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1 block">
+              <label htmlFor="register-password" className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1 block">
                 Mot de passe
               </label>
               <div className="relative">
                 <input
+                  id="register-password"
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d] border border-[#acaf91] rounded-lg px-3 py-2 pr-10 focus:outline-none focus:border-[#87a700]"
+                  autoComplete="new-password"
+                  className="w-full text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d] border border-[#acaf91] rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[#87a700] focus:border-[#87a700]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
+                  aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-[#acaf91] hover:text-[#31380d] transition-colors"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -79,20 +84,23 @@ export const RegisterPage = () => {
             </div>
 
             <div>
-              <label className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1 block">
+              <label htmlFor="register-password-confirm" className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1 block">
                 Confirmer le mot de passe
               </label>
               <div className="relative">
                 <input
+                  id="register-password-confirm"
                   type={showPasswordConfirm ? "text" : "password"}
                   value={passwordConfirm}
                   onChange={(e) => setPasswordConfirm(e.target.value)}
                   required
-                  className="w-full text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d] border border-[#acaf91] rounded-lg px-3 py-2 pr-10 focus:outline-none focus:border-[#87a700]"
+                  autoComplete="new-password"
+                  className="w-full text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d] border border-[#acaf91] rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[#87a700] focus:border-[#87a700]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPasswordConfirm((prev) => !prev)}
+                  aria-label={showPasswordConfirm ? "Masquer la confirmation" : "Afficher la confirmation"}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-[#acaf91] hover:text-[#31380d] transition-colors"
                 >
                   {showPasswordConfirm ? <EyeOff size={16} /> : <Eye size={16} />}

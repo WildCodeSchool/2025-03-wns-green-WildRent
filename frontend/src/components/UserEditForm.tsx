@@ -111,8 +111,12 @@ export const UserEditForm = ({ user, onCancel, onSuccess }: UserEditFormProps) =
       <form onSubmit={handleSubmit}>
         <div className="flex items-center gap-4 mb-6">
           <div
+            role="button"
+            tabIndex={0}
+            aria-label="Changer la photo de profil"
             className="w-16 h-16 shrink-0 rounded-full bg-[#acaf91] flex items-center justify-center overflow-hidden cursor-pointer relative group"
             onClick={() => fileInputRef.current?.click()}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") fileInputRef.current?.click(); }}
           >
             {avatarPreview ? (
               <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
@@ -143,15 +147,17 @@ export const UserEditForm = ({ user, onCancel, onSuccess }: UserEditFormProps) =
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 sm:gap-y-5 gap-x-8 mb-5 sm:mb-6">
           {fields.map(({ name, label }) => (
             <div key={name}>
-              <label className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1 block">
+              <label htmlFor={`edit-${name}`} className="text-xs font-[family-name:var(--font-text)] text-[#acaf91] mb-1 block">
                 {label}
               </label>
               <input
+                id={`edit-${name}`}
                 type={name === "email" ? "email" : "text"}
                 name={name}
                 value={formData[name] ?? ""}
                 onChange={handleChange}
-                className="w-full text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d] border border-[#acaf91] rounded-lg px-3 py-2 focus:outline-none focus:border-[#87a700]"
+                autoComplete={name === "email" ? "email" : name === "postalCode" ? "postal-code" : name === "city" ? "address-level2" : name === "address" ? "street-address" : name === "firstname" ? "given-name" : "family-name"}
+                className="w-full text-sm font-medium font-[family-name:var(--font-text)] text-[#31380d] border border-[#acaf91] rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#87a700] focus:border-[#87a700]"
               />
             </div>
           ))}
