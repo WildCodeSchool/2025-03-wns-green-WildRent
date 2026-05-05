@@ -17,7 +17,7 @@ export function PaymentPage() {
 
   function calculateTotal() {
     return items.reduce((sum, item) => {
-      return sum + calculateItemTotal(item.price, item.quantity, item.startDate, item.endDate);
+      return sum + calculateItemTotal(item.price, item.quantity, item.startDate, item.endDate, item.discount);
     }, 0);
   }
 

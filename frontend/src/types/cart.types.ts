@@ -9,6 +9,7 @@ export type CartBookingProduct = {
     image?: string;
     productRef: string;
     quantity: number;
+    discount: number;
     product: {
       id: number;
       name: string;
@@ -39,6 +40,7 @@ export type CartItemData = {
   productName: string;
   image: string;
   price: number;
+  discount: number;
   productRef: string;
   color: string;
   size: string;
