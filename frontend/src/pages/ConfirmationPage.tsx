@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from "react-router";
+import { formatPrice } from "../utils/formatPrice";
 
 type ConfirmationState = {
   bookingIds:  number[];
@@ -61,7 +62,7 @@ export function ConfirmationPage() {
 
           <div className="border-t border-white/20 pt-4 flex justify-between items-center">
             <p className="font-bold text-lg">Total payé :</p>
-            <p className="font-bold text-[var(--light-green)] text-xl">{total}€</p>
+            <p className="font-bold text-[var(--light-green)] text-xl">{formatPrice(total)}€</p>
           </div>
 
           <button

@@ -1,18 +1,22 @@
 import { useState } from "react";
 import { useQuery } from "@apollo/client/react";
+import { Link } from "react-router";
 import { useCart } from "../../context/CartContext";
 import type { CartItemData } from "../../types/cart.types";
 import { GET_AVAILABLE_STOCK } from "../../graphql/ProductVariantOperations";
 import { formatDate } from "../../utils/formatDate";
 import { calculateItemTotal } from "../../utils/calculateItemTotal";
+import { formatPrice } from "../../utils/formatPrice";
 
 export default function CartItem({
   bookingProductId,
+  productId,
   variantId,
   productName,
   productRef,
   image,
   price,
+  discount,
   color,
   size,
   startDate,
@@ -62,10 +66,21 @@ export default function CartItem({
   return (
     <div className="flex items-center gap-4 p-4 bg-[var(--dark-green)] rounded-xl text-white">
 
-      <img src={image} alt={productName} className="h-20 w-20 object-contain bg-white rounded-lg p-1" />
+      <Link to={`/products/${productId}`}>
+        <img src={image} alt={productName} className="h-20 w-20 object-contain bg-white rounded-lg p-1 hover:opacity-80 transition" />
+      </Link>
 
       <div className="flex-1">
-        <p className="font-bold font-[family-name:var(--font-title)]">{productName}</p>
+        <div className="flex items-center gap-2">
+          <Link to={`/products/${productId}`} className="hover:text-[var(--light-green)] transition">
+            <p className="font-bold font-[family-name:var(--font-title)]">{productName}</p>
+          </Link>
+          {discount > 0 && (
+            <span className="text-[10px] font-bold text-white bg-[#87a700] px-2 py-0.5 rounded-full">
+              -{discount}%
+            </span>
+          )}
+        </div>
         <p className="text-xs text-[var(--light-green)]">Ref : {productRef}</p>
         <p className="text-xs">Couleur : {color} · Taille : {size}</p>
 
@@ -144,7 +159,15 @@ export default function CartItem({
         </button>
       </div>
 
-      <p className="font-bold text-[var(--light-green)] w-16 text-right">{calculateItemTotal(price, quantity, startDate, endDate)}€</p>
+      <div className="flex items-center gap-2 w-28 justify-end">
+        {discount > 0 && (
+          <span className="relative text-xs text-gray-400">
+            {formatPrice(calculateItemTotal(price, quantity, startDate, endDate, 0))}€
+            <span className="absolute left-0 top-1/2 w-full h-[1.5px] bg-red-500 -rotate-12" />
+          </span>
+        )}
+        <p className="font-bold text-[var(--light-green)]">{formatPrice(calculateItemTotal(price, quantity, startDate, endDate, discount))}€</p>
+      </div>
 
       <button
         onClick={() => removeItem(bookingProductId)}

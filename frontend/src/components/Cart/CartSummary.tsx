@@ -1,13 +1,14 @@
 import { useCart } from "../../context/CartContext";
 import { useNavigate } from "react-router";
 import { calculateItemTotal } from "../../utils/calculateItemTotal";
+import { formatPrice } from "../../utils/formatPrice";
 
 export default function CartSummary() {
   const { items } = useCart();
   const navigate = useNavigate();
 
   const total = items.reduce((sum, item) => {
-    return sum + calculateItemTotal(item.price, item.quantity, item.startDate, item.endDate);
+    return sum + calculateItemTotal(item.price, item.quantity, item.startDate, item.endDate, item.discount);
   }, 0);
 
   return (
@@ -15,7 +16,7 @@ export default function CartSummary() {
       <h2 className="text-2xl font-bold font-[family-name:var(--font-title)] uppercase text-white">Récapitulatif</h2>
       
       <div className="mt-4 rounded-xl bg-[var(--dark-green)] p-4">
-        <p className="text-[var(--light-green)] font-bold text-lg">Total : {total}€</p>
+        <p className="text-[var(--light-green)] font-bold text-lg">Total : {formatPrice(total)}€</p>
       </div>
 
       <button 
