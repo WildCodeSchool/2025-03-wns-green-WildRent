@@ -58,7 +58,7 @@ This first version of WildRent provides a complete outdoor equipment rental expe
 
 ### Tools & environment
 
-* Docker & Docker Compose, npm, Jest / Vitest (tests planned), Nginx
+* Docker & Docker Compose, npm, Jest (backend unit tests), Nginx
 
 ---
 
@@ -92,6 +92,9 @@ npm run docker-up
 ```
 
 The application will be available at:
+- **Frontend**: http://localhost:5173
+- **GraphQL API**: http://localhost:4200/graphql
+- **PostgreSQL**: localhost:5432
 
 ### 5. Stop the application
 
@@ -139,7 +142,21 @@ docker compose -f docker-compose.dev.yaml exec backend npx ts-node ./src/config/
 
 ## Tests
 
-No tests have been implemented yet.
+### Backend (Jest)
+Unit tests cover the main services (products, bookings, product variants).
+```bash
+cd backend
+npm test
+```
+
+### Frontend (Vitest + Testing Library)
+Unit tests cover utility functions and components.
+```bash
+cd frontend
+npm test
+```
+
+Both backend and frontend tests run automatically in CI via GitHub Actions on every pull request to `develop` and on every push to `main`.
 
 ---
 
@@ -270,7 +287,7 @@ Cette première version de WildRent offre une expérience complète de location 
 
 ### Outils & environnement
 
-* Docker & Docker Compose, npm, Jest / Vitest (tests à venir), Nginx
+* Docker & Docker Compose, npm, Jest (tests unitaires backend), Nginx
 
 ---
 
@@ -305,6 +322,9 @@ npm run docker-up
 ```
 
 L’application sera accessible sur :
+- **Frontend** : http://localhost:5173
+- **API GraphQL** : http://localhost:4200/graphql
+- **PostgreSQL** : localhost:5432
 
 ### 5. Arrêter l’application
 
@@ -351,7 +371,21 @@ docker compose -f docker-compose.dev.yaml exec backend npx ts-node ./src/config/
 
 ## Tests
 
-Aucun test n’est encore implémenté pour le moment.
+### Backend (Jest)
+Les tests unitaires couvrent les principaux services (produits, réservations, variants).
+```bash
+cd backend
+npm test
+```
+
+### Frontend (Vitest + Testing Library)
+Les tests unitaires couvrent les fonctions utilitaires et les composants.
+```bash
+cd frontend
+npm test
+```
+
+Les tests backend et frontend sont exécutés automatiquement en CI via GitHub Actions à chaque pull request vers `develop` et à chaque push sur `main`.
 
 ---
 
