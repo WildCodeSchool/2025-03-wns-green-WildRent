@@ -1,4 +1,5 @@
-import { FindManyOptions, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
+import { FindManyOptions, In, LessThanOrEqual, MoreThanOrEqual, Not } from "typeorm";
+import { Status } from "../entities/Status";
 import { CreateProductVariantInput, UpdateProductVariantInput } from "../dtos/product-variant.dto";
 import { Product } from "../entities/Product";
 import { ProductVariant } from "../entities/ProductVariant";
@@ -58,20 +59,33 @@ export class ProductVariantService {
   async getAvailableStock(
     productVariantId: number,
     startDate: Date,
-    endDate: Date
+    endDate: Date,
+    excludeBookingId?: number
   ): Promise<number> {
     const productVariant = await ProductVariant.findOne({ where: { id: productVariantId } });
     if (!productVariant) throw Errors.notFound("ProductVariant");
 
-    const overlappingBookings = await BookingProducts.find({
-      where: {
-        productVariant: { id: productVariantId },
-        booking: {
-          startDate: LessThanOrEqual(endDate),
-          endDate: MoreThanOrEqual(startDate),
-        },
+    const blockingStatuses = await Status.find({
+      where: { statusName: In(["En attente", "À préparer", "En cours"]) },
+    });
+    const blockingStatusIds = blockingStatuses.map((s) => s.id);
+
+    const whereCondition: any = {
+      productVariant: { id: productVariantId },
+      booking: {
+        startDate: LessThanOrEqual(endDate),
+        endDate: MoreThanOrEqual(startDate),
+        status: { id: In(blockingStatusIds) },
       },
-      relations: ["booking"],
+    };
+
+    if (excludeBookingId) {
+      whereCondition.booking.id = Not(excludeBookingId);
+    }
+
+    const overlappingBookings = await BookingProducts.find({
+      where: whereCondition,
+      relations: ["booking", "booking.status"],
     });
 
     const reservedQuantity = overlappingBookings.reduce(
