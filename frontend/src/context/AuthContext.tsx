@@ -29,7 +29,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const [user, setUser] = useState<AuthUser | null>(null);
 
-  const { data: whoAmIData, loading, refetch } = useQuery(WHO_AM_I, {
+  const { data: whoAmIData, loading, refetch } = useQuery<{ whoAmI: AuthUser }>(WHO_AM_I, {
     fetchPolicy: "network-only",
   });
 
@@ -39,8 +39,8 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
     }
   }, [whoAmIData]);
 
-  const [loginMutation] = useMutation(LOGIN);
-  const [logoutMutation] = useMutation(LOGOUT);
+  const [loginMutation] = useMutation<{ login: AuthUser }>(LOGIN);
+  const [logoutMutation] = useMutation<{ logout: boolean }>(LOGOUT);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
@@ -49,9 +49,9 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
       });
 
       if (data?.login) {
-        const { data: whoAmIData } = await refetch();
-        if (whoAmIData?.whoAmI) {
-          setUser(whoAmIData.whoAmI);
+        const { data: refetchData } = await refetch();
+        if (refetchData?.whoAmI) {
+          setUser(refetchData.whoAmI);
         }
         toast.success("Bienvenue !");
         return true;

@@ -23,7 +23,7 @@ type ProductDescriptionProps = {
 };
 
 export default function ProductDetailsDescription({
-  productId,
+  productId: _productId,
   title,
   brand,
   pricePerDay,
@@ -32,7 +32,7 @@ export default function ProductDetailsDescription({
   description,
   colors,
   sizes,
-  image,
+  image: _image,
   variants,
 }: Readonly<ProductDescriptionProps>) {
 

@@ -13,7 +13,7 @@ interface DeleteAccountModalProps {
 export const DeleteAccountModal = ({ onClose, onDeleted }: DeleteAccountModalProps) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [deleteAccount, { loading }] = useMutation(DELETE_MY_ACCOUNT);
+  const [deleteAccount, { loading }] = useMutation<{ deleteMyAccount: boolean }>(DELETE_MY_ACCOUNT);
 
   const handleDelete = async () => {
     if (!password.trim()) return;
