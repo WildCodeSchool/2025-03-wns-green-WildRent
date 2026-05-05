@@ -5,19 +5,22 @@ import ProductDetailsCarousel from "../components/Product/ProductDetailsCarousel
 import ProductDetailsDescription from "../components/Product/ProductDetailsDescription";
 
 type ProductVariant = {
-  id: number;      
+  id: number;
   color: string;
   size: string;
   image: string;
-  quantity: number; 
+  quantity: number;
+  discount: number;
 };
 
 type ProductData = {
+  id: number;
   name: string;
   brand: string;
   price: number;
+  discount: number;
   productRef: string;
-  image?: string
+  image?: string;
   image1?: string;
   image2?: string;
   image3?: string;
@@ -39,7 +42,7 @@ export function ProductDetailsPage() {
 
   if (!product) return <p>Produit introuvable</p>;
 
-  const images = [product.image1, product.image2, product.image3].filter(Boolean) as string[];
+  const images = [product.image, product.image1, product.image2, product.image3].filter(Boolean) as string[];
   
   const variants = product.productVariant;
   const colors = [...new Set(variants.map((variant) => variant.color))];
@@ -50,9 +53,11 @@ export function ProductDetailsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <ProductDetailsCarousel images={images} productName={product.name} />
         <ProductDetailsDescription
+          productId={product.id}
           title={product.name}
           brand={product.brand}
           pricePerDay={product.price}
+          productDiscount={product.discount}
           reference={product.productRef}
           description={product.description}
           colors={colors}

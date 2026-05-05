@@ -3,7 +3,7 @@ import { IsNotEmpty, Length } from "class-validator";
 @InputType()
 export class RoleInput {
     @Field()
-    @IsNotEmpty({ message: "Role name must not be empty" })
-    @Length(3, 20, { message: "Role name must be between 3 and 20 characters" })
+    @IsNotEmpty({ message: "Le nom du rôle ne doit pas être vide" })
+    @Length(3, 20, { message: "Le nom du rôle doit contenir entre 3 et 20 caractères" })
     roleName!: string;
 }

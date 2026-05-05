@@ -1,45 +1,62 @@
 import {
   Arg,
-	ID,
+  Authorized,
+  Ctx,
+  ID,
   Mutation,
+  Query,
   Resolver,
-	Query,
 } from "type-graphql";
 
-import {Booking} from "../entities/Booking";
+import { Booking } from "../entities/Booking";
 import { BookingService } from "../services/booking.service";
 import { CreateBookingInput, UpdateBookingInput } from "../dtos/booking.dto";
+import { AuthContext } from "../types/types";
+import { Errors } from "../errors/errors";
 
 @Resolver(Booking)
 export class BookingResolver {
   private readonly bookingService = new BookingService();
   
-	@Query (() => [Booking])
-	async getAllBookings(): Promise<Booking[]> {
-		return this.bookingService.getAllBookings();
-	}
+  @Authorized("admin")
+  @Query(() => [Booking])
+  async getAllBookings(): Promise<Booking[]> {
+    return this.bookingService.getAllBookings();
+  }
 
-	@Query(() => Booking)
+  @Authorized()
+  @Query(() => Booking)
   async getBookingById(@Arg("id", () => ID) id: number): Promise<Booking> {
     return this.bookingService.getBookingById(id);
   }
-	
+
+  @Authorized()
+  @Query(() => [Booking])
+  async getMyBookings(@Ctx() context: AuthContext): Promise<Booking[]> {
+    return this.bookingService.getMyBookings(context.user.id);
+  }
+
+  @Authorized()
   @Mutation(() => Booking)
   async createBooking(
-    @Arg("data") data: CreateBookingInput
+    @Arg("data") data: CreateBookingInput,
+    @Ctx() context: AuthContext,
   ): Promise<Booking> {
-    return this.bookingService.createBooking(data);
+    return this.bookingService.createBooking(data, context.user.id);
   }
 
-	@Mutation(() => Booking)
+  @Authorized()
+  @Mutation(() => Booking)
   async updateBooking(
     @Arg("id", () => ID) id: number,
-    @Arg("data") data: UpdateBookingInput
+    @Arg("data") data: UpdateBookingInput,
+    @Ctx() context: AuthContext,
   ): Promise<Booking> {
-    return this.bookingService.updateBooking(id, data);
+    return this.bookingService.updateBooking(id, data, context.user.id);
   }
 
-	@Mutation(() => ID)
+  @Authorized()
+  @Mutation(() => ID)
   async deleteBooking(@Arg("id", () => ID) id: number): Promise<number> {
     return this.bookingService.deleteBooking(id);
   }

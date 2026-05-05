@@ -2,7 +2,6 @@ import { Field, ObjectType } from "type-graphql";
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Category } from "./Category";
 import { ProductVariant } from "./ProductVariant";
-import { BookingProducts } from "./BookingProducts";
 
 @Entity()
 @ObjectType()
@@ -11,10 +10,6 @@ export class Product extends BaseEntity {
     @Field()
     @PrimaryGeneratedColumn()
     id!: number;
-    
-    @Field()
-    @Column({ unique: true,unsigned: true })
-    productRef!: number;
 
     @Field()
     @Column({ length: 20 })
@@ -49,6 +44,10 @@ export class Product extends BaseEntity {
     image3?: string;
 
     @Field()
+    @Column({ unique: true })
+    productRef!: string;
+
+    @Field()
     @Column({ length: 20 })
     brand!: string;
 
@@ -72,7 +71,4 @@ export class Product extends BaseEntity {
     @Field(() => [ProductVariant], { nullable: true })
     productVariant!: ProductVariant[];
 
-    @OneToMany(() => BookingProducts, (bookingProducts) => bookingProducts.product)
-    @Field(() => [BookingProducts])
-    bookingsProducts!: BookingProducts[];
 }

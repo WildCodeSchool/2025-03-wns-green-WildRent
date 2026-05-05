@@ -58,7 +58,7 @@ This first version of WildRent provides a complete outdoor equipment rental expe
 
 ### Tools & environment
 
-* Docker & Docker Compose, npm, Jest / Vitest (tests planned), Nginx
+* Docker & Docker Compose, npm, Jest (backend unit tests), Nginx
 
 ---
 
@@ -92,6 +92,9 @@ npm run docker-up
 ```
 
 The application will be available at:
+- **Frontend**: http://localhost:5173
+- **GraphQL API**: http://localhost:4200/graphql
+- **PostgreSQL**: localhost:5432
 
 ### 5. Stop the application
 
@@ -101,9 +104,59 @@ npm run docker-down
 
 ---
 
+## Database Seeding Guide
+
+The seed script is used to populate the database with test data for development.
+
+After cloning the project, there is normally no data in the database. You only need to start the application and then run the seed script.
+
+Start the application:
+
+```bash
+npm run docker-up
+```
+
+Run the seed:
+
+```bash
+docker compose -f docker-compose.dev.yaml exec backend npx ts-node ./src/config/run-seed.ts
+```
+
+If the database already contains data:
+
+- If you only want to add seed data, you can directly run the seed command.
+- If you want to start from a clean state using only seed data, you must reset the database first:
+
+```bash
+docker compose -f docker-compose.dev.yaml down
+Remove-Item -Recurse -Force ./persist/database
+npm run docker-up
+```
+
+Then run the seed again:
+
+```bash
+docker compose -f docker-compose.dev.yaml exec backend npx ts-node ./src/config/run-seed.ts
+```
+---
+
 ## Tests
 
-No tests have been implemented yet.
+### Backend (Jest)
+Unit tests cover the main services (products, bookings, product variants).
+```bash
+cd backend
+npm test
+```
+
+### Frontend (Vitest + Testing Library)
+Unit tests cover utility functions and components.
+```bash
+cd frontend
+npm test
+```
+
+Both backend and frontend tests run automatically in CI via GitHub Actions on every pull request to `develop` and on every push to `main`.
 
 ---
 
@@ -234,7 +287,7 @@ Cette première version de WildRent offre une expérience complète de location 
 
 ### Outils & environnement
 
-* Docker & Docker Compose, npm, Jest / Vitest (tests à venir), Nginx
+* Docker & Docker Compose, npm, Jest (tests unitaires backend), Nginx
 
 ---
 
@@ -269,6 +322,9 @@ npm run docker-up
 ```
 
 L’application sera accessible sur :
+- **Frontend** : http://localhost:5173
+- **API GraphQL** : http://localhost:4200/graphql
+- **PostgreSQL** : localhost:5432
 
 ### 5. Arrêter l’application
 
@@ -278,9 +334,58 @@ npm run docker-down
 
 ---
 
+## Guide de remplissage de la base de données (seed)
+Le script de seed permet de remplir la base de données avec des données de test pour le développement.
+
+Après un clone du projet, il n’y a normalement aucune donnée en base de données. Il suffit donc de lancer l’application puis d’exécuter le script de seed.
+
+Lancer l’application :
+
+```bash
+npm run docker-up
+```
+
+Lancer le seed :
+
+```bash
+docker compose -f docker-compose.dev.yaml exec backend npx ts-node ./src/config/run-seed.ts
+```
+
+Si la base de données contient déjà des données :
+
+- Si vous souhaitez simplement ajouter les données du seed, vous pouvez exécuter directement la commande du seed "lancer le seed" ci dessus.
+- Si vous souhaitez repartir uniquement avec les données du seed (base propre), il faut supprimer la base de données :
+
+```bash
+docker compose -f docker-compose.dev.yaml down
+Remove-Item -Recurse -Force ./persist/database
+npm run docker-up
+```
+
+Puis relancer le seed :
+
+```bash
+docker compose -f docker-compose.dev.yaml exec backend npx ts-node ./src/config/run-seed.ts
+```
+---
+
 ## Tests
 
-Aucun test n’est encore implémenté pour le moment.
+### Backend (Jest)
+Les tests unitaires couvrent les principaux services (produits, réservations, variants).
+```bash
+cd backend
+npm test
+```
+
+### Frontend (Vitest + Testing Library)
+Les tests unitaires couvrent les fonctions utilitaires et les composants.
+```bash
+cd frontend
+npm test
+```
+
+Les tests backend et frontend sont exécutés automatiquement en CI via GitHub Actions à chaque pull request vers `develop` et à chaque push sur `main`.
 
 ---
 
@@ -345,8 +450,3 @@ feat(auth): implement JWT authentication and token refresh (WIP)
 * Noms de variables et fonctions clairs et explicites (ex. `calculateTotalPrice()` plutôt que `calc()`)
 * Respect des standards ESLint / Prettier
 * Revue de code obligatoire avant fusion sur `develop`
-
-### Development
-```bash
-npm run docker-up
-npm run docker-down

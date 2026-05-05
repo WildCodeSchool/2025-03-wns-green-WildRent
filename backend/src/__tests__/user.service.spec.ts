@@ -16,7 +16,7 @@ jest.mock("../entities/User", () => ({
 
 jest.mock("../entities/Role", () => ({
   Role: {
-    findOne: jest.fn().mockResolvedValue({ id: 1, roleName: "USER" }),
+    findOne: jest.fn().mockResolvedValue({ id: 1, roleName: "user" }),
   },
 }));
 
@@ -43,11 +43,12 @@ describe("UserService", () => {
       expect.objectContaining({
         email: "test@example.com",
         password: "hashed-password",
-        firstname: "non renseignée",
-        lastname: "non renseignée",
+        firstname: "non renseigné",
+        lastname: "non renseigné",
         phoneNumber: "0000000000",
-        address: "non renseignée",
-        city: "non renseignée",
+        address: "non renseigné",
+        city: "non renseigné",
+        postalCode: "00000",
       })
     );
 
@@ -63,7 +64,7 @@ describe("UserService", () => {
         password: "Password123!",
         passwordConfirm: "Password123!",
       })
-    ).rejects.toThrow("User already exists");
+    ).rejects.toThrow("User existe déjà");
   });
 
   it("should create a new user by admin with role", async () => {
@@ -98,7 +99,7 @@ describe("UserService", () => {
         passwordConfirm: "Password123!",
         roleId: 999,
       })
-    ).rejects.toThrow("Role not found");
+    ).rejects.toThrow("Role introuvable");
   });
 
   it("should delete a user", async () => {
@@ -111,7 +112,7 @@ describe("UserService", () => {
 
   it("should throw error if user not found on delete", async () => {
     (User.findOne as jest.Mock).mockResolvedValueOnce(null);
-    await expect(service.deleteUser(999)).rejects.toThrow("User not found");
+    await expect(service.deleteUser(999)).rejects.toThrow("User introuvable");
   });
 
   it("should return a user by id", async () => {
@@ -124,7 +125,7 @@ describe("UserService", () => {
 
   it("should throw error if user not found by id", async () => {
     (User.findOne as jest.Mock).mockResolvedValueOnce(null);
-    await expect(service.getUserById(999)).rejects.toThrow("User not found");
+    await expect(service.getUserById(999)).rejects.toThrow("User introuvable");
   });
 
   it("should update a user", async () => {
@@ -139,7 +140,7 @@ describe("UserService", () => {
 
   it("should throw error if user not found on update", async () => {
     (User.findOne as jest.Mock).mockResolvedValueOnce(null);
-    await expect(service.updateUser(999, { firstname: "x" })).rejects.toThrow("User not found");
+    await expect(service.updateUser(999, { firstname: "x" })).rejects.toThrow("User introuvable");
   });
 
   it("should update user by admin including role", async () => {
@@ -170,6 +171,6 @@ describe("UserService", () => {
     (User.findOne as jest.Mock).mockResolvedValueOnce(null);
     await expect(
       service.updateUserPassword(999, { password: "x", passwordConfirm: "x" })
-    ).rejects.toThrow("User not found");
+    ).rejects.toThrow("User introuvable");
   });
 });

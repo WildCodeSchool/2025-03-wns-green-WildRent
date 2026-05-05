@@ -1,47 +1,108 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-// import App from './App.tsx'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client'
 import { ApolloProvider } from '@apollo/client/react'
 import { Layout } from './pages/Layout.tsx'
 import { ProductPages } from './pages/ProductsPages.tsx'
-import {ProductDetailsPage} from './pages/ProductDetailsPage.tsx'
+import { ProductDetailsPage } from './pages/ProductDetailsPage.tsx'
 import { HomePage } from "./pages/Home/HomePage";
 import { CartProvider } from "./context/CartContext.tsx";
+import { AuthProvider } from "./context/AuthContext.tsx";
 import { CartPage } from './pages/CartPage.tsx'
 import { PaymentPage } from './pages/PayementPage.tsx'
+import { UserProfilePage } from './pages/UserProfilePage.tsx'
+import { LoginPage } from './pages/LoginPage.tsx'
+import { RegisterPage } from './pages/RegisterPage.tsx'
+import { ProtectedRoute } from './components/ProtectedRoute.tsx'
+import { GuestRoute } from './components/GuestRoute.tsx'
+import { ConfirmationPage } from './pages/ConfirmationPage.tsx'
+import { NotFoundPage } from './pages/NotFoundPage.tsx'
 
+const apiUrl = import.meta.env.VITE_API_URL ?? "";
 
 const client = new ApolloClient({
-  link: new HttpLink({ uri: "http://localhost:4200/graphql" }),
+  link: new HttpLink({
+    uri: `${apiUrl}/graphql`,
+    credentials: "include",
+  }),
   cache: new InMemoryCache(),
 });
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout/>, 
-    children : 
-    [
-      { index: true, element: <HomePage /> },
-      { path: "products", element: <ProductPages/> },
-      { path: "products/:id", element: <ProductDetailsPage/> },
-      { path: "cart", element: <CartPage/> },
-      { path: "payment", element: <PaymentPage /> }
-      
-    ],
+    element: <Layout />,
+    children:
+      [
+        { index: true, element: <HomePage /> },
+        { path: "products", element: <ProductPages /> },
+        { path: "products/:id", element: <ProductDetailsPage /> },
+        {
+          path: "cart",
+          element: (
+            <ProtectedRoute>
+              <CartPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "login",
+          element: (
+            <GuestRoute>
+              <LoginPage />
+            </GuestRoute>
+          ),
+        },
+        {
+          path: "register",
+          element: (
+            <GuestRoute>
+              <RegisterPage />
+            </GuestRoute>
+          ),
+        },
+        {
+          path: "payment",
+          element: (
+            <ProtectedRoute>
+              <PaymentPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "confirmation",
+          element: (
+            <ProtectedRoute>
+              <ConfirmationPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "profile",
+          element: (
+            <ProtectedRoute>
+              <UserProfilePage />
+            </ProtectedRoute>
+          ),
+        },
+        { path: "*", element: <NotFoundPage /> },
+      ],
   },
 ]);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ApolloProvider client={client}>
-    <CartProvider> 
-      <RouterProvider router={router} />
-      </CartProvider> 
+      <AuthProvider>
+        <CartProvider>
+          <RouterProvider router={router} />
+          <ToastContainer position="bottom-right" autoClose={6000} />
+        </CartProvider>
+      </AuthProvider>
     </ApolloProvider>
-      {/* <App /> */}
   </StrictMode>,
 )

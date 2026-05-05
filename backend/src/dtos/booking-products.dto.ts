@@ -1,15 +1,15 @@
-import { Field, InputType, ID, Int } from "type-graphql";
+import { Field, InputType, Int } from "type-graphql";
 import { IsInt, Min, IsOptional } from "class-validator";
 
 @InputType()
 export class CreateBookingProductsInput {
-  @Field(() => ID)
+  @Field(() => Int)
   @IsInt()
   bookingId!: number;
 
-  @Field(() => ID)
+  @Field(() => Int)
   @IsInt()
-  productId!: number;
+  productVariantId!: number;
 
   @Field(() => Int)
   @IsInt()

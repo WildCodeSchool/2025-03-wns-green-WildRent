@@ -4,9 +4,11 @@ import {
   Column,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Role } from "./Role";
+import { Booking } from "./Booking";
 
 @Entity()
 @ObjectType()
@@ -41,6 +43,18 @@ export class User extends BaseEntity {
   @Field()
   @Column({ length: 50 })
   city!: string;
+
+  @Field()
+  @Column({ length: 5 })
+  postalCode!: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  avatar?: string;
+  
+  @OneToMany(() => Booking, (booking) => booking.user)
+  @Field(() => [Booking])
+  bookings!: Booking[];
 
   @ManyToOne(() => Role, (role) => role.users)
   @Field(() => Role)
