@@ -1,4 +1,3 @@
-import { FindManyOptions, ILike } from "typeorm";
 import { NewProductInput, UpdateProductInput } from "../dtos/product.dto";
 import { Category } from "../entities/Category";
 import { Product } from "../entities/Product";
@@ -43,20 +42,23 @@ export class ProductService {
     limit: number = 20,
     offset: number = 0
   ): Promise<{ products: Product[]; total: number; hasMore: boolean }> {
-    const pattern = `%${query}%`;
+    const words = query.split(/\s+/).filter((w) => w.length > 0);
 
-    const [products, total] = await Product.findAndCount({
-      where: [
-        { name: ILike(pattern) },
-        { brand: ILike(pattern) },
-        { productRef: ILike(pattern) },
-        { category: { name: ILike(pattern) } },
-      ],
-      relations: { category: true, productVariant: true },
-      take: limit,
-      skip: offset,
-      order: { id: "DESC" },
-    });
+    const qb = Product.createQueryBuilder("product")
+      .leftJoinAndSelect("product.category", "category")
+      .leftJoinAndSelect("product.productVariant", "productVariant");
+
+    for (const [i, word] of words.entries()) {
+      const param = `word${i}`;
+      qb.andWhere(
+        `(product.name ILIKE :${param} OR product.brand ILIKE :${param} OR product.productRef ILIKE :${param} OR category.name ILIKE :${param})`,
+        { [param]: `%${word}%` },
+      );
+    }
+
+    qb.orderBy("product.id", "DESC").skip(offset).take(limit);
+
+    const [products, total] = await qb.getManyAndCount();
 
     return { products, total, hasMore: offset + limit < total };
   }
